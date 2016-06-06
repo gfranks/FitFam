@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_items">
+        <item>Notifications</item>
+        <item>About WorkoutCompanion</item>
+        <item>Privacy Policy</item>
+        <item>Terms of Use</item>
+    </string-array>
+
+    <string-array name="settings_sub_items">
+        <item>Notify me of nearby companions</item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
+
+    <string-array name="exercises">
+        <item>Aerobic</item>
+        <item>Baseball</item>
+        <item>Basketball</item>
+        <item>Biking</item>
+        <item>Body Building</item>
+        <item>Crossfit</item>
+        <item>Dancing</item>
+        <item>Hiking</item>
+        <item>Hockey</item>
+        <item>Jogging</item>
+        <item>P90X</item>
+        <item>Rock Climbing</item>
+        <item>Rollerblading</item>
+        <item>Running</item>
+        <item>Soccer</item>
+        <item>Skateboarding</item>
+        <item>Swimming</item>
+        <item>Tennis</item>
+        <item>Walking</item>
+        <item>Weight Lifting</item>
+    </string-array>
+
+</resources>

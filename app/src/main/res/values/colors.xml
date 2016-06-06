@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="transparent">#00000000</color>
+
+    <!-- Day theme colors -->
+    <color name="theme_background">#FAFAFA</color>
+    <color name="theme_background_dark">@color/gray_super_lightest</color>
+    <color name="theme_accent">#4CAF50</color>
+    <color name="theme_accent_translucent">#AA4CAF50</color>
+    <color name="theme_accent_light">#81C784</color>
+    <color name="theme_accent_dark">#2E7D32</color>
+    <color name="theme_color_control_highlight">@color/gray_super_lighter</color>
+    <color name="theme_default_text">#212121</color>
+    <color name="theme_default_text_light">#727272</color>
+    <color name="theme_default_text_inverse">@color/white</color>
+    <color name="theme_default_text_light_inverse">@color/gray_super_lighter</color>
+    <color name="theme_divider">#B6B6B6</color>
+    <color name="theme_icon_color">@color/gray_light</color>
+    <color name="theme_icon_color_light">@color/gray_super</color>
+    <color name="theme_primary">#2196F3</color>
+    <color name="theme_primary_light">#BBDEFB</color>
+    <color name="theme_primary_dark">#1976D2</color>
+    <color name="theme_tab_bar_background">@color/gray_light</color>
+    <color name="theme_tab_bar_background_dark">@color/gray</color>
+    <color name="theme_tab_bar_icon_color">@color/gray_super_light</color>
+    <color name="theme_tab_bar_icon_color_selected">@color/white</color>
+    <color name="theme_task_overdue">@color/red</color>
+    <color name="theme_task_upcoming">@color/orange</color>
+
+    <color name="black">#000000</color>
+    <color name="black_translucent">#88000000</color>
+    <color name="black_transparent">#48000000</color>
+    <color name="blue">#4787F3</color>
+    <color name="blue_dark">#3365DF</color>
+    <color name="blue_off">#6696C8</color>
+    <color name="gray">#272822</color>
+    <color name="gray_dark">#252525</color>
+    <color name="gray_dark_translucent">#AA252525</color>
+    <color name="gray_light">#414141</color>
+    <color name="gray_lighter">#505050</color>
+    <color name="gray_lighter_translucent">#AA505050</color>
+    <color name="gray_lighter_transparent">#88505050</color>
+    <color name="gray_lightest">#808080</color>
+    <color name="gray_lightest_translucent">#AA808080</color>
+    <color name="gray_super">#AAAAAA</color>
+    <color name="gray_super_translucent">#AAAAAAAA</color>
+    <color name="gray_super_light">#DDDDDD</color>
+    <color name="gray_super_light_translucent">#AADDDDDD</color>
+    <color name="gray_super_lighter">#E1E1E1</color>
+    <color name="gray_super_lighter_translucent">#AAE1E1E1</color>
+    <color name="gray_super_lightest">#F1F1F1</color>
+    <color name="green">#A8DE4D</color>
+    <color name="orange">#FC880F</color>
+    <color name="red">#FF4351</color>
+    <color name="yellow">#FEC418</color>
+    <color name="yellow_off">#FFE18B</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_translucent">#AAFFFFFF</color>
+    <color name="white_full_transparent">#00FFFFFF</color>
+
+    <!-- MaterialDateTimePicker colors -->
+    <color name="mdtp_accent_color">@color/theme_accent</color>
+    <color name="mdtp_accent_color_dark">@color/theme_accent_dark</color>
+    <color name="mdtp_date_picker_view_animator">@color/theme_background</color>
+    <color name="mdtp_date_picker_text_normal">@color/theme_default_text</color>
+    <color name="mdtp_white">@color/white</color>
+
+</resources>

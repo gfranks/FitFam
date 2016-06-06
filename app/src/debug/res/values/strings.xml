@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App Strings -->
+    <string name="app_name">Workout Companion Debug</string>
+
+    <!-- Keys -->
+    <string name="api_map_key">AIzaSyBRvdvERi0N5L2LPekYFbJ7w6jpBoucJ2o</string>
+    <string name="api_places_key">AIzaSyAVJmg5MTebQxSa5T6EQ1uJjz0hsPm0S60</string>
+
+</resources>

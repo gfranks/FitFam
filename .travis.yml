@@ -1,0 +1,35 @@
+language: android
+jdk: oraclejdk7
+
+sudo: false
+
+cache:
+  directories:
+  - $HOME/.android-sdk
+
+android:
+  components:
+    - android-23
+    - build-tools-23.0.1
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+branches:
+  except:
+    - none
+
+notifications:
+  email:
+    - lgfz71@gmail.com
+
+script:
+  - chmod +x ./scripts/travis/build.sh
+  - travis_retry ./scripts/travis/build.sh
+
+env:
+  global:
+  - MALLOC_ARENA_MAX=2
+  - GRADLE_OPTS="-Xmx512m -XX:MaxPermSize=350m"

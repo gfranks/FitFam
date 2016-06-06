@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/weight"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        android:background="@color/theme_divider" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <com.github.gfranks.workoutcompanion.view.SeekArc
+            android:id="@+id/weight_seekbar"
+            style="@style/DefaultAppTheme.SeekArcStyle"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/weight_seekbar_progress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/seek_arc_size"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+    </FrameLayout>
+
+</LinearLayout>

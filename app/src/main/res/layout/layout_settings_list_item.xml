@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/bg_list_selector"
+    android:clickable="true">
+
+    <LinearLayout
+        android:id="@+id/settings_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_list_selector"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:minHeight="60dp"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/list_cell_vertical_padding"
+        android:paddingLeft="@dimen/list_cell_horizontal_padding"
+        android:paddingRight="@dimen/list_cell_horizontal_padding"
+        android:paddingTop="@dimen/list_cell_vertical_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/settings_item_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/settings_item_subtext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/settings_item_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/DefaultAppTheme.SwitchCompat" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/settings_item_notification_quiet_time_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settings_item_container"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/list_cell_horizontal_padding"
+        android:paddingRight="@dimen/list_cell_horizontal_padding"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/notification_quiet_time" />
+
+        <TextView
+            android:id="@+id/settings_item_notification_quiet_time_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_accent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/list_cell_horizontal_padding"
+            android:paddingLeft="@dimen/list_cell_horizontal_padding"
+            android:paddingRight="@dimen/list_cell_horizontal_padding"
+            android:paddingTop="@dimen/list_cell_horizontal_padding"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_quiet_time_to" />
+
+        <TextView
+            android:id="@+id/settings_item_notification_quiet_time_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_accent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/list_cell_horizontal_padding"
+            android:paddingLeft="@dimen/list_cell_horizontal_padding"
+            android:paddingRight="@dimen/list_cell_horizontal_padding"
+            android:paddingTop="@dimen/list_cell_horizontal_padding"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

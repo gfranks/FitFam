@@ -1,0 +1,132 @@
+<resources>
+    <!-- App Strings -->
+    <string name="app_name">Workout Companion</string>
+    <string name="app_description">The fastest, easiest way to find a local gym and workout partner</string>
+
+    <!-- Keys -->
+    <string name="api_map_key">AIzaSyBRvdvERi0N5L2LPekYFbJ7w6jpBoucJ2o</string>
+    <string name="api_places_key">AIzaSyAVJmg5MTebQxSa5T6EQ1uJjz0hsPm0S60</string>
+    <string name="gcm_sender_id">1058468277142</string>
+    <string name="airship_dev_app_key">U106HFiGTuOxuVN3iTsJUA</string>
+    <string name="airship_dev_app_secret">7Nqij48pSyaJfV78rwiAdQ</string>
+    <string name="airship_prod_app_key">KFG7W4pjRhaxbB-BVWxslA</string>
+    <!-- // TODO: update with prod key -->
+    <string name="airship_prod_app_secret">076-KC0lQYOvp5FPHwwsnQ</string>
+    <!-- // TODO: update with prod app secret -->
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Prompt Strings -->
+    <string name="email">Email</string>
+    <string name="email_blank">xxxx@xxxxx.com</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_number_blank">(xxx) xxx-xxx</string>
+    <string name="search_hint">City, State or Zip</string>
+    <string name="weight">Weight</string>
+    <string name="exercises">Exercises</string>
+    <string name="weight_value">%d lbs</string>
+    <string name="sex">Sex</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="birthday">MM/DD/YYYY</string>
+
+    <!-- Empty List Strings -->
+    <string name="empty_workout_companions">No recent companion activity</string>
+
+    <!-- Notification Strings -->
+    <string name="notification_companion">You have a nearby companion</string>
+
+    <!-- Login Strings -->
+    <string name="login">Login</string>
+    <string name="login_back">Back to Login</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password_reset">Password Reset</string>
+    <string name="forgot_password_prompt">Please enter your WorkoutCompanion account email address</string>
+    <string name="forgot_password_sent_link">Send Reset Link</string>
+    <string name="forgot_password_sent">Forgotten password instructions sent</string>
+    <string name="create_account">Create Account</string>
+
+    <!-- Profile Strings -->
+    <string name="user_profile">User Profile</string>
+    <string name="workout_request_sent">Workout request sent</string>
+
+    <!-- Navigation Strings -->
+    <string name="nav_account_section">Account</string>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Settings Strings -->
+    <string name="notification_quiet_time">Quiet Time:</string>
+    <string name="notification_quiet_time_to"> to </string>
+    <string name="version">Version: %s</string>
+
+    <!-- Discover Nav Strings -->
+    <string name="discover_gyms">Find Gyms</string>
+    <string name="discover_workout_companions">Companions</string>
+
+    <!-- Menu Strings -->
+    <string name="action_call">Call</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_dev_settings">Dev Settings</string>
+    <string name="action_discover">Discover</string>
+    <string name="action_done">Done</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_message">Message</string>
+    <string name="action_request_workout">Request Workout</string>
+    <string name="action_save">Save</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Error Strings -->
+    <string name="error_network">Network error, please try again</string>
+    <string name="error_network_no_response">Error, no response</string>
+    <string name="error_network_http">Unable to process request</string>
+    <string name="error_login">Please enter an email address and/or password to continue</string>
+    <string name="error_create_account">Please ensure you have entered a valid email and filled in all fields</string>
+    <string name="error_not_an_email">Please enter a valid email</string>
+    <string name="error_no_password_create">Password not entered or does not match</string>
+    <string name="error_no_password">Please enter a password</string>
+    <string name="error_no_phone_number">Please enter a valid phone number</string>
+    <string name="error_invalid_birthday">Birthday must be in the format of MM/DD/YYYY</string>
+    <string name="error_no_first_name">Please enter a first name</string>
+    <string name="error_no_last_name">Please enter a last name</string>
+    <string name="error_user_profile">Please ensure you have entered all the correct info</string>
+    <string name="error_no_location">Unable to acquire location. Please use built in search.</string>
+
+    <!-- Dev Settings Strings -->
+    <string name="dev_settings">Development Settings</string>
+    <string name="dev_features">Features</string>
+    <string name="dev_feature_crashlytics">Crashlytics</string>
+    <string name="dev_network_information">Network</string>
+    <string name="dev_logging">Logging</string>
+    <string name="dev_environment">Environment</string>
+    <string name="dev_images">Images</string>
+    <string name="dev_image_indicators">Indicators</string>
+    <string name="dev_build_information">Build Information</string>
+    <string name="dev_name">Name</string>
+    <string name="dev_code">Code</string>
+    <string name="dev_sha">SHA</string>
+    <string name="dev_date">Date</string>
+    <string name="dev_information">Information</string>
+    <string name="dev_make">Make</string>
+    <string name="dev_model">Model</string>
+    <string name="dev_resolution">Resolution</string>
+    <string name="dev_density">Density</string>
+    <string name="dev_release">Release</string>
+    <string name="dev_api">API</string>
+
+    <!-- Transition Name strings -->
+    <string name="transition_log_in_title">log_in_title</string>
+    <string name="transition_log_in_subtitle">log_in_subtitle</string>
+    <string name="transition_header">header</string>
+    <string name="transition_image">image</string>
+    <string name="transition_name">name</string>
+    <string name="transition_email">email</string>
+</resources>

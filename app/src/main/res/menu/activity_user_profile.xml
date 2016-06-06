@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_cancel"
+        android:title="@string/action_cancel"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_call"
+        android:icon="@drawable/ic_call"
+        android:title="@string/action_call"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_message"
+        android:icon="@drawable/ic_message"
+        android:title="@string/action_message"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_request_workout"
+        android:icon="@drawable/ic_workout"
+        android:title="@string/action_request_workout"
+        app:showAsAction="always" />
+</menu>
