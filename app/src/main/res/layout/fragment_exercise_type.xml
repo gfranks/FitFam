@@ -17,6 +17,14 @@
         android:layout_marginTop="3dp"
         android:background="@color/theme_divider" />
 
+    <Button
+        android:id="@+id/exercise_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/list_cell_vertical_padding"
+        android:text="@string/request_exercise"
+        android:visibility="gone"/>
+
     <com.github.gfranks.workoutcompanion.view.WCRecyclerView
         android:id="@+id/exercise_grid"
         android:layout_width="match_parent"

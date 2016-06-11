@@ -106,18 +106,18 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         mMapView.onCreate(savedInstanceState);
         mListView.setOnItemClickListener(this);
         mListView.setAdapter(mAdapter);
-
-        if (getMap() == null) {
-            mMapView.getMapAsync(this);
-        } else {
-            mDiscoverManager.connect(this, this, this);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+
+        if (getMap() == null) {
+            mMapView.getMapAsync(this);
+        } else if (!mDiscoverManager.isConnected()) {
+            mDiscoverManager.connect(this, this, this);
+        }
     }
 
     @Override

@@ -178,10 +178,12 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mFemale.setEnabled(mEditMode);
         mBirthday.setEnabled(mEditMode);
         mBirthdaySelect.setEnabled(mEditMode);
-        if (mEditMode) {
-            mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color));
-        } else {
-            mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color_light));
+        if (mCanEdit) {
+            if (mEditMode) {
+                mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color));
+            } else {
+                mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color_light));
+            }
         }
 
         ((WeightSelectFragment) getSupportFragmentManager().findFragmentById(R.id.weight_select_fragment)).edit(mEditMode);
@@ -296,6 +298,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
                 .setAlert(t.getMessage())
                 .create());
+
+        supportFinishAfterTransition();
     }
 
     private void initUser() {
@@ -319,14 +323,16 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         if (!mCanEdit && !mUser.isCanSeeContactInfo()) {
             mEmail.setText(R.string.email_blank);
             mPhoneNumber.setText(R.string.phone_number_blank);
+            mBirthday.setText(R.string.birthday_blank);
             mEmail.setTypeface(null, Typeface.ITALIC);
             mPhoneNumber.setTypeface(null, Typeface.ITALIC);
+            mBirthday.setTypeface(null, Typeface.ITALIC);
         } else {
             mEmail.setText(mUser.getEmail());
             mPhoneNumber.setText(mUser.getPhoneNumber());
         }
         mBirthday.setText(mUser.getBirthday());
-        if (mFemale.getText().toString().equals(mUser.getSex())) {
+        if (!mUser.isFemale()) {
             mFemale.setChecked(true);
         } else {
             mMale.setChecked(true);
@@ -345,7 +351,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mUser.setEmail(mEmail.getText().toString());
         mUser.setPhoneNumber(mPhoneNumber.getText().toString());
         mUser.setBirthday(mBirthday.getText().toString());
-        mUser.setSex(mMale.isChecked() ? mMale.getText().toString() : mFemale.getText().toString());
+        mUser.setSex(mMale.isChecked() ? WCUser.MALE : WCUser.FEMALE);
         mUser.setWeight(((WeightSelectFragment) getSupportFragmentManager().findFragmentById(R.id.weight_select_fragment)).getWeight());
         mUser.setExercises(((ExerciseTypeFragment) getSupportFragmentManager().findFragmentById(R.id.exercise_type_fragment)).getExercises());
     }
@@ -373,7 +379,12 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
 
                 @Override
                 public void onFailure(Call<WCUser> call, Throwable t) {
-                    UserProfileActivity.this.onFailure(call, t);
+                    if (isFinishing()) {
+                        return;
+                    }
+                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
+                            .setAlert(t.getMessage())
+                            .create());
                 }
             });
         } else {

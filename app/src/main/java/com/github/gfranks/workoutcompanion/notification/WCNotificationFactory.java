@@ -83,18 +83,11 @@ public class WCNotificationFactory extends DefaultNotificationFactory {
     }
 
     private PendingIntent createPendingIntent(Class<?> targetClass, Intent intent, int requestCode) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
-            stackBuilder.addParentStack(targetClass);
-            stackBuilder.addNextIntent(intent);
-            return stackBuilder.getPendingIntent(requestCode,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        } else {
-            return PendingIntent.getActivity(getContext(),
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
+        stackBuilder.addParentStack(targetClass);
+        stackBuilder.addNextIntent(intent);
+        return stackBuilder.getPendingIntent(requestCode,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private NotificationCompat.Action createAction(int icon, String title, PendingIntent intent, Bundle extras) {

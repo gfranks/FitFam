@@ -9,10 +9,8 @@
     <string name="gcm_sender_id">1058468277142</string>
     <string name="airship_dev_app_key">U106HFiGTuOxuVN3iTsJUA</string>
     <string name="airship_dev_app_secret">7Nqij48pSyaJfV78rwiAdQ</string>
-    <string name="airship_prod_app_key">KFG7W4pjRhaxbB-BVWxslA</string>
-    <!-- // TODO: update with prod key -->
-    <string name="airship_prod_app_secret">076-KC0lQYOvp5FPHwwsnQ</string>
-    <!-- // TODO: update with prod app secret -->
+    <string name="airship_prod_app_key">KFG7W4pjRhaxbB-BVWxslA</string> <!-- // TODO: update with prod key -->
+    <string name="airship_prod_app_secret">076-KC0lQYOvp5FPHwwsnQ</string> <!-- // TODO: update with prod app secret -->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,11 +27,16 @@
     <string name="search_hint">City, State or Zip</string>
     <string name="weight">Weight</string>
     <string name="exercises">Exercises</string>
+    <string name="exercise">Exercise</string>
     <string name="weight_value">%d lbs</string>
     <string name="sex">Sex</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="birthday">MM/DD/YYYY</string>
+    <string name="birthday_blank">xx/xx/xxxx</string>
+    <string name="request_workout_to_see">To see %s\'s contact info, send them a workout request</string>
+    <string name="request_exercise">Request Exercise</string>
+    <string name="request">Request</string>
 
     <!-- Empty List Strings -->
     <string name="empty_workout_companions">No recent companion activity</string>
@@ -99,6 +102,7 @@
     <string name="error_no_last_name">Please enter a last name</string>
     <string name="error_user_profile">Please ensure you have entered all the correct info</string>
     <string name="error_no_location">Unable to acquire location. Please use built in search.</string>
+    <string name="error_unable_to_load_exercises">Unable to load exercises, loading default ones</string>
 
     <!-- Dev Settings Strings -->
     <string name="dev_settings">Development Settings</string>

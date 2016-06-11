@@ -1,6 +1,5 @@
 package com.github.gfranks.workoutcompanion.manager;
 
-import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
@@ -26,7 +25,7 @@ public class AccountManager {
 
     private WCUser mUser;
 
-    public AccountManager(SharedPreferences prefs, Application app) {
+    public AccountManager(SharedPreferences prefs) {
         mFirstTimeUserBooleanPreference = new BooleanPreference(prefs, KEY_FIRST_TIME_USER, true);
         mEmailPreference = new StringPreference(prefs, KEY_EMAIL, DEFAULT_EMAIL);
         mUserStringPreference = new StringPreference(prefs, KEY_USER, DEFAULT_USER);

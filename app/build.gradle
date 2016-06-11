@@ -3,6 +3,9 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven {
+        url "https://jitpack.io"
+    }
+    maven {
         url 'https://maven.fabric.io/public'
     }
     maven {
@@ -38,7 +41,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.gfranks.workoutcompanion"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -130,6 +133,10 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'info.metadude.android:typed-preferences:1.1.0'
     compile 'com.urbanairship.android:urbanairship-sdk:7.1.+'
+
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.8@aar') {
+        transitive = true
+    }
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.6@aar') {
         transitive = true;

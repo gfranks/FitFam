@@ -22,8 +22,7 @@ public class UserModule {
 
     @Provides
     @Singleton
-    AccountManager provideAccountManager(SharedPreferences sharedPreferences,
-                                         Application appContext) {
-        return new AccountManager(sharedPreferences, appContext);
+    AccountManager provideAccountManager(SharedPreferences sharedPreferences) {
+        return new AccountManager(sharedPreferences);
     }
 }

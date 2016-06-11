@@ -1,15 +1,23 @@
 package com.github.gfranks.workoutcompanion.data.api;
 
+import android.app.Application;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
+import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
+import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.UserDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import javax.inject.Singleton;
 
+import info.metadude.android.typedpreferences.StringPreference;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -22,10 +30,14 @@ import retrofit2.http.Path;
 @Singleton
 public class MockWorkoutCompanionService implements WorkoutCompanionService {
 
+    private AccountManager mAccountManager;
     private UserDatabase mUserDatabase;
+    private StringPreference mExercisesPreference;
 
-    public MockWorkoutCompanionService(UserDatabase userDatabase) {
-        mUserDatabase = userDatabase;
+    public MockWorkoutCompanionService(Application application, AccountManager accountManager, SharedPreferences prefs) {
+        mAccountManager = accountManager;
+        mUserDatabase = new UserDatabase(application);
+        mExercisesPreference = new StringPreference(prefs, "exercises", TextUtils.join(",", application.getResources().getStringArray(R.array.exercises)));
     }
 
     /**
@@ -90,7 +102,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
     }
 
     @Override
-    public Call<ResponseBody> registerPush(@Body String token) {
+    public Call<ResponseBody> registerPush(@Path("userId") String userId, @Body String token) {
         return new MockCall<ResponseBody>() {
             @Override
             public void enqueue(Callback<ResponseBody> cb) {
@@ -187,6 +199,12 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                         users = getMockUsers();
                     }
 
+                    for (WCUser user : new ArrayList<>(users)) {
+                        if (user.equals(mAccountManager.getUser())) {
+                            users.remove(user);
+                        }
+                    }
+
                     if (cb != null) {
                         cb.onResponse(this, Response.success(users));
                     }
@@ -200,7 +218,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
     }
 
     @Override
-    public Call<List<WCUser>> getRecentCompanions(@Path("userId") final String userId) {
+    public Call<List<WCUser>> getRecentCompanions(@Path("userId") String userId) {
         return new MockCall<List<WCUser>>() {
             @Override
             public void enqueue(Callback<List<WCUser>> cb) {
@@ -213,7 +231,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                     }
 
                     for (WCUser user : new ArrayList<>(users)) {
-                        if (user.getId().equals(userId)) {
+                        if (user.equals(mAccountManager.getUser())) {
                             users.remove(user);
                         }
                     }
@@ -225,6 +243,39 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                     if (cb != null) {
                         cb.onFailure(this, new Throwable("Unable to retrieve users"));
                     }
+                }
+            }
+        };
+    }
+
+    /**
+     * *********
+     * Exercises
+     * *********
+     */
+    @Override
+    public Call<List<String>> getExercises() {
+        return new MockCall<List<String>>() {
+            @Override
+            public void enqueue(Callback<List<String>> cb) {
+                if (cb != null) {
+                    List<String> exercises = new ArrayList<>(Arrays.asList(mExercisesPreference.get().split(",")));
+                    cb.onResponse(this, Response.success(exercises));
+                }
+            }
+        };
+    }
+
+    @Override
+    public Call<String> requestNewExercise(@Body final String exercise) {
+        return new MockCall<String>() {
+            @Override
+            public void enqueue(Callback<String> cb) {
+                if (cb != null) {
+                    List<String> exercises = new ArrayList<>(Arrays.asList(mExercisesPreference.get().split(",")));
+                    exercises.add(exercise);
+                    mExercisesPreference.set(TextUtils.join(",", exercises));
+                    cb.onResponse(this, Response.success(exercise));
                 }
             }
         };

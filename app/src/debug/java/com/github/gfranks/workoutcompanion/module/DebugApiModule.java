@@ -1,10 +1,12 @@
 package com.github.gfranks.workoutcompanion.module;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.data.IsMockMode;
 import com.github.gfranks.workoutcompanion.data.api.MockWorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
+import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.UserDatabase;
 
 import javax.inject.Singleton;
@@ -29,9 +31,16 @@ public final class DebugApiModule {
 
     @Provides
     @Singleton
-    WorkoutCompanionService provideWorkoutCompanionService(Retrofit retrofit, Application application, @IsMockMode boolean isMockMode) {
+    MockWorkoutCompanionService provideMockWorkoutCompanionService(Application app, AccountManager accountManager, SharedPreferences prefs) {
+        return new MockWorkoutCompanionService(app, accountManager, prefs);
+    }
+
+    @Provides
+    @Singleton
+    WorkoutCompanionService provideWorkoutCompanionService(Retrofit retrofit, MockWorkoutCompanionService mockWorkoutCompanionService,
+                                                           @IsMockMode boolean isMockMode) {
         if (isMockMode) {
-            return new MockWorkoutCompanionService(new UserDatabase(application));
+            return mockWorkoutCompanionService;
         }
         return retrofit.create(WorkoutCompanionService.class);
     }

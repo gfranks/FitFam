@@ -175,7 +175,7 @@ public class WorkoutCompanionActivity extends BaseActivity implements Navigation
 
     private void checkForPushNotificationRegistration() {
         if (!mAccountManager.isPushNotificationsRegisteredWithApi() && UAirship.shared().getPushManager().getChannelId() != null) {
-            mService.registerPush(UAirship.shared().getPushManager().getChannelId()).enqueue(new Callback<ResponseBody>() {
+            mService.registerPush(mAccountManager.getUser().getId(), UAirship.shared().getPushManager().getChannelId()).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     mAccountManager.setPushNotificationsRegisteredWithApi(true);

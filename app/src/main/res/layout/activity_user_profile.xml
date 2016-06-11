@@ -22,7 +22,7 @@
             app:collapsedTitleTextAppearance="@style/DefaultAppTheme.CollapsingToolbarLayoutCollapsedTitleTextAppearance"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="200dp"
+            app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/DefaultAppTheme.CollapsingToolbarLayoutExpandedTitleTextAppearance"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 

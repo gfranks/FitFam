@@ -29,6 +29,8 @@ public class DiscoverManager implements GoogleApiClient.ConnectionCallbacks, Goo
     private DoublePreference mLatitudePreference;
     private DoublePreference mLongitudePreference;
 
+    private boolean mConnected;
+
     public DiscoverManager(SharedPreferences prefs, Application app) {
         mLatitudePreference = new DoublePreference(prefs, KEY_LAT, 0.0);
         mLongitudePreference = new DoublePreference(prefs, KEY_LNG, 0.0);
@@ -51,10 +53,12 @@ public class DiscoverManager implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     @Override
     public void onConnected(Bundle bundle) {
+        mConnected = true;
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+        mConnected = false;
     }
 
     /**
@@ -64,6 +68,11 @@ public class DiscoverManager implements GoogleApiClient.ConnectionCallbacks, Goo
      */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        mConnected = false;
+    }
+
+    public boolean isConnected() {
+        return mConnected;
     }
 
     public boolean connect(Activity activity, GoogleApiClient.ConnectionCallbacks onConnectedCallback,

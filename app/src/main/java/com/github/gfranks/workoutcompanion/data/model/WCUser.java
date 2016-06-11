@@ -12,6 +12,9 @@ import java.util.UUID;
 
 public class WCUser implements Parcelable, Type {
 
+    public static final String MALE = "Male";
+    public static final String FEMALE = "Female";
+
     public static final String EXTRA = "user";
     public static final String EXTRA_NEW = "new_user";
     public static final Parcelable.Creator<WCUser> CREATOR = new Parcelable.Creator<WCUser>() {
@@ -186,10 +189,18 @@ public class WCUser implements Parcelable, Type {
         return Integer.parseInt(getBirthday().substring(6));
     }
 
+    public boolean isMale() {
+        return sex.equals(MALE);
+    }
+
+    public boolean isFemale() {
+        return sex.equals(FEMALE);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof WCUser) {
-            return ((WCUser) o).getId().equals(getId());
+            return getId().equals(((WCUser) o).getId());
         }
         return super.equals(o);
     }
