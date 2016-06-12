@@ -175,8 +175,8 @@ public class EndSheetBehavior<V extends View> extends CoordinatorLayout.Behavior
     public EndSheetBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EndSheetBehavior);
-        setPeekWidth(a.getDimensionPixelSize(R.styleable.EndSheetBehavior_peekWidth, 0));
-        setHideable(a.getBoolean(R.styleable.EndSheetBehavior_hideable, false));
+        setPeekWidth(a.getDimensionPixelSize(R.styleable.EndSheetBehavior_esb_peekWidth, 0));
+        setHideable(a.getBoolean(R.styleable.EndSheetBehavior_esb_hideable, false));
         a.recycle();
         ViewConfiguration configuration = ViewConfiguration.get(context);
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();

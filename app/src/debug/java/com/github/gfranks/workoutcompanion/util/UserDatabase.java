@@ -135,6 +135,11 @@ public class UserDatabase {
         builder.setCanSeeContactInfo(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_CAN_SEE_INFO)) == 1);
         WCUser user = builder.build();
         user.setId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_ID)));
+        for (String exercise : new ArrayList<>(user.getExercises())) {
+            if (exercise.length() == 0) {
+                user.getExercises().remove(exercise);
+            }
+        }
         return user;
     }
 

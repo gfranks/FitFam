@@ -12,12 +12,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.github.gfranks.workoutcompanion.view.WCCircleImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/user_image"
         android:layout_width="@dimen/default_image_size_large"
         android:layout_height="@dimen/default_image_size_large"
         android:layout_marginTop="@dimen/nav_header_vertical_spacing"
         android:transitionName="@string/transition_image"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_avatar" />
 
     <TextView

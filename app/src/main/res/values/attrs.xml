@@ -2,8 +2,8 @@
 <resources>
 
     <declare-styleable name="EndSheetBehavior">
-        <attr name="peekWidth" format="dimension" />
-        <attr name="hideable" format="boolean" />
+        <attr name="esb_peekWidth" format="dimension" />
+        <attr name="esb_hideable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="WCRecyclerView">

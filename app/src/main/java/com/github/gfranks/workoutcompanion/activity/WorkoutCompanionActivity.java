@@ -24,6 +24,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.DiscoverFragment;
 import com.github.gfranks.workoutcompanion.fragment.SettingsFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
+import com.github.gfranks.workoutcompanion.util.CropCircleTransformation;
 import com.github.gfranks.workoutcompanion.util.Feature;
 import com.squareup.picasso.Picasso;
 import com.urbanairship.UAirship;
@@ -152,8 +153,7 @@ public class WorkoutCompanionActivity extends BaseActivity implements Navigation
             mPicasso.load(user.getImage())
                     .placeholder(defaultImage)
                     .error(defaultImage)
-                    .fit()
-                    .centerCrop()
+                    .transform(new CropCircleTransformation())
                     .into(((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.user_image)));
         } else {
             ((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.user_image)).setImageDrawable(defaultImage);

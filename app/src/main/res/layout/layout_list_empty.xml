@@ -5,5 +5,4 @@
     android:layout_height="match_parent"
     android:background="@color/theme_background"
     android:gravity="center"
-    android:textAppearance="@style/TextAppearance.AppCompat.Title"
     android:textStyle="bold" />

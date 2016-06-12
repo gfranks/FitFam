@@ -2,23 +2,27 @@ package com.github.gfranks.workoutcompanion.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
 
 public class EmptyView extends FrameLayout {
 
-    private TextView mEmptyText;
+    private View mHeader;
+    private LinearLayout mContainer;
+    private TextView mEmptyTitle, mEmptySubtitle;
     private ProgressBar mProgress;
 
     public EmptyView(Context context) {
@@ -47,7 +51,8 @@ public class EmptyView extends FrameLayout {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
 
-        ss.mEmptyText = mEmptyText.getText().toString();
+        ss.mEmptyTitle = mEmptyTitle.getText().toString();
+        ss.mEmptySubtitle = mEmptySubtitle.getText().toString();
         ss.mIsProgressDisplayed = mProgress.getVisibility() == View.VISIBLE;
 
         return ss;
@@ -63,33 +68,115 @@ public class EmptyView extends FrameLayout {
         SavedState ss = (SavedState)state;
         super.onRestoreInstanceState(ss.getSuperState());
 
-        mEmptyText.setText(ss.mEmptyText);
+        mEmptyTitle.setText(ss.mEmptyTitle);
+        mEmptySubtitle.setText(ss.mEmptySubtitle);
         displayLoading(ss.mIsProgressDisplayed);
     }
 
-    public void setText(int textResId) {
-        mEmptyText.setText(textResId);
+    public View addEmptyHeader(int headerResId) {
+        ViewGroup headerRoot = ((ViewGroup) mContainer.getChildAt(0));
+        headerRoot.setVisibility(View.VISIBLE);
+        LinearLayout emptyTextRoot = ((LinearLayout) mContainer.getChildAt(1));
+        emptyTextRoot.setGravity(Gravity.TOP);
+        emptyTextRoot.setPadding(emptyTextRoot.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
+                , emptyTextRoot.getPaddingRight(), 0);
+        if (headerRoot.getChildCount() != 0) {
+            headerRoot.removeAllViews();
+        }
+
+        mHeader = inflate(getContext(), headerResId, headerRoot);
+        return mHeader;
     }
 
-    public void setText(String text) {
-        mEmptyText.setText(text);
+    public void addEmptyHeader(View header) {
+        ViewGroup headerRoot = ((ViewGroup) mContainer.getChildAt(0));
+        headerRoot.setVisibility(View.VISIBLE);
+        LinearLayout emptyTextRoot = ((LinearLayout) mContainer.getChildAt(1));
+        emptyTextRoot.setGravity(Gravity.TOP);
+        emptyTextRoot.setPadding(emptyTextRoot.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
+                , emptyTextRoot.getPaddingRight(), 0);
+        if (headerRoot.getChildCount() != 0) {
+            headerRoot.removeAllViews();
+        }
+
+        mHeader = header;
+        headerRoot.addView(mHeader);
+    }
+
+    public void setTitle(int textResId) {
+        mEmptyTitle.setText(textResId);
+    }
+
+    public void setTitle(String text) {
+        mEmptyTitle.setText(text);
+    }
+
+    public void setSubtitle(int textResId) {
+        mEmptySubtitle.setText(textResId);
+    }
+
+    public void setSubtitle(String text) {
+        mEmptySubtitle.setText(text);
+    }
+
+    public void setTitleTextAppearance(int textAppearanceResId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mEmptyTitle.setTextAppearance(textAppearanceResId);
+        } else {
+            mEmptyTitle.setTextAppearance(getContext(), textAppearanceResId);
+        }
+    }
+
+    public void setSubtitleTextAppearance(int textAppearanceResId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mEmptySubtitle.setTextAppearance(textAppearanceResId);
+        } else {
+            mEmptySubtitle.setTextAppearance(getContext(), textAppearanceResId);
+        }
     }
 
     public void displayLoading(boolean loading) {
         if (loading) {
-            mEmptyText.setVisibility(View.INVISIBLE);
+            mContainer.setVisibility(View.INVISIBLE);
             mProgress.setVisibility(View.VISIBLE);
         } else {
-            mEmptyText.setVisibility(View.VISIBLE);
+            mContainer.setVisibility(View.VISIBLE);
             mProgress.setVisibility(View.INVISIBLE);
         }
     }
 
     private void init(AttributeSet attrs) {
         removeAllViews();
-        mEmptyText = new TextView(getContext(), attrs);
-        mEmptyText.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        addView(mEmptyText);
+
+        float density = getResources().getDisplayMetrics().density;
+        int fiveDp = (int) (5.0F * density);
+        int tenDp = (int) (10.0F * density);
+
+        mContainer = new LinearLayout(getContext());
+        mContainer.setOrientation(LinearLayout.VERTICAL);
+        mContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        View headerContainer = new RelativeLayout(getContext());
+        headerContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        headerContainer.setPadding(0, fiveDp, 0, fiveDp);
+        headerContainer.setVisibility(View.GONE);
+        mContainer.addView(headerContainer);
+
+        LinearLayout emptyTextContainer = new LinearLayout(getContext(), attrs);
+        emptyTextContainer.setOrientation(LinearLayout.VERTICAL);
+        emptyTextContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        emptyTextContainer.setGravity(Gravity.CENTER_VERTICAL);
+        emptyTextContainer.setPadding(tenDp, 0, tenDp, 0);
+        mEmptyTitle = new TextView(getContext());
+        mEmptyTitle.setGravity(Gravity.CENTER);
+        emptyTextContainer.addView(mEmptyTitle);
+        mEmptySubtitle = new TextView(getContext());
+        mEmptySubtitle.setGravity(Gravity.CENTER);
+        mEmptySubtitle.setPadding(0, tenDp, 0, 0);
+        emptyTextContainer.addView(mEmptySubtitle);
+        setTitleTextAppearance(R.style.TextAppearance_AppCompat_Headline);
+        setSubtitleTextAppearance(R.style.TextAppearance_AppCompat_Subhead);
+        mContainer.addView(emptyTextContainer);
+        addView(mContainer);
 
         mProgress = new ProgressBar(getContext(), attrs);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -110,7 +197,8 @@ public class EmptyView extends FrameLayout {
             }
         };
 
-        String mEmptyText;
+        String mEmptyTitle;
+        String mEmptySubtitle;
         boolean mIsProgressDisplayed;
 
         SavedState(Parcelable superState) {
@@ -119,14 +207,16 @@ public class EmptyView extends FrameLayout {
 
         private SavedState(Parcel in) {
             super(in);
-            mEmptyText = in.readString();
+            mEmptyTitle = in.readString();
+            mEmptySubtitle = in.readString();
             mIsProgressDisplayed = in.readInt() == 1;
         }
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeString(mEmptyText);
+            out.writeString(mEmptyTitle);
+            out.writeString(mEmptySubtitle);
             out.writeInt(mIsProgressDisplayed ? 1 : 0);
         }
     }

@@ -9,11 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.gfranks.workoutcompanion.R;
+import com.github.gfranks.workoutcompanion.adapter.ExerciseTypeAdapter;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
@@ -48,7 +47,7 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
     RecyclerView mExerciseGrid;
 
     private WCUser mUser;
-    private ExerciseAdapter mExerciseAdapter;
+    private ExerciseTypeAdapter mAdapter;
     private boolean mEditMode;
 
     public static ExerciseTypeFragment newInstance(WCUser user) {
@@ -106,11 +105,11 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         } else {
             mExerciseRequest.setVisibility(View.GONE);
         }
-        if (mExerciseAdapter == null || mExerciseGrid.getAdapter() == null) {
-            mExerciseAdapter = new ExerciseAdapter(response.body());
-            mExerciseGrid.setAdapter(mExerciseAdapter);
+        if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
+            mAdapter = new ExerciseTypeAdapter(mUser, response.body(), mEditMode);
+            mExerciseGrid.setAdapter(mAdapter);
         } else {
-            mExerciseAdapter.setExercises(response.body());
+            mAdapter.setExercises(response.body());
         }
     }
 
@@ -122,11 +121,11 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
                 .setAlert(getString(R.string.error_unable_to_load_exercises))
                 .create());
-        if (mExerciseAdapter == null || mExerciseGrid.getAdapter() == null) {
-            mExerciseAdapter = new ExerciseAdapter(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))));
-            mExerciseGrid.setAdapter(mExerciseAdapter);
+        if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
+            mAdapter = new ExerciseTypeAdapter(mUser, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))), mEditMode);
+            mExerciseGrid.setAdapter(mAdapter);
         } else {
-            mExerciseAdapter.setExercises(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))));
+            mAdapter.setExercises(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))));
         }
     }
 
@@ -147,9 +146,9 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
                         mService.requestNewExercise(input.toString()).enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                List<String> exercises = mExerciseAdapter.getExercises();
+                                List<String> exercises = mAdapter.getExercises();
                                 exercises.add(response.body());
-                                mExerciseAdapter.setExercises(exercises);
+                                mAdapter.setExercises(exercises);
                             }
 
                             @Override
@@ -181,67 +180,6 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         mEditMode = editMode;
         mExerciseRequest.setEnabled(mEditMode);
         mExerciseGrid.setEnabled(mEditMode);
-        mExerciseAdapter.notifyDataSetChanged();
-    }
-
-    private class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.CheckBoxViewHolder> {
-
-        private List<String> mExercises;
-
-        ExerciseAdapter(List<String> exercises) {
-            mExercises = exercises;
-        }
-
-        void setExercises(List<String> exercises) {
-            mExercises = exercises;
-            notifyDataSetChanged();
-        }
-
-        List<String> getExercises() {
-            return mExercises;
-        }
-
-        public String getItem(int position) {
-            return mExercises.get(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            if (mUser == null) {
-                return 0;
-            }
-            return mExercises.size();
-        }
-
-        @Override
-        public CheckBoxViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new CheckBoxViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_exercise_type_item, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(CheckBoxViewHolder holder, final int position) {
-            holder.itemView.setEnabled(mEditMode);
-            String exercise = getItem(position);
-            ((CheckBox) holder.itemView).setOnCheckedChangeListener(null); // clear listener if any exists
-            ((CheckBox) holder.itemView).setChecked(mUser.getExercises().contains(exercise));
-            ((CheckBox) holder.itemView).setText(getItem(position));
-            ((CheckBox) holder.itemView).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        mUser.getExercises().add(getItem(position));
-                    } else {
-                        mUser.getExercises().remove(getItem(position));
-                    }
-                }
-            });
-        }
-
-        public class CheckBoxViewHolder extends RecyclerView.ViewHolder {
-
-            public CheckBoxViewHolder(View view) {
-                super(view);
-            }
-        }
+        mAdapter.setEnabled(mEditMode);
     }
 }

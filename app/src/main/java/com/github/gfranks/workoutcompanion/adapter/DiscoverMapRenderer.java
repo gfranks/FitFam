@@ -82,7 +82,7 @@ public class DiscoverMapRenderer extends DefaultClusterRenderer<WCDiscoverResult
         ShapeDrawable outline = new ShapeDrawable(new OvalShape());
         outline.getPaint().setColor(ContextCompat.getColor(context, R.color.white_translucent));
         LayerDrawable background = new LayerDrawable(new Drawable[]{outline, mMarkerDrawable});
-        int strokeWidth = (int) (mDensity * 2.5F);
+        int strokeWidth = (int) (2.5F * mDensity);
         background.setLayerInset(1, strokeWidth, strokeWidth, strokeWidth, strokeWidth);
         return background;
     }

@@ -1,15 +1,19 @@
 package com.github.gfranks.workoutcompanion.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.UserProfileActivity;
@@ -20,14 +24,19 @@ import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
+import com.github.gfranks.workoutcompanion.util.PicassoUtils;
+import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
+import com.squareup.picasso.Picasso;
 import com.urbanairship.UAirship;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +50,8 @@ public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView
     WorkoutCompanionService mService;
     @Inject
     AccountManager mAccountManager;
+    @Inject
+    Picasso mPicasso;
 
     @InjectView(R.id.list)
     WCRecyclerView mListView;
@@ -59,8 +70,7 @@ public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mEmptyView.setText(R.string.empty_workout_companions);
-        mListView.setEmptyView(mEmptyView);
+        setupEmptyView();
         mListView.setOnItemClickListener(this);
         mListView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.recycler_view_layout_animation));
     }
@@ -118,5 +128,19 @@ public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView
         UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
                 .setAlert(t.getMessage())
                 .create());
+    }
+
+    private void setupEmptyView() {
+        mEmptyView.setTitle(R.string.empty_workout_companions_title);
+        mEmptyView.setSubtitle(R.string.empty_workout_companions_subtitle);
+        View emptyHeader = mEmptyView.addEmptyHeader(R.layout.layout_user_list_item);
+        emptyHeader.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_background_dark));
+        new UserViewHolder(emptyHeader).populateAsPlaceHolder(new WCUser.Builder()
+                .setFirstName(getString(R.string.empty_companions_header_first_name))
+                .setLastName(getString(R.string.empty_companions_header_last_name))
+                .setExercises(Arrays.asList(getString(R.string.empty_companions_header_exercises).split(", ")))
+                .setImage(getString(R.string.empty_companions_header_image))
+                .build());
+        mListView.setEmptyView(mEmptyView);
     }
 }

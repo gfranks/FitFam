@@ -31,6 +31,7 @@ import com.github.gfranks.workoutcompanion.fragment.WeightSelectFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
+import com.github.gfranks.workoutcompanion.util.CropCircleTransformation;
 import com.github.gfranks.workoutcompanion.util.EndSheetBehavior;
 import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.util.ValidatorUtils;
@@ -311,8 +312,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mPicasso.load(mUser.getImage())
                     .placeholder(defaultImage)
                     .error(defaultImage)
-                    .fit()
-                    .centerCrop()
+                    .transform(new CropCircleTransformation())
                     .into(mImage);
         } else {
             mImage.setImageDrawable(defaultImage);
@@ -330,8 +330,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         } else {
             mEmail.setText(mUser.getEmail());
             mPhoneNumber.setText(mUser.getPhoneNumber());
+            mBirthday.setText(mUser.getBirthday());
         }
-        mBirthday.setText(mUser.getBirthday());
         if (!mUser.isFemale()) {
             mFemale.setChecked(true);
         } else {
