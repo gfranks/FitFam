@@ -45,6 +45,7 @@
     <string name="empty_companions_header_exercises">Biking, Crossfit, Hiking, Jogging, P90X, Running, Soccer, Swimming, Tennis, Walking, Weight Lifting</string>
     <string name="empty_workout_companions_title">See companions here</string>
     <string name="empty_workout_companions_subtitle">Request workouts from their profile</string>
+    <string name="empty_gym">No users found at this gym</string>
 
     <!-- Notification Strings -->
     <string name="notification_companion">You have a nearby companion</string>

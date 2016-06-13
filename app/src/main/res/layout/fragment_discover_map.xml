@@ -23,12 +23,20 @@
             android:layout_height="@dimen/shadow_elevation"
             android:background="@drawable/img_shadow_top" />
 
-        <com.github.gfranks.workoutcompanion.view.WCRecyclerView
-            android:id="@+id/map_view_list"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/theme_background_dark"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+            android:layout_height="wrap_content">
+
+            <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+                android:id="@+id/map_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/theme_background_dark"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+            <include layout="@layout/layout_list_empty" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

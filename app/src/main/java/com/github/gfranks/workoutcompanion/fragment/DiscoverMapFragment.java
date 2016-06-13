@@ -35,6 +35,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.DiscoverManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
+import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -79,6 +80,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     View mBottomSheet;
     @InjectView(R.id.map_view_list)
     WCRecyclerView mListView;
+    @InjectView(R.id.list_empty_text)
+    EmptyView mEmptyView;
 
     private GoogleMap mMap;
     private ClusterManager<WCDiscoverResult> mClusterManager;
@@ -104,6 +107,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView.onCreate(savedInstanceState);
+        mEmptyView.setSubtitle(R.string.empty_gym);
+        mListView.setEmptyView(mEmptyView);
         mListView.setOnItemClickListener(this);
         mListView.setAdapter(mAdapter);
     }
@@ -427,7 +432,10 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         int approximateMapHeight = size.y - 2 * actionBarHeight;
         int maxHeight = (int) Math.round(0.6 * approximateMapHeight);
         ViewGroup.LayoutParams params = mBottomSheet.getLayoutParams();
-        if (mAdapter.getItemCount() * getResources().getDimensionPixelSize(R.dimen.user_list_item_height) > maxHeight) {
+        if (mAdapter.getItemCount() == 0) {
+            params.height = maxHeight / 2;
+            mEmptyView.getLayoutParams().height = maxHeight / 2;
+        } else if (mAdapter.getItemCount() * getResources().getDimensionPixelSize(R.dimen.user_list_item_height) > maxHeight) {
             params.height = maxHeight;
         } else {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
