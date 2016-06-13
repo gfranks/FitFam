@@ -26,7 +26,7 @@ public final class DebugApiModule {
     @Provides
     @Singleton
     HttpLoggingInterceptor.Level provideHttpLoggingInterceptorLevel() {
-        return HttpLoggingInterceptor.Level.BASIC;
+        return HttpLoggingInterceptor.Level.BODY;
     }
 
     @Provides

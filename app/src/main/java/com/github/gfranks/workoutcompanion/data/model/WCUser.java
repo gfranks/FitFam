@@ -190,11 +190,11 @@ public class WCUser implements Parcelable, Type {
     }
 
     public boolean isMale() {
-        return sex.equals(MALE);
+        return sex != null && sex.length() > 0 && sex.equals(MALE);
     }
 
     public boolean isFemale() {
-        return sex.equals(FEMALE);
+        return sex != null && sex.length() > 0 && sex.equals(FEMALE);
     }
 
     @Override

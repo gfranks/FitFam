@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -104,18 +103,20 @@ public class EmptyView extends FrameLayout {
     }
 
     public void setTitle(int textResId) {
-        mEmptyTitle.setText(textResId);
+        setTitle(getContext().getString(textResId));
     }
 
     public void setTitle(String text) {
+        mEmptyTitle.setVisibility(View.VISIBLE);
         mEmptyTitle.setText(text);
     }
 
     public void setSubtitle(int textResId) {
-        mEmptySubtitle.setText(textResId);
+        setSubtitle(getContext().getString(textResId));
     }
 
     public void setSubtitle(String text) {
+        mEmptySubtitle.setVisibility(View.VISIBLE);
         mEmptySubtitle.setText(text);
     }
 
@@ -168,10 +169,12 @@ public class EmptyView extends FrameLayout {
         emptyTextContainer.setPadding(tenDp, 0, tenDp, 0);
         mEmptyTitle = new TextView(getContext());
         mEmptyTitle.setGravity(Gravity.CENTER);
+        mEmptyTitle.setVisibility(View.GONE);
         emptyTextContainer.addView(mEmptyTitle);
         mEmptySubtitle = new TextView(getContext());
         mEmptySubtitle.setGravity(Gravity.CENTER);
         mEmptySubtitle.setPadding(0, tenDp, 0, 0);
+        mEmptySubtitle.setVisibility(View.GONE);
         emptyTextContainer.addView(mEmptySubtitle);
         setTitleTextAppearance(R.style.TextAppearance_AppCompat_Headline);
         setSubtitleTextAppearance(R.style.TextAppearance_AppCompat_Subhead);

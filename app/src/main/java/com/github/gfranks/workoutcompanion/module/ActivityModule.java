@@ -13,6 +13,7 @@ import com.github.gfranks.workoutcompanion.fragment.LoginFragment;
 import com.github.gfranks.workoutcompanion.fragment.MyCompanionsFragment;
 import com.github.gfranks.workoutcompanion.fragment.SettingsFragment;
 import com.github.gfranks.workoutcompanion.fragment.WeightSelectFragment;
+import com.github.gfranks.workoutcompanion.fragment.base.BaseDialogFragment;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.ui.ForActivity;
 
@@ -24,6 +25,7 @@ import dagger.Provides;
 @Module(
         injects = {
                 BaseFragment.class,
+                BaseDialogFragment.class,
                 LoginFragment.class,
                 CreateAccountFragment.class,
                 ForgotPasswordFragment.class,

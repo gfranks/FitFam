@@ -20,6 +20,7 @@
         <item name="windowNoTitle">true</item>
 
         <item name="seekArcStyle">@style/DefaultAppTheme.SeekArcStyle</item>
+        <item name="md_background_color">@color/theme_background</item>
     </style>
 
     <style name="DefaultAppTheme.NoActionBar">
