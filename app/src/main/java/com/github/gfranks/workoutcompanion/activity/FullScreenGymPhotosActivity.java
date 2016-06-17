@@ -1,6 +1,7 @@
 package com.github.gfranks.workoutcompanion.activity;
 
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -47,8 +48,8 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
         mViewPager.setAdapter(new PhotoPagerAdapter(GymPhotoHelper.getFullScreenGymPhotos(this, mGym.getPhotos())));
 
         mViewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_INDEX, 0));
-        mViewPagerIndicator.setAlpha(0f);
         onPageSelected(mViewPager.getCurrentItem());
+        setTitle(mGym.getName());
     }
 
     /**
@@ -63,7 +64,6 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
     @Override
     public void onPageSelected(int position) {
         mViewPagerIndicator.setText(++position + " of " + mGym.getPhotos().size());
-        setTitle(mViewPagerIndicator.getText().toString());
     }
 
     @Override
@@ -99,7 +99,8 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable defaultImage = ContextCompat.getDrawable(FullScreenGymPhotosActivity.this, R.drawable.ic_gym);
+            Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(FullScreenGymPhotosActivity.this, R.drawable.ic_gym),
+                    (int) (100F * getResources().getDisplayMetrics().density));
             mPicasso.load(getItem(position))
                     .placeholder(defaultImage)
                     .error(defaultImage)
@@ -114,11 +115,9 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
                     if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
                         mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                         mAppBarLayout.animate().translationY(0).start();
-                        mViewPagerIndicator.animate().alpha(0f).start();
                     } else {
                         mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
                         mAppBarLayout.animate().translationY((int) (-mAppBarLayout.getHeight()*1.5)).start();
-                        mViewPagerIndicator.animate().alpha(1f).start();
                     }
                 }
             });

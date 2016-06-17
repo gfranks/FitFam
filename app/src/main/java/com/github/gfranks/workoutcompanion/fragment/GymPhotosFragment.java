@@ -2,6 +2,7 @@ package com.github.gfranks.workoutcompanion.fragment;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -99,7 +100,8 @@ public class GymPhotosFragment extends BaseFragment {
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable defaultImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_gym);
+            Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_gym),
+                    (int) (75F * getResources().getDisplayMetrics().density));
             mPicasso.load(getItem(position))
                     .placeholder(defaultImage)
                     .error(defaultImage)

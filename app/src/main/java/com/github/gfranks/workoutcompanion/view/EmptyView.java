@@ -12,37 +12,45 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class EmptyView extends FrameLayout {
 
+    @InjectView(R.id.empty_view_header_container)
+    ViewGroup mHeaderContainer;
+    @InjectView(R.id.empty_view_text_container)
+    LinearLayout mEmptyTextContainer;
+    @InjectView(R.id.empty_view_title)
+    TextView mEmptyTitle;
+    @InjectView(R.id.empty_view_subtitle)
+    TextView mEmptySubtitle;
+    @InjectView(R.id.empty_view_progress)
+    ProgressBar mProgress;
+
     private View mHeader;
-    private LinearLayout mContainer;
-    private TextView mEmptyTitle, mEmptySubtitle;
-    private ProgressBar mProgress;
 
     public EmptyView(Context context) {
-        super(context);
-        init(null);
+        this(context, null);
     }
 
     public EmptyView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs);
+        this(context, attrs, 0);
     }
 
     public EmptyView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public EmptyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
+        init();
     }
 
     @Override
@@ -73,33 +81,29 @@ public class EmptyView extends FrameLayout {
     }
 
     public View addEmptyHeader(int headerResId) {
-        ViewGroup headerRoot = ((ViewGroup) mContainer.getChildAt(0));
-        headerRoot.setVisibility(View.VISIBLE);
-        LinearLayout emptyTextRoot = ((LinearLayout) mContainer.getChildAt(1));
-        emptyTextRoot.setGravity(Gravity.TOP);
-        emptyTextRoot.setPadding(emptyTextRoot.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
-                , emptyTextRoot.getPaddingRight(), 0);
-        if (headerRoot.getChildCount() != 0) {
-            headerRoot.removeAllViews();
+        mHeaderContainer.setVisibility(View.VISIBLE);
+        mEmptyTextContainer.setGravity(Gravity.TOP);
+        mEmptyTextContainer.setPadding(mEmptyTextContainer.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
+                , mEmptyTextContainer.getPaddingRight(), mEmptyTextContainer.getPaddingBottom());
+        if (mHeaderContainer.getChildCount() != 0) {
+            mHeaderContainer.removeAllViews();
         }
 
-        mHeader = inflate(getContext(), headerResId, headerRoot);
+        mHeader = inflate(getContext(), headerResId, mHeaderContainer);
         return mHeader;
     }
 
     public void addEmptyHeader(View header) {
-        ViewGroup headerRoot = ((ViewGroup) mContainer.getChildAt(0));
-        headerRoot.setVisibility(View.VISIBLE);
-        LinearLayout emptyTextRoot = ((LinearLayout) mContainer.getChildAt(1));
-        emptyTextRoot.setGravity(Gravity.TOP);
-        emptyTextRoot.setPadding(emptyTextRoot.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
-                , emptyTextRoot.getPaddingRight(), 0);
-        if (headerRoot.getChildCount() != 0) {
-            headerRoot.removeAllViews();
+        mHeaderContainer.setVisibility(View.VISIBLE);
+        mEmptyTextContainer.setGravity(Gravity.TOP);
+        mEmptyTextContainer.setPadding(mEmptyTextContainer.getPaddingLeft(), (int) (35.0F * getResources().getDisplayMetrics().density)
+                , mEmptyTextContainer.getPaddingRight(), mEmptyTextContainer.getPaddingBottom());
+        if (mHeaderContainer.getChildCount() != 0) {
+            mHeaderContainer.removeAllViews();
         }
 
         mHeader = header;
-        headerRoot.addView(mHeader);
+        mHeaderContainer.addView(mHeader);
     }
 
     public void setTitle(int textResId) {
@@ -109,6 +113,7 @@ public class EmptyView extends FrameLayout {
     public void setTitle(String text) {
         mEmptyTitle.setVisibility(View.VISIBLE);
         mEmptyTitle.setText(text);
+        mEmptySubtitle.setPadding(0, (int) (10.0F * getResources().getDisplayMetrics().density), 0, 0);
     }
 
     public void setSubtitle(int textResId) {
@@ -138,55 +143,17 @@ public class EmptyView extends FrameLayout {
 
     public void displayLoading(boolean loading) {
         if (loading) {
-            mContainer.setVisibility(View.INVISIBLE);
+            mEmptyTextContainer.setVisibility(View.INVISIBLE);
             mProgress.setVisibility(View.VISIBLE);
         } else {
-            mContainer.setVisibility(View.VISIBLE);
+            mEmptyTextContainer.setVisibility(View.VISIBLE);
             mProgress.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void init(AttributeSet attrs) {
-        removeAllViews();
-
-        float density = getResources().getDisplayMetrics().density;
-        int fiveDp = (int) (5.0F * density);
-        int tenDp = (int) (10.0F * density);
-
-        mContainer = new LinearLayout(getContext());
-        mContainer.setOrientation(LinearLayout.VERTICAL);
-        mContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        View headerContainer = new RelativeLayout(getContext());
-        headerContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        headerContainer.setPadding(0, fiveDp, 0, fiveDp);
-        headerContainer.setVisibility(View.GONE);
-        mContainer.addView(headerContainer);
-
-        LinearLayout emptyTextContainer = new LinearLayout(getContext(), attrs);
-        emptyTextContainer.setOrientation(LinearLayout.VERTICAL);
-        emptyTextContainer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        emptyTextContainer.setGravity(Gravity.CENTER_VERTICAL);
-        emptyTextContainer.setPadding(tenDp, 0, tenDp, 0);
-        mEmptyTitle = new TextView(getContext());
-        mEmptyTitle.setGravity(Gravity.CENTER);
-        mEmptyTitle.setVisibility(View.GONE);
-        emptyTextContainer.addView(mEmptyTitle);
-        mEmptySubtitle = new TextView(getContext());
-        mEmptySubtitle.setGravity(Gravity.CENTER);
-        mEmptySubtitle.setPadding(0, tenDp, 0, 0);
-        mEmptySubtitle.setVisibility(View.GONE);
-        emptyTextContainer.addView(mEmptySubtitle);
-        setTitleTextAppearance(R.style.TextAppearance_AppCompat_Headline);
-        setSubtitleTextAppearance(R.style.TextAppearance_AppCompat_Subhead);
-        mContainer.addView(emptyTextContainer);
-        addView(mContainer);
-
-        mProgress = new ProgressBar(getContext(), attrs);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.gravity = Gravity.CENTER;
-        mProgress.setLayoutParams(lp);
-        mProgress.setVisibility(View.GONE);
-        addView(mProgress);
+    private void init() {
+        inflate(getContext(), R.layout.layout_empty_view, this);
+        ButterKnife.inject(this, this);
     }
 
     static class SavedState extends BaseSavedState {

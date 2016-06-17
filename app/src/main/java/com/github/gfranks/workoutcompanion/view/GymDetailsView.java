@@ -87,23 +87,32 @@ public class GymDetailsView extends LinearLayout {
 
     private void init(AttributeSet attrs, int defStyleAttr) {
         removeAllViews();
+        setOrientation(VERTICAL);
 
         float density = getContext().getResources().getDisplayMetrics().density;
-        int topBottomMargin = (int) (5F * density);
+        int leftRightPadding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        int topBottomMargin = getResources().getDimensionPixelSize(R.dimen.gym_details_view_vertical_margin);
 
-        setOrientation(VERTICAL);
         mTitle = new TextView(getContext());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         mTitle.setLayoutParams(lp);
-        setTitleTextAppearance(R.style.DefaultAppTheme_TextAppearance_SuperSmall);
         mTitle.setEnabled(false);
-        addView(mTitle, 0);
+        mTitle.setPadding(leftRightPadding, 0, leftRightPadding, 0);
+        setTitleTextAppearance(R.style.DefaultAppTheme_TextAppearance_SuperSmall);
+        addView(mTitle);
+
+        View topDivider = new View(getContext());
+        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (1F * density));
+        lp.setMargins(0, topBottomMargin, 0, 0);
+        topDivider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_divider));
+        topDivider.setLayoutParams(lp);
+        addView(topDivider);
 
         mDescription = new TextView(getContext());
         lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(0, topBottomMargin, 0, topBottomMargin);
         mDescription.setLayoutParams(lp);
+        mDescription.setPadding(leftRightPadding, topBottomMargin*2, leftRightPadding, topBottomMargin*2);
+        mDescription.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_background));
         setDescriptionTextAppearance(R.style.TextAppearance_AppCompat_Small);
         addView(mDescription);
 
@@ -117,14 +126,11 @@ public class GymDetailsView extends LinearLayout {
             mDescription.setTextColor(descriptionTextColor);
         }
 
-        topBottomMargin = (int) (3F * density);
-        View divider = new View(getContext());
+        View bottomDivider = new View(getContext());
         lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (1F * density));
-        divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_divider));
-        lp.setMargins(0, topBottomMargin, 0, topBottomMargin);
-        divider.setLayoutParams(lp);
-        divider.setEnabled(false);
-        addView(divider);
+        bottomDivider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_divider));
+        bottomDivider.setLayoutParams(lp);
+        addView(bottomDivider);
 
         if (attrs != null) {
             a = getContext().obtainStyledAttributes(attrs, R.styleable.GymDetailsView, defStyleAttr, 0);

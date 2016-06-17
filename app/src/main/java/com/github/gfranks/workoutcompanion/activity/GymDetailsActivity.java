@@ -15,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
@@ -54,9 +56,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>, WCRecyclerView.OnItemClickListener,
-        OnMapReadyCallback {
-
-    private static final String FAVORITE = "favorite";
+        OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
     @Inject
     DiscoverService mDiscoverService;
@@ -67,6 +67,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @Inject
     Picasso mPicasso;
 
+    @InjectView(R.id.gym_favorite)
+    ToggleButton mFavorite;
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
     @InjectView(R.id.gym_name)
@@ -90,7 +92,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     private GoogleMap mMap;
     private ClusterManager<WCGym> mClusterManager;
 
-    private boolean mIsFavorite, mTransitioned;
+    private boolean mTransitioned;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,9 +108,6 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         mListView.setAdapter(mAdapter);
 
         mGymDatabase = new GymDatabase(this);
-        if (savedInstanceState != null) {
-            mIsFavorite = savedInstanceState.getBoolean(FAVORITE, false);
-        }
 
         mMapView.onCreate(null);
         initGym();
@@ -133,12 +132,6 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(FAVORITE, mIsFavorite);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_gym_details, menu);
         return true;
@@ -146,7 +139,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mTransitioned) {
+        if (mTransitioned && mGym.getFormatted_phone_number() != null &&
+                mGym.getFormatted_phone_number().length() > 0) {
             showFab();
         } else {
             hideFab();
@@ -225,20 +219,26 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * ********************
      */
     @OnClick(R.id.fab)
-    void onFavorite() {
-        if (mIsFavorite) {
-            mIsFavorite = false;
-            mFab.setImageResource(R.drawable.ic_unheart);
-            mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mGym.getId());
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                    .setAlert(getString(R.string.gym_unfavorited))
-                    .create());
-        } else {
-            mIsFavorite = true;
-            mFab.setImageResource(R.drawable.ic_heart);
+    void onCallClick() {
+        // TODO: call gym
+    }
+
+    /**
+     * **************************************
+     * CompoundButton.OnCheckedChangeListener
+     * **************************************
+     */
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
             mGymDatabase.saveGym(mAccountManager.getUser().getId(), mGym);
             UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
                     .setAlert(getString(R.string.gym_favorited))
+                    .create());
+        } else {
+            mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mGym.getId());
+            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                    .setAlert(getString(R.string.gym_unfavorited))
                     .create());
         }
     }
@@ -318,16 +318,12 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
         try {
             mGymDatabase.open();
-            mIsFavorite = mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId());
+            mFavorite.setOnCheckedChangeListener(null);
+            mFavorite.setChecked(mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId()));
+            mFavorite.setOnCheckedChangeListener(this);
         } catch (Throwable t) {
             t.printStackTrace();
             // unable to open gym db
-        }
-
-        if (mIsFavorite) {
-            mFab.setImageResource(R.drawable.ic_heart);
-        } else {
-            mFab.setImageResource(R.drawable.ic_unheart);
         }
     }
 
