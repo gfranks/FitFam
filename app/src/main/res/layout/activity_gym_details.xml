@@ -41,7 +41,8 @@
                 android:layout_gravity="end"
                 android:textOn="@null"
                 android:textOff="@null"
-                android:background="@drawable/ic_heart"/>
+                android:background="@drawable/ic_heart"
+                android:transitionName="@string/transition_gym_favorite"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

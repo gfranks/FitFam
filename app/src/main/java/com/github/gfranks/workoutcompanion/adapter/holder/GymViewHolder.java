@@ -117,6 +117,10 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
         return mImage;
     }
 
+    public View getFavoriteViewForTransition() {
+        return mFavorite;
+    }
+
     public View getNameViewForTransition() {
         return mName;
     }

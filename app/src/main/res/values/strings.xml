@@ -164,4 +164,5 @@
     <string name="transition_gym_image">gym_image</string>
     <string name="transition_gym_name">gym_name</string>
     <string name="transition_gym_address">gym_address</string>
+    <string name="transition_gym_favorite">gym_favorite</string>
 </resources>

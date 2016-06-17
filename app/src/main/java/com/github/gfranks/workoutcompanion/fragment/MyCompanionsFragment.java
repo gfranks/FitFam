@@ -23,7 +23,6 @@ import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
-import com.squareup.picasso.Picasso;
 import com.urbanairship.UAirship;
 
 import java.util.Arrays;
@@ -44,8 +43,6 @@ public class MyCompanionsFragment extends BaseFragment implements Callback<List<
     WorkoutCompanionService mService;
     @Inject
     AccountManager mAccountManager;
-    @Inject
-    Picasso mPicasso;
 
     @InjectView(R.id.list)
     WCRecyclerView mListView;
