@@ -47,7 +47,7 @@ public class DataModule {
     @Singleton
     Picasso providePicasso(Application app) {
         Picasso picasso = Picasso.with(app);
-        picasso.setIndicatorsEnabled(BuildConfig.DEBUG);
+        picasso.setIndicatorsEnabled(false);
         picasso.setLoggingEnabled(BuildConfig.DEBUG);
         return picasso;
     }

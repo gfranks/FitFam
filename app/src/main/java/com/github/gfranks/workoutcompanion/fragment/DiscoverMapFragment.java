@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Display;
@@ -289,7 +290,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         intent.putExtra(WCGym.EXTRA, mAdapter.getItem(position));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                    ((GymViewHolder) vh).getImageViewForTransition(), getString(R.string.transition_gym_image));
+                    Pair.create(((GymViewHolder) vh).getNameViewForTransition(), getString(R.string.transition_gym_name)),
+                    Pair.create(((GymViewHolder) vh).getAddressViewForTransition(), getString(R.string.transition_gym_address)));
             getActivity().startActivity(intent, options.toBundle());
         } else {
             getActivity().startActivity(intent);

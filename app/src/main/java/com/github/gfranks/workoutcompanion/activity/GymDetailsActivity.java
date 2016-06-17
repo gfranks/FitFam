@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
+import android.view.Menu;
 import android.view.View;
 
 import com.github.gfranks.workoutcompanion.R;
@@ -72,8 +73,6 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     GymDetailsView mName;
     @InjectView(R.id.gym_address)
     GymDetailsView mAddress;
-    @InjectView(R.id.mapview_container)
-    View mMapViewContainer;
     @InjectView(R.id.mapview)
     MapView mMapView;
     @InjectView(R.id.gym_website)
@@ -91,7 +90,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     private GoogleMap mMap;
     private ClusterManager<WCGym> mClusterManager;
 
-    private boolean mIsFavorite;
+    private boolean mIsFavorite, mTransitioned;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,6 +136,23 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(FAVORITE, mIsFavorite);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_gym_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mTransitioned) {
+            showFab();
+        } else {
+            hideFab();
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -320,11 +336,13 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             getWindow().getSharedElementEnterTransition().addListener(new AnimationUtils.DefaultTransitionListener() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
-                    showFab();
+                    mTransitioned = true;
+                    supportInvalidateOptionsMenu();
                 }
             });
         } else {
-            showFab();
+            mTransitioned = true;
+            supportInvalidateOptionsMenu();
         }
     }
 

@@ -73,4 +73,12 @@ public class GymViewHolder extends RecyclerView.ViewHolder {
     public View getImageViewForTransition() {
         return mImage;
     }
+
+    public View getNameViewForTransition() {
+        return mName;
+    }
+
+    public View getAddressViewForTransition() {
+        return mAddress;
+    }
 }

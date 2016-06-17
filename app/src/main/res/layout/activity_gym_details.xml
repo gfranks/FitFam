@@ -69,6 +69,7 @@
                     android:id="@+id/gym_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:transitionName="@string/transition_gym_name"
                     app:gdv_title="@string/gym_name" />
 
                 <com.github.gfranks.workoutcompanion.view.GymDetailsView
@@ -76,6 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/list_cell_vertical_padding"
+                    android:transitionName="@string/transition_gym_address"
                     app:gdv_title="@string/gym_address" />
 
                 <com.github.gfranks.workoutcompanion.view.GymDetailsView
@@ -94,37 +96,29 @@
                     android:visibility="gone"
                     app:gdv_title="@string/gym_hours" />
 
-                <LinearLayout
-                    android:id="@+id/mapview_container"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="vertical">
+                    android:text="@string/gym_map"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/gym_map"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/theme_divider" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="3dp"
-                        android:background="@color/theme_divider" />
-
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/mapview"
-                        android:layout_width="match_parent"
-                        android:layout_height="225dp"
-                        android:clickable="true"
-                        app:uiRotateGestures="false"
-                        app:uiScrollGestures="false"
-                        app:uiTiltGestures="false"
-                        app:uiZoomControls="false"
-                        app:uiZoomGestures="false" />
-
-                </LinearLayout>
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapview"
+                    android:layout_width="match_parent"
+                    android:layout_height="225dp"
+                    android:clickable="true"
+                    app:uiRotateGestures="false"
+                    app:uiScrollGestures="false"
+                    app:uiTiltGestures="false"
+                    app:uiZoomControls="false"
+                    app:uiZoomGestures="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
