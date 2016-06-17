@@ -4,20 +4,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.util.DividerItemDecoration;
 
-public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemTouchListener {
+public class WCRecyclerView extends RecyclerView {
 
     private View mEmptyView;
     private RecyclerViewDataSetObserver mDataSetObserver;
     private OnItemClickListener mOnItemClickListener;
-    private GestureDetector mGestureDetector;
     private boolean mDisableOnItemClick;
 
     public WCRecyclerView(Context context) {
@@ -42,27 +39,6 @@ public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemT
         }
         mDataSetObserver.onChanged();
         scheduleLayoutAnimation();
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        if (!mDisableOnItemClick) {
-            View childView = rv.findChildViewUnder(e.getX(), e.getY());
-            if (childView != null && mOnItemClickListener != null && mGestureDetector.onTouchEvent(e)) {
-                int position = rv.getChildAdapterPosition(childView);
-                mOnItemClickListener.onItemClick(this, rv.findViewHolderForAdapterPosition(position), position);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
     }
 
     public void setEmptyView(View emptyView) {
@@ -92,14 +68,7 @@ public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemT
         if (useDividers) {
             addItemDecoration(new DividerItemDecoration(getContext(), orientation));
         }
-        addOnItemTouchListener(this);
         mDataSetObserver = new RecyclerViewDataSetObserver();
-        mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
 
         if (layoutAnimation) {
             setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.recycler_view_layout_animation));
@@ -123,6 +92,26 @@ public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemT
 
     public interface OnItemClickListener {
         void onItemClick(RecyclerView recyclerView, RecyclerView.ViewHolder vh, int position);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ViewHolder(View view) {
+            super(view);
+
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemView.getParent() != null && itemView.getParent() instanceof WCRecyclerView) {
+                        WCRecyclerView rv = (WCRecyclerView) itemView.getParent();
+                        if (rv.mOnItemClickListener != null && !rv.mDisableOnItemClick) {
+                            rv.mOnItemClickListener.onItemClick(rv, rv.findViewHolderForAdapterPosition(getAdapterPosition()),
+                                    getAdapterPosition());
+                        }
+                    }
+                }
+            });
+        }
     }
 
     class RecyclerViewDataSetObserver extends AdapterDataObserver {

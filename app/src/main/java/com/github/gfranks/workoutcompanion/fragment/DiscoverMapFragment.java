@@ -1,6 +1,9 @@
 package com.github.gfranks.workoutcompanion.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Point;
@@ -11,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -32,8 +36,10 @@ import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
+import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.manager.DiscoverManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
+import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
@@ -63,7 +69,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ClusterManager.OnClusterClickListener<WCGym>, ClusterManager.OnClusterItemClickListener<WCGym>,
         GoogleMap.OnMapClickListener, WCRecyclerView.OnItemClickListener, SearchView.OnQueryTextListener,
-        SearchView.OnSuggestionListener {
+        SearchView.OnSuggestionListener, GymListAdapter.OnFavoriteListener {
 
     public static final String TAG = "discover_map_fragment";
 
@@ -71,6 +77,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     DiscoverManager mDiscoverManager;
     @Inject
     DiscoverService mDiscoverService;
+    @Inject
+    AccountManager mAccountManager;
 
     @InjectView(R.id.map_view)
     MapView mMapView;
@@ -86,13 +94,15 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     private GymListAdapter mAdapter;
     private SearchView mSearchView;
     private SearchSuggestionsAdapter mSearchViewAdapter;
+    private GymDatabase mGymDatabase;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new GymListAdapter();
+        mAdapter = new GymListAdapter(this);
         mSearchViewAdapter = new SearchSuggestionsAdapter(getContext());
+        mGymDatabase = new GymDatabase(getActivity());
     }
 
     @Nullable
@@ -114,6 +124,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver, new IntentFilter(GymDatabase.BROADCAST));
         mMapView.onResume();
 
         if (getMap() == null) {
@@ -124,15 +135,15 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mDiscoverManager.disconnect();
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMapView.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
+        mDiscoverManager.disconnect();
     }
 
     @Override
@@ -353,6 +364,32 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         return false;
     }
 
+    /**
+     * **********************************
+     * GymListAdapter.OnFavoritedListener
+     * **********************************
+     */
+    @Override
+    public void onFavorite(int position, boolean isFavorite) {
+        try {
+            mGymDatabase.open();
+            if (isFavorite) {
+                mGymDatabase.saveGym(mAccountManager.getUser().getId(), mAdapter.getItem(position));
+                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                        .setAlert(getString(R.string.gym_favorited))
+                        .create());
+            } else {
+                mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
+                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                        .setAlert(getString(R.string.gym_unfavorited))
+                        .create());
+            }
+            mGymDatabase.close();
+        } catch (Throwable t) {
+            // unable to open db
+        }
+    }
+
     private void loadGyms() {
         LatLng latLng = mDiscoverManager.getLastKnownLocation();
         mDiscoverService.getGyms(latLng.latitude + "," + latLng.longitude, getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
@@ -461,4 +498,17 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         }
         mBottomSheet.setLayoutParams(params);
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
+                if (isDetached() || getActivity() == null) {
+                    return;
+                }
+
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
 }

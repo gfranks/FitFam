@@ -2,9 +2,11 @@ package com.github.gfranks.workoutcompanion.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
@@ -16,6 +18,8 @@ import java.util.List;
 
 public class GymDatabase {
 
+    public static final String BROADCAST = "gyms_modified";
+
     private String[] ALL_COLUMNS = {
             GymSQLiteHelper.COLUMN_ID, GymSQLiteHelper.COLUMN_PLACE_ID,
             GymSQLiteHelper.COLUMN_NAME, GymSQLiteHelper.COLUMN_ICON,
@@ -24,9 +28,11 @@ public class GymDatabase {
 
     private GymSQLiteHelper mDbHelper;
     private SQLiteDatabase mDatabase;
+    private LocalBroadcastManager mBroadcastManager;
 
     public GymDatabase(Context context) {
         mDbHelper = new GymSQLiteHelper(context);
+        mBroadcastManager = LocalBroadcastManager.getInstance(context);
     }
 
     public void open() throws SQLException {
@@ -49,6 +55,7 @@ public class GymDatabase {
         values.put(GymSQLiteHelper.COLUMN_VICINITY, gym.getVicinity());
         values.put(GymSQLiteHelper.COLUMN_GEOMETRY, Utils.getGson().toJson(gym.getGeometry()));
         mDatabase.insert(GymSQLiteHelper.TABLE_GYMS, null, values);
+        mBroadcastManager.sendBroadcast(new Intent(BROADCAST));
     }
 
     public void deleteGym(String userId, WCGym gym) {
@@ -58,6 +65,7 @@ public class GymDatabase {
     public void deleteGym(String userId, String gymId) {
         mDatabase.delete(GymSQLiteHelper.TABLE_GYMS, GymSQLiteHelper.COLUMN_ID + "=? AND "
                 + GymSQLiteHelper.COLUMN_USER_ID + "=?", new String[]{gymId, userId});
+        mBroadcastManager.sendBroadcast(new Intent(BROADCAST));
     }
 
     public void isFavorite(String userId, WCGym gym) {

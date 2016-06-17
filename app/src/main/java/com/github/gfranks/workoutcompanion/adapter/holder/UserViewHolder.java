@@ -1,9 +1,9 @@
 package com.github.gfranks.workoutcompanion.adapter.holder;
 
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +13,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
-import com.github.gfranks.workoutcompanion.util.Utils;
+import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class UserViewHolder extends RecyclerView.ViewHolder {
+public class UserViewHolder extends WCRecyclerView.ViewHolder {
 
     @Inject
     Picasso mPicasso;
@@ -59,8 +59,8 @@ public class UserViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setUserImage(WCUser user) {
-        Drawable defaultImage = Utils.applyDrawableTint(itemView.getContext(),
-                R.drawable.ic_avatar, ContextCompat.getColor(itemView.getContext(), R.color.theme_icon_color));
+        Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_avatar),
+                (int) (200F * itemView.getResources().getDisplayMetrics().density));
         if (user.getImage() != null && !user.getImage().isEmpty()) {
             RequestCreator creator = mPicasso.load(user.getImage())
                     .placeholder(defaultImage)

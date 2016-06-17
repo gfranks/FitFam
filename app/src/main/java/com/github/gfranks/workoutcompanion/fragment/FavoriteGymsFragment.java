@@ -1,11 +1,15 @@
 package com.github.gfranks.workoutcompanion.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +34,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView.OnItemClickListener {
+public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView.OnItemClickListener, GymListAdapter.OnFavoriteListener {
 
     public static final String TAG = "favorite_gyms_fragment";
 
@@ -69,27 +73,14 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
     @Override
     public void onResume() {
         super.onResume();
-        try {
-            mEmptyView.displayLoading(true);
-            mGymDatabase.open();
-            if (mAdapter == null || mListView.getAdapter() == null) {
-                mAdapter = new GymListAdapter(mGymDatabase.getAllGyms(mAccountManager.getUser().getId()));
-                mListView.setAdapter(mAdapter);
-            } else {
-                mAdapter.setGyms(mGymDatabase.getAllGyms(mAccountManager.getUser().getId()));
-            }
-            mEmptyView.displayLoading(false);
-        } catch (Throwable t) {
-            mEmptyView.displayLoading(false);
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                    .setAlert(getString(R.string.error_unable_to_load_saved_gyms))
-                    .create());
-        }
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver, new IntentFilter(GymDatabase.BROADCAST));
+        loadGyms();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
         mGymDatabase.close();
     }
 
@@ -112,16 +103,68 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
         }
     }
 
+    /**
+     * **********************************
+     * GymListAdapter.OnFavoritedListener
+     * **********************************
+     */
+    @Override
+    public void onFavorite(int position, boolean isFavorite) {
+        try {
+            mGymDatabase.open();
+            mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
+            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                    .setAlert(getString(R.string.gym_unfavorited))
+                    .create());
+            mAdapter.removeItem(position);
+            mGymDatabase.close();
+        } catch (Throwable t) {
+            // unable to open db
+        }
+    }
+
+    private void loadGyms() {
+        if (isDetached() || getActivity() == null) {
+            return;
+        }
+
+        try {
+            mEmptyView.displayLoading(true);
+            mGymDatabase.open();
+            if (mAdapter == null || mListView.getAdapter() == null) {
+                mAdapter = new GymListAdapter(mGymDatabase.getAllGyms(mAccountManager.getUser().getId()), this);
+                mListView.setAdapter(mAdapter);
+            } else {
+                mAdapter.setGyms(mGymDatabase.getAllGyms(mAccountManager.getUser().getId()));
+            }
+            mEmptyView.displayLoading(false);
+        } catch (Throwable t) {
+            mEmptyView.displayLoading(false);
+            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
+                    .setAlert(getString(R.string.error_unable_to_load_saved_gyms))
+                    .create());
+        }
+    }
+
     private void setupEmptyView() {
         mEmptyView.setTitle(R.string.empty_favorite_gyms_title);
         mEmptyView.setSubtitle(R.string.empty_favorite_gyms_subtitle);
         View emptyHeader = mEmptyView.addEmptyHeader(R.layout.layout_gym_list_item);
         emptyHeader.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.theme_background_dark));
-        new GymViewHolder(emptyHeader).populateAsPlaceHolder(new WCGym.Builder()
+        new GymViewHolder(emptyHeader, null).populateAsPlaceHolder(new WCGym.Builder()
                 .setName(getString(R.string.empty_favorite_gyms_header_name))
                 .setIcon(getString(R.string.empty_favorite_gyms_header_image))
                 .setVicinity(getString(R.string.empty_favorite_gyms_header_vicinity))
                 .build());
         mListView.setEmptyView(mEmptyView);
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
+                loadGyms();
+            }
+        }
+    };
 }

@@ -19,6 +19,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
+import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.model.LatLng;
@@ -33,7 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SelectGymDialog extends MaterialDialog implements SearchView.OnQueryTextListener,
-        SearchView.OnSuggestionListener, WCRecyclerView.OnItemClickListener {
+        SearchView.OnSuggestionListener, WCRecyclerView.OnItemClickListener, GymListAdapter.OnFavoriteListener {
 
     @Inject
     DiscoverService mDiscoverService;
@@ -51,14 +52,16 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
 
     private WCUser mUser;
     private SearchSuggestionsAdapter mSearchViewAdapter;
-    private GymListAdapter mListViewAdapter;
+    private GymListAdapter mAdapter;
     private OnGymSelectedListener mOnGymSelectedListener;
+    private GymDatabase mGymDatabase;
 
     private SelectGymDialog(Context context, OnGymSelectedListener onGymSelectedListener) {
         super(getBuilder(context));
         WorkoutCompanionApplication.get(context).inject(this);
         mOnGymSelectedListener = onGymSelectedListener;
         mSearchViewAdapter = new SearchSuggestionsAdapter(getContext());
+        mGymDatabase = new GymDatabase(context);
         setupViews();
     }
 
@@ -148,10 +151,36 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     @Override
     public void onItemClick(RecyclerView recyclerView, RecyclerView.ViewHolder vh, int position) {
         if (mOnGymSelectedListener != null) {
-            WCGym result = mListViewAdapter.getItem(position);
+            WCGym result = mAdapter.getItem(position);
             mOnGymSelectedListener.onGymSelected(this, result.getPlace_id(), result.getName());
         }
         dismiss();
+    }
+
+    /**
+     * **********************************
+     * GymListAdapter.OnFavoritedListener
+     * **********************************
+     */
+    @Override
+    public void onFavorite(int position, boolean isFavorite) {
+        try {
+            mGymDatabase.open();
+            if (isFavorite) {
+                mGymDatabase.saveGym(mAccountManager.getUser().getId(), mAdapter.getItem(position));
+                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                        .setAlert(getContext().getString(R.string.gym_favorited))
+                        .create());
+            } else {
+                mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
+                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                        .setAlert(getContext().getString(R.string.gym_unfavorited))
+                        .create());
+            }
+            mGymDatabase.close();
+        } catch (Throwable t) {
+            // unable to open db
+        }
     }
 
     private void loadGyms(LatLng latLng) {
@@ -164,11 +193,11 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
                 }
 
                 mEmptyView.displayLoading(false);
-                if (mListViewAdapter == null || mListView.getAdapter() == null) {
-                    mListViewAdapter = new GymListAdapter(response.body().getResults());
-                    mListView.setAdapter(mListViewAdapter);
+                if (mAdapter == null || mListView.getAdapter() == null) {
+                    mAdapter = new GymListAdapter(response.body().getResults(),SelectGymDialog. this);
+                    mListView.setAdapter(mAdapter);
                 } else {
-                    mListViewAdapter.setGyms(response.body().getResults());
+                    mAdapter.setGyms(response.body().getResults());
                 }
             }
 

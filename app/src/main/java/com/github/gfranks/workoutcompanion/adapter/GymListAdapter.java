@@ -13,14 +13,17 @@ import java.util.List;
 
 public class GymListAdapter extends RecyclerView.Adapter<GymViewHolder> {
 
+    private OnFavoriteListener mListener;
     private List<WCGym> mGyms;
 
-    public GymListAdapter() {
+    public GymListAdapter(OnFavoriteListener listener) {
+        mListener = listener;
         mGyms = new ArrayList<>();
     }
 
-    public GymListAdapter(List<WCGym> gyms) {
+    public GymListAdapter(List<WCGym> gyms, OnFavoriteListener listener) {
         mGyms = gyms;
+        mListener = listener;
     }
 
     public void setGyms(List<WCGym> gyms) {
@@ -37,13 +40,22 @@ public class GymListAdapter extends RecyclerView.Adapter<GymViewHolder> {
         return mGyms.get(position);
     }
 
+    public void removeItem(int position) {
+        mGyms.remove(position);
+        notifyDataSetChanged();
+    }
+
     @Override
     public GymViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GymViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_gym_list_item, parent, false));
+        return new GymViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_gym_list_item, parent, false), mListener);
     }
 
     @Override
     public void onBindViewHolder(GymViewHolder holder, int position) {
         holder.populate(getItem(position));
+    }
+
+    public interface OnFavoriteListener {
+        void onFavorite(int position, boolean isFavorite);
     }
 }

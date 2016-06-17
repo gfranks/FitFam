@@ -1,6 +1,5 @@
 package com.github.gfranks.workoutcompanion.adapter.holder;
 
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.SettingsListAdapter;
 import com.github.gfranks.workoutcompanion.util.SettingsItem;
 import com.github.gfranks.workoutcompanion.util.Utils;
+import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.urbanairship.UAirship;
 
 import org.joda.time.DateTime;
@@ -21,7 +21,7 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class SettingsViewHolder extends RecyclerView.ViewHolder {
+public class SettingsViewHolder extends WCRecyclerView.ViewHolder {
 
     @InjectView(R.id.settings_item_container)
     View mContainer;

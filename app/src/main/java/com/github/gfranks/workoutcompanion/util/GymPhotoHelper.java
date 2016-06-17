@@ -8,8 +8,22 @@ import com.github.gfranks.workoutcompanion.data.model.WCGymPhoto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GymPhotoHelper {
+
+    public static String getRandomGymPhoto(Context context, List<WCGymPhoto> photos) {
+        String photoUrl = null;
+        if (photos != null && !photos.isEmpty()) {
+            WCGymPhoto photo = photos.get(new Random().nextInt(photos.size()));
+            StringBuilder sb = new StringBuilder(getDefaultPhotoUrl(context, photo));
+            sb.append("&maxwidth=");
+            sb.append(PicassoUtils.IMAGE_SCALED_SIZE);
+            photoUrl = sb.toString();
+        }
+
+        return photoUrl;
+    }
 
     public static List<String> getScaledGymPhotos(Context context, List<WCGymPhoto> photos) {
         List<String> photoUrls = new ArrayList<>();
