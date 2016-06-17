@@ -84,6 +84,7 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
 
     public void populateAsPlaceHolder(WCGym gym) {
         populate(gym);
+        itemView.setClickable(false);
         mName.setEnabled(false);
         mAddress.setEnabled(false);
         mImage.setAlpha(0.5f);

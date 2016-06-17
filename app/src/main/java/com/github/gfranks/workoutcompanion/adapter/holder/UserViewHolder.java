@@ -53,6 +53,7 @@ public class UserViewHolder extends WCRecyclerView.ViewHolder {
 
     public void populateAsPlaceHolder(WCUser user) {
         populate(user);
+        itemView.setClickable(false);
         mName.setEnabled(false);
         mExercises.setEnabled(false);
         mImage.setAlpha(0.5f);
