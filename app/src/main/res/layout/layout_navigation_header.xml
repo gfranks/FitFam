@@ -17,7 +17,7 @@
         android:layout_width="@dimen/default_image_size_large"
         android:layout_height="@dimen/default_image_size_large"
         android:layout_marginTop="@dimen/nav_header_vertical_spacing"
-        android:transitionName="@string/transition_image"
+        android:transitionName="@string/transition_user_image"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_avatar" />
 

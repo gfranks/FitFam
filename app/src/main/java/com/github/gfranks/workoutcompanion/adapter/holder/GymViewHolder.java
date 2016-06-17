@@ -4,14 +4,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
-import com.github.gfranks.workoutcompanion.data.model.WCUser;
+import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
 import com.github.gfranks.workoutcompanion.util.Utils;
 import com.squareup.picasso.Picasso;
@@ -22,53 +21,48 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class UserViewHolder extends RecyclerView.ViewHolder {
+public class GymViewHolder extends RecyclerView.ViewHolder {
 
     @Inject
     Picasso mPicasso;
 
-    @InjectView(R.id.user_image)
+    @InjectView(R.id.gym_image)
     ImageView mImage;
-    @InjectView(R.id.user_name)
+    @InjectView(R.id.gym_name)
     TextView mName;
-    @InjectView(R.id.user_exercises)
-    TextView mExercises;
+    @InjectView(R.id.gym_address)
+    TextView mAddress;
 
-    public UserViewHolder(View view) {
+    public GymViewHolder(View view) {
         super(view);
         ButterKnife.inject(this, view);
         WorkoutCompanionApplication.get(view.getContext()).inject(this);
     }
 
-    public void populate(WCUser user) {
-        mName.setText(user.getFullName());
-        if (user.getExercises().isEmpty()) {
-            mExercises.setText("No exercises selected");
-        } else {
-            mExercises.setText(TextUtils.join(", ", user.getExercises()));
-        }
-
-        setUserImage(user);
+    public void populate(WCGym gym) {
+        setGymImage(gym);
+        mName.setText(gym.getName());
+        mAddress.setText(gym.getVicinity());
     }
 
-    public void populateAsPlaceHolder(WCUser user) {
-        populate(user);
+    public void populateAsPlaceHolder(WCGym gym) {
+        populate(gym);
         mName.setEnabled(false);
-        mExercises.setEnabled(false);
+        mAddress.setEnabled(false);
         mImage.setAlpha(0.5f);
     }
 
-    private void setUserImage(WCUser user) {
+    private void setGymImage(WCGym gym) {
         Drawable defaultImage = Utils.applyDrawableTint(itemView.getContext(),
-                R.drawable.ic_avatar, ContextCompat.getColor(itemView.getContext(), R.color.theme_icon_color));
-        if (user.getImage() != null && !user.getImage().isEmpty()) {
-            RequestCreator creator = mPicasso.load(user.getImage())
+                R.drawable.ic_gym, ContextCompat.getColor(itemView.getContext(), R.color.theme_icon_color));
+        if (gym.getIcon() != null && !gym.getIcon().isEmpty()) {
+            RequestCreator creator = mPicasso.load(gym.getIcon())
                     .placeholder(defaultImage)
                     .error(defaultImage);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 creator.transform(new RoundedCornersTransformation(
                         itemView.getResources().getDimensionPixelSize(R.dimen.card_view_rounded_corner_radius),
-                        0, RoundedCornersTransformation.CornerType.TOP));
+                        0, RoundedCornersTransformation.CornerType.LEFT));
             }
             creator.into(mImage);
         } else {

@@ -51,6 +51,10 @@ public class WCUser implements Parcelable, Type {
     private List<String> exercises;
     @SerializedName("canSeeContactInfo")
     private boolean canSeeContactInfo;
+    @SerializedName("gymId")
+    private String gymId;
+    @SerializedName("gym")
+    private String gym;
 
     public WCUser() {
     }
@@ -72,6 +76,8 @@ public class WCUser implements Parcelable, Type {
         weight = builder.weight;
         exercises = builder.exercises;
         canSeeContactInfo = builder.canSeeContactInfo;
+        gymId = builder.gymId;
+        gym = builder.gym;
     }
 
     public String getId() {
@@ -173,6 +179,22 @@ public class WCUser implements Parcelable, Type {
         this.canSeeContactInfo = canSeeContactInfo;
     }
 
+    public String getGymId() {
+        return gymId;
+    }
+
+    public void setGymId(String gymId) {
+        this.gymId = gymId;
+    }
+
+    public String getGym() {
+        return gym;
+    }
+
+    public void setGym(String gym) {
+        this.gym = gym;
+    }
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
@@ -224,6 +246,8 @@ public class WCUser implements Parcelable, Type {
         out.writeValue(weight);
         out.writeList(exercises);
         out.writeValue(canSeeContactInfo ? 1 : 0);
+        out.writeValue(gymId);
+        out.writeValue(gym);
     }
 
     private void readFromParcel(Parcel in) {
@@ -239,6 +263,8 @@ public class WCUser implements Parcelable, Type {
         weight = (int) in.readValue(Integer.class.getClassLoader());
         exercises = in.readArrayList(String.class.getClassLoader());
         canSeeContactInfo = ((int) in.readValue(Integer.class.getClassLoader())) == 1;
+        gymId = (String) in.readValue(String.class.getClassLoader());
+        gym = (String) in.readValue(String.class.getClassLoader());
     }
 
     public static class Builder {
@@ -255,6 +281,8 @@ public class WCUser implements Parcelable, Type {
         private int weight;
         private List<String> exercises;
         private boolean canSeeContactInfo;
+        private String gymId;
+        private String gym;
 
         public Builder() {
             id = UUID.randomUUID().toString();
@@ -323,6 +351,18 @@ public class WCUser implements Parcelable, Type {
 
         public Builder setCanSeeContactInfo(boolean canSeeContactInfo) {
             this.canSeeContactInfo = canSeeContactInfo;
+
+            return this;
+        }
+
+        public Builder setGymId(String gymId) {
+            this.gymId = gymId;
+
+            return this;
+        }
+
+        public Builder setGym(String gym) {
+            this.gym = gym;
 
             return this;
         }

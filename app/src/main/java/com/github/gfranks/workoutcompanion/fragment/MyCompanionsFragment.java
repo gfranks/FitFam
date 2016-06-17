@@ -42,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView.OnItemClickListener, Callback<List<WCUser>> {
+public class MyCompanionsFragment extends BaseFragment implements Callback<List<WCUser>>, WCRecyclerView.OnItemClickListener {
 
     public static final String TAG = "my_companions_fragment";
 
@@ -83,24 +83,6 @@ public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView
     }
 
     /**
-     * **********************************
-     * WCRecyclerView.OnItemClickListener
-     * **********************************
-     */
-    @Override
-    public void onItemClick(RecyclerView recyclerView, RecyclerView.ViewHolder vh, int position) {
-        Intent intent = new Intent(getActivity(), UserProfileActivity.class);
-        intent.putExtra(WCUser.EXTRA, mAdapter.getItem(position));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
-                    ((UserViewHolder) vh).getImageViewForTransition(), getString(R.string.transition_image));
-            getActivity().startActivity(intent, options.toBundle());
-        } else {
-            getActivity().startActivity(intent);
-        }
-    }
-
-    /**
      * ****************
      * Callback<WCUser>
      * ****************
@@ -128,6 +110,24 @@ public class MyCompanionsFragment extends BaseFragment implements WCRecyclerView
         UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
                 .setAlert(t.getMessage())
                 .create());
+    }
+
+    /**
+     * **********************************
+     * WCRecyclerView.OnItemClickListener
+     * **********************************
+     */
+    @Override
+    public void onItemClick(RecyclerView recyclerView, RecyclerView.ViewHolder vh, int position) {
+        Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+        intent.putExtra(WCUser.EXTRA, mAdapter.getItem(position));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                    ((UserViewHolder) vh).getImageViewForTransition(), getString(R.string.transition_user_image));
+            getActivity().startActivity(intent, options.toBundle());
+        } else {
+            getActivity().startActivity(intent);
+        }
     }
 
     private void setupEmptyView() {

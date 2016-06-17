@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.ViewPagerAdapter;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
+import com.github.gfranks.workoutcompanion.util.Utils;
 
 import butterknife.InjectView;
 
@@ -40,10 +41,15 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
         super.onViewCreated(view, savedInstanceState);
 
         mAdapter = new ViewPagerAdapter(getContext(), getChildFragmentManager(), mViewPager);
-        mAdapter.addTab(DiscoverMapFragment.class, getArguments(), R.string.discover_gyms);
-        mAdapter.addTab(MyCompanionsFragment.class, getArguments(), R.string.discover_workout_companions);
+        mAdapter.addTab(DiscoverMapFragment.class, getArguments(), 0);//R.string.discover_gyms);
+        mAdapter.addTab(FavoriteGymsFragment.class, getArguments(), 0);//R.string.discover_my_gyms);
+        mAdapter.addTab(MyCompanionsFragment.class, getArguments(), 0);//R.string.discover_my_companions);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setOnTabSelectedListener(this);
+
+        mTabLayout.getTabAt(0).setIcon(Utils.getTabIcon(getActivity(), R.drawable.ic_discover));
+        mTabLayout.getTabAt(1).setIcon(Utils.getTabIcon(getActivity(), R.drawable.ic_gym));
+        mTabLayout.getTabAt(2).setIcon(Utils.getTabIcon(getActivity(), R.drawable.ic_users));
 
         onTabSelected(mTabLayout.getTabAt(0));
     }

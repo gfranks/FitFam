@@ -26,6 +26,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
+import com.github.gfranks.workoutcompanion.dialog.SelectGymDialog;
 import com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment;
 import com.github.gfranks.workoutcompanion.fragment.WeightSelectFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
@@ -61,10 +62,10 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     @Inject
     Picasso mPicasso;
 
-    @InjectView(R.id.fab)
-    FloatingActionButton mFab;
     @InjectView(R.id.image)
     ImageView mImage;
+    @InjectView(R.id.fab)
+    FloatingActionButton mFab;
     @InjectView(R.id.first_name)
     MaterialEditText mFirstName;
     @InjectView(R.id.last_name)
@@ -81,6 +82,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     MaterialEditText mBirthday;
     @InjectView(R.id.birthday_select)
     AppCompatImageView mBirthdaySelect;
+    @InjectView(R.id.home_gym)
+    MaterialEditText mHomeGym;
 
     private WCUser mUser;
     private boolean mIsNewUser, mCanEdit, mEditMode, mTransitioned, mExiting;
@@ -117,6 +120,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mLastName.addValidator(ValidatorUtils.getNonEmptyValidator(getString(R.string.error_no_last_name)));
         mEmail.addValidator(ValidatorUtils.getEmailValidator(this));
         mPhoneNumber.addValidator(ValidatorUtils.getPhoneNumberValidator(this));
+        mHomeGym.addValidator(ValidatorUtils.getNonEmptyValidator(getString(R.string.error_no_home_gym_selected)));
 
         if (!mCanEdit) {
             mBirthdaySelect.setVisibility(View.GONE);
@@ -179,6 +183,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mFemale.setEnabled(mEditMode);
         mBirthday.setEnabled(mEditMode);
         mBirthdaySelect.setEnabled(mEditMode);
+        mHomeGym.setEnabled(mEditMode);
         if (mCanEdit) {
             if (mEditMode) {
                 mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color));
@@ -232,7 +237,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
      * View.OnClickListener
      * ********************
      */
-    @OnClick({R.id.image, R.id.fab, R.id.birthday_select})
+    @OnClick({R.id.image, R.id.fab, R.id.birthday_select, R.id.home_gym})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.image:
@@ -273,6 +278,16 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                         mUser.setBirthday(birthday.toString());
                     }
                 }, year, month, day).show();
+                break;
+            case R.id.home_gym:
+                SelectGymDialog.newInstance(this, new SelectGymDialog.OnGymSelectedListener() {
+                    @Override
+                    public void onGymSelected(SelectGymDialog dialog, String placeId, String gym) {
+                        mUser.setGymId(placeId);
+                        mUser.setGym(gym);
+                        mHomeGym.setText(gym);
+                    }
+                }).show();
                 break;
         }
     }
@@ -320,6 +335,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
 
         mFirstName.setText(mUser.getFirstName());
         mLastName.setText(mUser.getLastName());
+        mHomeGym.setText(mUser.getGym());
         if (!mCanEdit && !mUser.isCanSeeContactInfo()) {
             mEmail.setText(R.string.email_blank);
             mPhoneNumber.setText(R.string.phone_number_blank);
@@ -332,7 +348,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mPhoneNumber.setText(mUser.getPhoneNumber());
             mBirthday.setText(mUser.getBirthday());
         }
-        if (!mUser.isFemale()) {
+        if (mUser.isFemale()) {
             mFemale.setChecked(true);
         } else {
             mMale.setChecked(true);
@@ -359,7 +375,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     private void save() {
         mPhoneNumber.setText(Utils.removeNonDigitValuesFromPhoneNumber(mPhoneNumber.getText().toString(), true));
         if (mFirstName.validate() && mLastName.validate() && mEmail.validate() && mPhoneNumber.validate()
-                && mBirthday.validate() && (mMale.isChecked() || mFemale.isChecked())) {
+                && mBirthday.validate() && mHomeGym.validate() && (mMale.isChecked() || mFemale.isChecked())) {
             mEditMode = false;
             mExiting = true;
             supportInvalidateOptionsMenu();

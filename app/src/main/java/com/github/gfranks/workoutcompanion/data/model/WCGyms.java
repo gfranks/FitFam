@@ -8,31 +8,33 @@ import com.google.gson.annotations.SerializedName;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class WCDiscoverResponse implements Parcelable, Type {
+public class WCGyms implements Parcelable, Type {
 
-    public static final Parcelable.Creator<WCDiscoverResponse> CREATOR = new Parcelable.Creator<WCDiscoverResponse>() {
-        public WCDiscoverResponse createFromParcel(Parcel in) {
-            return new WCDiscoverResponse(in);
+    public static final Parcelable.Creator<WCGyms> CREATOR = new Parcelable.Creator<WCGyms>() {
+        public WCGyms createFromParcel(Parcel in) {
+            return new WCGyms(in);
         }
 
-        public WCDiscoverResponse[] newArray(int size) {
-            return new WCDiscoverResponse[size];
+        public WCGyms[] newArray(int size) {
+            return new WCGyms[size];
         }
     };
 
     @SerializedName("status")
     private String status;
+    @SerializedName("result")
+    private WCGym result;
     @SerializedName("results")
-    private List<WCDiscoverResult> results;
+    private List<WCGym> results;
     @SerializedName("error_message")
     private String error_message;
     @SerializedName("html_attributions")
     private List<String> html_attributions;
 
-    public WCDiscoverResponse() {
+    public WCGyms() {
     }
 
-    public WCDiscoverResponse(Parcel in) {
+    public WCGyms(Parcel in) {
         readFromParcel(in);
     }
 
@@ -44,11 +46,19 @@ public class WCDiscoverResponse implements Parcelable, Type {
         this.html_attributions = html_attributions;
     }
 
-    public List<WCDiscoverResult> getResults() {
+    public WCGym getResult() {
+        return result;
+    }
+
+    public void setResult(WCGym result) {
+        this.result = result;
+    }
+
+    public List<WCGym> getResults() {
         return results;
     }
 
-    public void setResults(List<WCDiscoverResult> results) {
+    public void setResults(List<WCGym> results) {
         this.results = results;
     }
 
@@ -81,6 +91,7 @@ public class WCDiscoverResponse implements Parcelable, Type {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeValue(status);
+        out.writeValue(result);
         out.writeList(results);
         out.writeValue(error_message);
         out.writeValue(html_attributions);
@@ -88,7 +99,8 @@ public class WCDiscoverResponse implements Parcelable, Type {
 
     protected void readFromParcel(Parcel in) {
         status = (String) in.readValue(String.class.getClassLoader());
-        results = in.readArrayList(WCDiscoverResult.class.getClassLoader());
+        result = (WCGym) in.readValue(WCGym.class.getClassLoader());
+        results = in.readArrayList(WCGym.class.getClassLoader());
         error_message = (String) in.readValue(String.class.getClassLoader());
         html_attributions = in.readArrayList(String.class.getClassLoader());
     }

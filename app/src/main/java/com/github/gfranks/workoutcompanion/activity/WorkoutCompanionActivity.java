@@ -164,7 +164,7 @@ public class WorkoutCompanionActivity extends BaseActivity implements Navigation
                 Intent intent = new Intent(WorkoutCompanionActivity.this, UserProfileActivity.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(WorkoutCompanionActivity.this,
-                            mNavigationView.getHeaderView(0).findViewById(R.id.user_image), getString(R.string.transition_image));
+                            mNavigationView.getHeaderView(0).findViewById(R.id.user_image), getString(R.string.transition_user_image));
                     startActivity(intent, options.toBundle());
                 } else {
                     startActivity(intent);

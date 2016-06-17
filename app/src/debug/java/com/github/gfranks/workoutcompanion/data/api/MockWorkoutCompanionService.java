@@ -120,7 +120,6 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
      * Users
      * *****
      */
-
     @Override
     public Call<WCUser> getUser(@Path("userId") final String userId) {
         return new MockCall<WCUser>() {
@@ -187,7 +186,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
     }
 
     @Override
-    public Call<List<WCUser>> getUsers(@Path("placeId") String placeId) {
+    public Call<List<WCUser>> getUsers(@Path("placeId") final String placeId) {
         return new MockCall<List<WCUser>>() {
             @Override
             public void enqueue(Callback<List<WCUser>> cb) {
@@ -200,11 +199,12 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                     }
 
                     for (WCUser user : new ArrayList<>(users)) {
-                        if (user.equals(mAccountManager.getUser())) {
+                        if (user.equals(mAccountManager.getUser()) || !user.getGymId().equals(placeId)) {
                             users.remove(user);
                         }
                     }
 
+                    mUserDatabase.close();
                     if (cb != null) {
                         cb.onResponse(this, Response.success(users));
                     }
@@ -236,6 +236,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                         }
                     }
 
+                    mUserDatabase.close();
                     if (cb != null) {
                         cb.onResponse(this, Response.success(users));
                     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_view_select_gym"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/search_hint"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+            android:id="@+id/select_gym_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/list_cell_vertical_padding"
+            app:wcrv_dividers="true"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+        <include layout="@layout/layout_list_empty" />
+
+    </FrameLayout>
+
+</LinearLayout>

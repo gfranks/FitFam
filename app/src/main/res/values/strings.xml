@@ -12,8 +12,57 @@
     <string name="airship_prod_app_key">KFG7W4pjRhaxbB-BVWxslA</string> <!-- // TODO: update with prod key -->
     <string name="airship_prod_app_secret">076-KC0lQYOvp5FPHwwsnQ</string> <!-- // TODO: update with prod app secret -->
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- Notification Strings -->
+    <string name="notification_companion">You have a nearby companion</string>
+
+    <!-- Login Strings -->
+    <string name="login">Login</string>
+    <string name="login_back">Back to Login</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password_reset">Password Reset</string>
+    <string name="forgot_password_prompt">Please enter your WorkoutCompanion account email address</string>
+    <string name="forgot_password_sent_link">Send Reset Link</string>
+    <string name="forgot_password_sent">Forgotten password instructions sent</string>
+    <string name="create_account">Create Account</string>
+
+    <!-- Profile Strings -->
+    <string name="user_profile">User Profile</string>
+    <string name="workout_request_sent">Workout request sent</string>
+
+    <!-- Navigation Strings -->
+    <string name="nav_account_section">Account</string>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Gym Details Strings -->
+    <string name="gym_details">Gym Details</string>
+    <string name="gym_favorited">Gym has been added to favorites</string>
+    <string name="gym_unfavorited">Gym has been unfavorited</string>
+
+    <!-- Settings Strings -->
+    <string name="notification_quiet_time">Quiet Time:</string>
+    <string name="notification_quiet_time_to"> to </string>
+    <string name="version">Version: %s</string>
+
+    <!-- Discover Nav Strings -->
+    <string name="discover_gyms">Find Gyms</string>
+    <string name="discover_my_gyms">My Gyms</string>
+    <string name="discover_my_companions">My Companions</string>
+
+    <!-- Menu Strings -->
+    <string name="action_call">Call</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_dev_settings">Dev Settings</string>
+    <string name="action_discover">Discover</string>
+    <string name="action_done">Done</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_message">Message</string>
+    <string name="action_request_workout">Request Workout</string>
+    <string name="action_save">Save</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
 
     <!-- Prompt Strings -->
     <string name="email">Email</string>
@@ -37,6 +86,10 @@
     <string name="request_workout_to_see">To see %s\'s contact info, send them a workout request</string>
     <string name="request_exercise">Request Exercise</string>
     <string name="request">Request</string>
+    <string name="home_gym">Home Gym</string>
+    <string name="companions">Companions</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- Empty List Strings -->
     <string name="empty_companions_header_image">http://cdn3-www.superherohype.com/assets/uploads/gallery/captain_america_4979/captain_america_the_winter_soldier_7927/captws_captainamerica_avatar.jpg</string>
@@ -45,53 +98,14 @@
     <string name="empty_companions_header_exercises">Biking, Crossfit, Hiking, Jogging, P90X, Running, Soccer, Swimming, Tennis, Walking, Weight Lifting</string>
     <string name="empty_workout_companions_title">See companions here</string>
     <string name="empty_workout_companions_subtitle">Request workouts from their profile</string>
-    <string name="empty_gym">No users found at this gym</string>
-
-    <!-- Notification Strings -->
-    <string name="notification_companion">You have a nearby companion</string>
-
-    <!-- Login Strings -->
-    <string name="login">Login</string>
-    <string name="login_back">Back to Login</string>
-    <string name="forgot_password">Forgot Password</string>
-    <string name="forgot_password_reset">Password Reset</string>
-    <string name="forgot_password_prompt">Please enter your WorkoutCompanion account email address</string>
-    <string name="forgot_password_sent_link">Send Reset Link</string>
-    <string name="forgot_password_sent">Forgotten password instructions sent</string>
-    <string name="create_account">Create Account</string>
-
-    <!-- Profile Strings -->
-    <string name="user_profile">User Profile</string>
-    <string name="workout_request_sent">Workout request sent</string>
-
-    <!-- Navigation Strings -->
-    <string name="nav_account_section">Account</string>
-    <string name="nav_discover">Discover</string>
-    <string name="nav_settings">Settings</string>
-
-    <!-- Settings Strings -->
-    <string name="notification_quiet_time">Quiet Time:</string>
-    <string name="notification_quiet_time_to"> to </string>
-    <string name="version">Version: %s</string>
-
-    <!-- Discover Nav Strings -->
-    <string name="discover_gyms">Find Gyms</string>
-    <string name="discover_workout_companions">Companions</string>
-
-    <!-- Menu Strings -->
-    <string name="action_call">Call</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_continue">Continue</string>
-    <string name="action_dev_settings">Dev Settings</string>
-    <string name="action_discover">Discover</string>
-    <string name="action_done">Done</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_logout">Logout</string>
-    <string name="action_message">Message</string>
-    <string name="action_request_workout">Request Workout</string>
-    <string name="action_save">Save</string>
-    <string name="action_search">Search</string>
-    <string name="action_settings">Settings</string>
+    <string name="empty_favorite_gyms_header_image">http://abenity.s3.amazonaws.com/external/images/logo_lafitness_250.jpg</string>
+    <string name="empty_favorite_gyms_header_name">LA Fitness</string>
+    <string name="empty_favorite_gyms_header_vicinity">75 5th St NW, Atlanta, GA 30308</string>
+    <string name="empty_favorite_gyms_title">Save the gyms you love</string>
+    <string name="empty_favorite_gyms_subtitle">Tap the heart icon to save a gym</string>
+    <string name="empty_select_home_gym">Search by location to select your home gym</string>
+    <string name="empty_gym">No gyms to display</string>
+    <string name="empty_users">No users found at this gym</string>
 
     <!-- Error Strings -->
     <string name="error_network">Network error, please try again</string>
@@ -106,9 +120,11 @@
     <string name="error_invalid_birthday">Birthday must be in the format of MM/DD/YYYY</string>
     <string name="error_no_first_name">Please enter a first name</string>
     <string name="error_no_last_name">Please enter a last name</string>
+    <string name="error_no_home_gym_selected">Please select a home gym</string>
     <string name="error_user_profile">Please ensure you have entered all the correct info</string>
     <string name="error_no_location">Unable to acquire location. Please use built in search.</string>
     <string name="error_unable_to_load_exercises">Unable to load exercises, loading default ones</string>
+    <string name="error_unable_to_load_saved_gyms">Unable to load saved gyms</string>
 
     <!-- Dev Settings Strings -->
     <string name="dev_settings">Development Settings</string>
@@ -136,7 +152,10 @@
     <string name="transition_log_in_title">log_in_title</string>
     <string name="transition_log_in_subtitle">log_in_subtitle</string>
     <string name="transition_header">header</string>
-    <string name="transition_image">image</string>
-    <string name="transition_name">name</string>
-    <string name="transition_email">email</string>
+    <string name="transition_user_image">user_image</string>
+    <string name="transition_user_name">user_name</string>
+    <string name="transition_user_email">user_email</string>
+    <string name="transition_gym_image">gym_image</string>
+    <string name="transition_gym_name">gym_name</string>
+    <string name="transition_gym_address">gym_address</string>
 </resources>

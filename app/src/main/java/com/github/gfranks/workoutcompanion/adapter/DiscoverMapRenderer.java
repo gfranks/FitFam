@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.ViewGroup;
 
 import com.github.gfranks.workoutcompanion.R;
-import com.github.gfranks.workoutcompanion.data.model.WCDiscoverResult;
+import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -19,7 +19,7 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.google.maps.android.ui.SquareTextView;
 
-public class DiscoverMapRenderer extends DefaultClusterRenderer<WCDiscoverResult> {
+public class DiscoverMapRenderer extends DefaultClusterRenderer<WCGym> {
 
     private final IconGenerator mIconGenerator;
     private final IconGenerator mClusterIconGenerator;
@@ -30,7 +30,7 @@ public class DiscoverMapRenderer extends DefaultClusterRenderer<WCDiscoverResult
     private int mClusterIconColor;
     private int mMarkerIconColor;
 
-    public DiscoverMapRenderer(Context context, GoogleMap map, ClusterManager<WCDiscoverResult> clusterManager) {
+    public DiscoverMapRenderer(Context context, GoogleMap map, ClusterManager<WCGym> clusterManager) {
         super(context, map, clusterManager);
 
         mDensity = context.getResources().getDisplayMetrics().density;
@@ -49,13 +49,13 @@ public class DiscoverMapRenderer extends DefaultClusterRenderer<WCDiscoverResult
     }
 
     @Override
-    protected void onBeforeClusterRendered(Cluster<WCDiscoverResult> cluster, MarkerOptions markerOptions) {
+    protected void onBeforeClusterRendered(Cluster<WCGym> cluster, MarkerOptions markerOptions) {
         mClusterDrawable.getPaint().setColor(mClusterIconColor);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()))));
     }
 
     @Override
-    protected void onBeforeClusterItemRendered(WCDiscoverResult item, MarkerOptions markerOptions) {
+    protected void onBeforeClusterItemRendered(WCGym item, MarkerOptions markerOptions) {
         mMarkerDrawable.getPaint().setColor(mMarkerIconColor);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon()));
         markerOptions.title(item.getName());

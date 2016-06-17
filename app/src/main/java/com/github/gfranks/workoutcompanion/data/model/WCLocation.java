@@ -8,24 +8,24 @@ import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
 
-public class WCLocationResult implements Parcelable, Type {
+public class WCLocation implements Parcelable, Type {
 
-    public static final Parcelable.Creator<WCLocationResult> CREATOR = new Parcelable.Creator<WCLocationResult>() {
-        public WCLocationResult createFromParcel(Parcel in) {
-            return new WCLocationResult(in);
+    public static final Parcelable.Creator<WCLocation> CREATOR = new Parcelable.Creator<WCLocation>() {
+        public WCLocation createFromParcel(Parcel in) {
+            return new WCLocation(in);
         }
 
-        public WCLocationResult[] newArray(int size) {
-            return new WCLocationResult[size];
+        public WCLocation[] newArray(int size) {
+            return new WCLocation[size];
         }
     };
 
     @SerializedName("formatted_address")
     private String formatted_address;
     @SerializedName("geometry")
-    private WCDiscoverResultGeometry geometry;
+    private WCGymGeometry geometry;
 
-    public WCLocationResult(Parcel in) {
+    public WCLocation(Parcel in) {
         readFromParcel(in);
     }
 
@@ -37,11 +37,11 @@ public class WCLocationResult implements Parcelable, Type {
         this.formatted_address = formatted_address;
     }
 
-    public WCDiscoverResultGeometry getGeometry() {
+    public WCGymGeometry getGeometry() {
         return geometry;
     }
 
-    public void setGeometry(WCDiscoverResultGeometry geometry) {
+    public void setGeometry(WCGymGeometry geometry) {
         this.geometry = geometry;
     }
 
@@ -62,6 +62,6 @@ public class WCLocationResult implements Parcelable, Type {
 
     private void readFromParcel(Parcel in) {
         formatted_address = (String) in.readValue(String.class.getClassLoader());
-        geometry = (WCDiscoverResultGeometry) in.readValue(WCDiscoverResultGeometry.class.getClassLoader());
+        geometry = (WCGymGeometry) in.readValue(WCGymGeometry.class.getClassLoader());
     }
 }

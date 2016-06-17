@@ -8,7 +8,9 @@ import com.github.gfranks.workoutcompanion.fragment.DevSettingsFragment;
 import com.github.gfranks.workoutcompanion.fragment.DiscoverFragment;
 import com.github.gfranks.workoutcompanion.fragment.DiscoverMapFragment;
 import com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment;
+import com.github.gfranks.workoutcompanion.fragment.FavoriteGymsFragment;
 import com.github.gfranks.workoutcompanion.fragment.ForgotPasswordFragment;
+import com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment;
 import com.github.gfranks.workoutcompanion.fragment.LoginFragment;
 import com.github.gfranks.workoutcompanion.fragment.MyCompanionsFragment;
 import com.github.gfranks.workoutcompanion.fragment.SettingsFragment;
@@ -31,9 +33,11 @@ import dagger.Provides;
                 ForgotPasswordFragment.class,
                 DiscoverFragment.class,
                 DiscoverMapFragment.class,
+                FavoriteGymsFragment.class,
                 MyCompanionsFragment.class,
                 WeightSelectFragment.class,
                 ExerciseTypeFragment.class,
+                GymPhotosFragment.class,
                 SettingsFragment.class,
                 DevSettingsFragment.class
         },

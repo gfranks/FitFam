@@ -48,6 +48,10 @@
             android:label="@string/user_profile"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".activity.GymDetailsActivity"
+            android:label="@string/gym_details" />
+
         <receiver android:name=".notification.WCNotificationPublisher" />
 
         <receiver

@@ -2,12 +2,15 @@ package com.github.gfranks.workoutcompanion.module;
 
 import android.app.Application;
 
+import com.github.gfranks.workoutcompanion.activity.GymDetailsActivity;
 import com.github.gfranks.workoutcompanion.activity.LoginActivity;
 import com.github.gfranks.workoutcompanion.activity.UserProfileActivity;
 import com.github.gfranks.workoutcompanion.activity.WorkoutCompanionActivity;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
+import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
 import com.github.gfranks.workoutcompanion.adapter.holder.UserViewHolder;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
+import com.github.gfranks.workoutcompanion.dialog.SelectGymDialog;
 import com.github.gfranks.workoutcompanion.module.ui.UiModule;
 import com.github.gfranks.workoutcompanion.notification.WCNotificationFactory;
 
@@ -30,8 +33,11 @@ import dagger.Provides;
                 LoginActivity.class,
                 WorkoutCompanionActivity.class,
                 UserProfileActivity.class,
+                GymDetailsActivity.class,
+                GymViewHolder.class,
                 UserViewHolder.class,
-                WCNotificationFactory.class
+                WCNotificationFactory.class,
+                SelectGymDialog.class
         },
         library = true,
         complete = false

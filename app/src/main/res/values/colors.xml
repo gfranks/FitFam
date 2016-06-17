@@ -23,8 +23,8 @@
     <color name="theme_primary_dark">#1976D2</color>
     <color name="theme_tab_bar_background">@color/gray_light</color>
     <color name="theme_tab_bar_background_dark">@color/gray</color>
-    <color name="theme_tab_bar_icon_color">@color/gray_super_light</color>
-    <color name="theme_tab_bar_icon_color_selected">@color/white</color>
+    <color name="theme_tab_bar_icon_color">@color/theme_icon_color_light</color>
+    <color name="theme_tab_bar_icon_color_selected">@color/theme_icon_color</color>
     <color name="theme_task_overdue">@color/red</color>
     <color name="theme_task_upcoming">@color/orange</color>
 

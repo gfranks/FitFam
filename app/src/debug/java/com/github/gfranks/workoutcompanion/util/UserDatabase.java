@@ -23,7 +23,8 @@ public class UserDatabase {
             UserSQLiteHelper.COLUMN_PHONE_NUMBER, UserSQLiteHelper.COLUMN_BIRTHDAY,
             UserSQLiteHelper.COLUMN_EMAIL, UserSQLiteHelper.COLUMN_PASSWORD,
             UserSQLiteHelper.COLUMN_SEX, UserSQLiteHelper.COLUMN_WEIGHT,
-            UserSQLiteHelper.COLUMN_EXERCISES, UserSQLiteHelper.COLUMN_CAN_SEE_INFO
+            UserSQLiteHelper.COLUMN_EXERCISES, UserSQLiteHelper.COLUMN_CAN_SEE_INFO,
+            UserSQLiteHelper.COLUMN_GYM_ID, UserSQLiteHelper.COLUMN_GYM
     };
 
     private UserSQLiteHelper mDbHelper;
@@ -57,6 +58,8 @@ public class UserDatabase {
         values.put(UserSQLiteHelper.COLUMN_WEIGHT, user.getWeight());
         values.put(UserSQLiteHelper.COLUMN_EXERCISES, TextUtils.join(",", user.getExercises()));
         values.put(UserSQLiteHelper.COLUMN_CAN_SEE_INFO, user.isCanSeeContactInfo() ? 1 : 0);
+        values.put(UserSQLiteHelper.COLUMN_GYM_ID, user.getGymId());
+        values.put(UserSQLiteHelper.COLUMN_GYM, user.getGym());
         mDatabase.insert(UserSQLiteHelper.TABLE_USERS, null, values);
     }
 
@@ -74,6 +77,8 @@ public class UserDatabase {
         values.put(UserSQLiteHelper.COLUMN_WEIGHT, user.getWeight());
         values.put(UserSQLiteHelper.COLUMN_EXERCISES, TextUtils.join(",", user.getExercises()));
         values.put(UserSQLiteHelper.COLUMN_CAN_SEE_INFO, user.isCanSeeContactInfo() ? 1 : 0);
+        values.put(UserSQLiteHelper.COLUMN_GYM_ID, user.getGymId());
+        values.put(UserSQLiteHelper.COLUMN_GYM, user.getGym());
         mDatabase.update(UserSQLiteHelper.TABLE_USERS, values, UserSQLiteHelper.COLUMN_ID + "=?", new String[]{user.getId()});
     }
 
@@ -98,13 +103,11 @@ public class UserDatabase {
     }
 
     public void deleteUser(WCUser user) {
-        System.out.println("Comment deleted with id: " + user.getId());
-        mDatabase.delete(UserSQLiteHelper.TABLE_USERS, UserSQLiteHelper.COLUMN_ID
-                + " = " + user.getId(), null);
+        mDatabase.delete(UserSQLiteHelper.TABLE_USERS, UserSQLiteHelper.COLUMN_ID + "=?", new String[]{user.getId()});
     }
 
     public List<WCUser> getAllUsers() {
-        List<WCUser> users = new ArrayList<WCUser>();
+        List<WCUser> users = new ArrayList<>();
 
         Cursor cursor = mDatabase.query(UserSQLiteHelper.TABLE_USERS,
                 ALL_COLUMNS, null, null, null, null, null);
@@ -133,6 +136,8 @@ public class UserDatabase {
         builder.setWeight(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_WEIGHT)));
         builder.setExercises(new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_EXERCISES)).split(","))));
         builder.setCanSeeContactInfo(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_CAN_SEE_INFO)) == 1);
+        builder.setGymId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_GYM_ID)));
+        builder.setGym(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_GYM)));
         WCUser user = builder.build();
         user.setId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_ID)));
         for (String exercise : new ArrayList<>(user.getExercises())) {
@@ -143,21 +148,23 @@ public class UserDatabase {
         return user;
     }
 
-    public class UserSQLiteHelper extends SQLiteOpenHelper {
+    private class UserSQLiteHelper extends SQLiteOpenHelper {
 
-        public static final String TABLE_USERS = "users";
-        public static final String COLUMN_ID = "id";
-        public static final String COLUMN_IMAGE = "image";
-        public static final String COLUMN_FIRST_NAME = "first_name";
-        public static final String COLUMN_LAST_NAME = "last_name";
-        public static final String COLUMN_PHONE_NUMBER = "phone_number";
-        public static final String COLUMN_BIRTHDAY = "birthday";
-        public static final String COLUMN_EMAIL = "email";
-        public static final String COLUMN_PASSWORD = "password";
-        public static final String COLUMN_SEX = "sex";
-        public static final String COLUMN_WEIGHT = "weight";
-        public static final String COLUMN_EXERCISES = "exercises";
-        public static final String COLUMN_CAN_SEE_INFO = "can_see_info";
+        static final String TABLE_USERS = "users";
+        static final String COLUMN_ID = "id";
+        static final String COLUMN_IMAGE = "image";
+        static final String COLUMN_FIRST_NAME = "first_name";
+        static final String COLUMN_LAST_NAME = "last_name";
+        static final String COLUMN_PHONE_NUMBER = "phone_number";
+        static final String COLUMN_BIRTHDAY = "birthday";
+        static final String COLUMN_EMAIL = "email";
+        static final String COLUMN_PASSWORD = "password";
+        static final String COLUMN_SEX = "sex";
+        static final String COLUMN_WEIGHT = "weight";
+        static final String COLUMN_EXERCISES = "exercises";
+        static final String COLUMN_CAN_SEE_INFO = "can_see_info";
+        static final String COLUMN_GYM_ID = "gym_id";
+        static final String COLUMN_GYM = "gym";
 
         private static final String DATABASE_NAME = "users.db";
         private static final int DATABASE_VERSION = 1;
@@ -176,9 +183,11 @@ public class UserDatabase {
                 + COLUMN_SEX + " text, "
                 + COLUMN_WEIGHT + " int, "
                 + COLUMN_EXERCISES + " text, "
-                + COLUMN_CAN_SEE_INFO + " int);";
+                + COLUMN_CAN_SEE_INFO + " int, "
+                + COLUMN_GYM_ID + " text, "
+                + COLUMN_GYM + " text);";
 
-        public UserSQLiteHelper(Context context) {
+        UserSQLiteHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 

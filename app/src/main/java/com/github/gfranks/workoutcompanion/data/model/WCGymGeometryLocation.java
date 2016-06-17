@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
 
-public class WCDiscoverResultGeometryLocation implements Parcelable, Type {
+public class WCGymGeometryLocation implements Parcelable, Type {
 
-    public static final Parcelable.Creator<WCDiscoverResultGeometryLocation> CREATOR = new Parcelable.Creator<WCDiscoverResultGeometryLocation>() {
-        public WCDiscoverResultGeometryLocation createFromParcel(Parcel in) {
-            return new WCDiscoverResultGeometryLocation(in);
+    public static final Parcelable.Creator<WCGymGeometryLocation> CREATOR = new Parcelable.Creator<WCGymGeometryLocation>() {
+        public WCGymGeometryLocation createFromParcel(Parcel in) {
+            return new WCGymGeometryLocation(in);
         }
 
-        public WCDiscoverResultGeometryLocation[] newArray(int size) {
-            return new WCDiscoverResultGeometryLocation[size];
+        public WCGymGeometryLocation[] newArray(int size) {
+            return new WCGymGeometryLocation[size];
         }
     };
 
@@ -25,10 +25,10 @@ public class WCDiscoverResultGeometryLocation implements Parcelable, Type {
     @SerializedName("lng")
     private double lng;
 
-    public WCDiscoverResultGeometryLocation() {
+    public WCGymGeometryLocation() {
     }
 
-    public WCDiscoverResultGeometryLocation(Parcel in) {
+    public WCGymGeometryLocation(Parcel in) {
         readFromParcel(in);
     }
 

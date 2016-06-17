@@ -80,8 +80,8 @@ public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemT
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        boolean layoutAnimation = true;
-        boolean useDividers = true;
+        boolean layoutAnimation = false;
+        boolean useDividers = false;
         int orientation = VERTICAL;
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.WCRecyclerView, defStyle, 0);
@@ -90,8 +90,8 @@ public class WCRecyclerView extends RecyclerView implements RecyclerView.OnItemT
             orientation = a.getInt(R.styleable.WCRecyclerView_wcrv_orientation, orientation);
             a.recycle();
         }
-        if (useDividers && orientation != HORIZONTAL) {
-            addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        if (useDividers) {
+            addItemDecoration(new DividerItemDecoration(getContext(), orientation));
         }
         addOnItemTouchListener(this);
         mDataSetObserver = new RecyclerViewDataSetObserver();

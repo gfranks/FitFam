@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/user_list_item_height"
+    android:layout_height="@dimen/gym_list_item_height"
     android:layout_marginBottom="@dimen/user_list_cell_top_bottom_margin"
     android:layout_marginEnd="@dimen/user_list_cell_left_right_margin"
     android:layout_marginLeft="@dimen/user_list_cell_left_right_margin"
@@ -16,16 +16,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:background="@drawable/bg_list_selector">
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/user_image"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/default_image_size_xxxlarge"
-            android:transitionName="@string/transition_user_image"
+            android:id="@+id/gym_image"
+            android:layout_width="@dimen/gym_list_item_height"
+            android:layout_height="match_parent"
+            android:transitionName="@string/transition_gym_image"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_avatar" />
+            app:srcCompat="@drawable/ic_gym" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,23 +39,24 @@
             android:paddingTop="@dimen/list_cell_vertical_padding">
 
             <TextView
-                android:id="@+id/user_name"
+                android:id="@+id/gym_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:transitionName="@string/transition_user_name" />
+                android:transitionName="@string/transition_gym_name" />
 
             <TextView
-                android:id="@+id/user_exercises"
+                android:id="@+id/gym_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="2dp"
                 android:paddingTop="2dp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:transitionName="@string/transition_gym_address"/>
 
         </LinearLayout>
 
