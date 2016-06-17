@@ -4,21 +4,20 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
+import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
 import com.github.gfranks.workoutcompanion.adapter.UserListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.UserViewHolder;
 import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
@@ -30,11 +29,16 @@ import com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
-import com.github.gfranks.workoutcompanion.util.CropCircleTransformation;
 import com.github.gfranks.workoutcompanion.util.EndSheetBehavior;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.GymDetailsView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.Picasso;
 import com.urbanairship.UAirship;
 
@@ -44,12 +48,12 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>, WCRecyclerView.OnItemClickListener {
+public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>, WCRecyclerView.OnItemClickListener,
+        OnMapReadyCallback {
 
     private static final String FAVORITE = "favorite";
 
@@ -62,10 +66,20 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @Inject
     Picasso mPicasso;
 
-    @InjectView(R.id.image)
-    ImageView mImage;
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
+    @InjectView(R.id.gym_name)
+    GymDetailsView mName;
+    @InjectView(R.id.gym_address)
+    GymDetailsView mAddress;
+    @InjectView(R.id.mapview_container)
+    View mMapViewContainer;
+    @InjectView(R.id.mapview)
+    MapView mMapView;
+    @InjectView(R.id.gym_website)
+    GymDetailsView mWebsite;
+    @InjectView(R.id.gym_hours)
+    GymDetailsView mHours;
     @InjectView(R.id.user_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
@@ -74,6 +88,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     private WCGym mGym;
     private UserListAdapter mAdapter;
     private GymDatabase mGymDatabase;
+    private GoogleMap mMap;
+    private ClusterManager<WCGym> mClusterManager;
 
     private boolean mIsFavorite;
 
@@ -95,18 +111,25 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mIsFavorite = savedInstanceState.getBoolean(FAVORITE, false);
         }
 
+        mMapView.onCreate(null);
         initGym();
+        mDiscoverService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mDiscoverService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
+        mMapView.onResume();
+
+        if (getMap() == null) {
+            mMapView.getMapAsync(this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mMapView.onPause();
         mGymDatabase.close();
     }
 
@@ -204,18 +227,55 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         }
     }
 
-    private void initGym() {
-        Drawable defaultImage = ContextCompat.getDrawable(this, R.drawable.ic_gym);
-        if (mGym.getIcon() != null && !mGym.getIcon().isEmpty()) {
-            mPicasso.load(mGym.getIcon())
-                    .placeholder(defaultImage)
-                    .error(defaultImage)
-                    .transform(new CropCircleTransformation(ContextCompat.getColor(this, R.color.theme_background)))
-                    .into(mImage);
-        } else {
-            mImage.setImageDrawable(defaultImage);
+    /**
+     * ******************
+     * OnMapReadyCallback
+     * ******************
+     */
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+        if (mClusterManager == null) {
+            mClusterManager = new ClusterManager<>(this, getMap());
+            mClusterManager.setRenderer(new DiscoverMapRenderer(this, getMap(), mClusterManager));
         }
+        mClusterManager.clearItems();
+        mClusterManager.addItem(mGym);
+        getMap().getUiSettings().setAllGesturesEnabled(false);
+        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(mGym.getPosition(), 15));
+    }
+
+    private GoogleMap getMap() {
+        return mMap;
+    }
+
+    private void initGym() {
         setTitle(mGym.getName());
+        mName.setDescription(mGym.getName());
+        if (mGym.getFormatted_address() != null && mGym.getFormatted_address().length() > 0) {
+            mAddress.setDescription(mGym.getFormatted_address());
+        } else {
+            mAddress.setDescription(mGym.getVicinity());
+        }
+
+        if (mGym.getWebsite() != null && mGym.getWebsite().length() > 0) {
+            mWebsite.setVisibility(View.VISIBLE);
+            mWebsite.setDescription(mGym.getWebsite());
+            mWebsite.setOnDescriptionClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mGym.getWebsite()));
+                    startActivity(intent);
+                }
+            });
+        }
+
+        if (mGym.getOpening_hours() != null && mGym.getOpening_hours().getWeekday_text() != null
+                && !mGym.getOpening_hours().getWeekday_text().isEmpty()) {
+            mHours.setVisibility(View.VISIBLE);
+            mHours.setDescription(mGym.getOpening_hours().toString());
+        }
 
         ((GymPhotosFragment) getSupportFragmentManager().findFragmentById(R.id.images_fragment)).setGym(mGym);
 

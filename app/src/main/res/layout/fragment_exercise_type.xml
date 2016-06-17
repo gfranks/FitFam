@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_cell_vertical_padding"
         android:text="@string/request_exercise"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <com.github.gfranks.workoutcompanion.view.WCRecyclerView
         android:id="@+id/exercise_grid"

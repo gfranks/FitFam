@@ -1,7 +1,6 @@
 package com.github.gfranks.workoutcompanion.data.api;
 
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
-import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 
 import retrofit2.Call;
@@ -16,7 +15,7 @@ public interface DiscoverService {
 
     @GET("/maps/api/place/details/json")
     Call<WCGyms> getGymDetails(@Query("placeid") String placeId,
-                              @Query("key") String key);
+                               @Query("key") String key);
 
     @GET("/maps/api/geocode/json")
     Call<WCLocations> getLocations(@Query("address") String address,

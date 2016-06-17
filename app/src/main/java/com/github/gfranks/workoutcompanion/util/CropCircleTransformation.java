@@ -3,7 +3,6 @@ package com.github.gfranks.workoutcompanion.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
@@ -11,19 +10,8 @@ import com.squareup.picasso.Transformation;
 
 public class CropCircleTransformation implements Transformation {
 
-    private boolean mBackground;
-    private int mBackgroundColor = Color.WHITE;
-
-    public CropCircleTransformation() {
-        mBackground = false;
-    }
-
-    public CropCircleTransformation(int backgroundColor) {
-        mBackground = true;
-        mBackgroundColor = backgroundColor;
-    }
-
-    @Override public Bitmap transform(Bitmap source) {
+    @Override
+    public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());
 
         int width = (source.getWidth() - size) / 2;
@@ -43,14 +31,6 @@ public class CropCircleTransformation implements Transformation {
         paint.setAntiAlias(true);
 
         float r = size / 2f;
-
-        if (mBackground) {
-            Paint background = new Paint();
-            background.setColor(mBackgroundColor);
-            background.setAntiAlias(true);
-            canvas.drawCircle(r, r, r, background);
-        }
-
         canvas.drawCircle(r, r, r, paint);
 
         source.recycle();
@@ -58,7 +38,8 @@ public class CropCircleTransformation implements Transformation {
         return bitmap;
     }
 
-    @Override public String key() {
+    @Override
+    public String key() {
         return "CropCircleTransformation()";
     }
 }

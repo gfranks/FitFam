@@ -13,6 +13,7 @@
     <color name="theme_color_control_highlight">@color/gray_super_lighter</color>
     <color name="theme_default_text">#212121</color>
     <color name="theme_default_text_light">#727272</color>
+    <color name="theme_default_text_tertiary">#44000000</color>
     <color name="theme_default_text_inverse">@color/white</color>
     <color name="theme_default_text_light_inverse">@color/gray_super_lighter</color>
     <color name="theme_divider">#B6B6B6</color>

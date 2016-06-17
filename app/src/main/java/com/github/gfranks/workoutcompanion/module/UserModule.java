@@ -1,6 +1,5 @@
 package com.github.gfranks.workoutcompanion.module;
 
-import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;

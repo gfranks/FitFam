@@ -13,8 +13,8 @@ import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
 import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
-import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
+import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
@@ -54,16 +54,16 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     private GymListAdapter mListViewAdapter;
     private OnGymSelectedListener mOnGymSelectedListener;
 
-    public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener) {
-        return new SelectGymDialog(context, onGymSelectedListener);
-    }
-
     private SelectGymDialog(Context context, OnGymSelectedListener onGymSelectedListener) {
         super(getBuilder(context));
         WorkoutCompanionApplication.get(context).inject(this);
         mOnGymSelectedListener = onGymSelectedListener;
         mSearchViewAdapter = new SearchSuggestionsAdapter(getContext());
         setupViews();
+    }
+
+    public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener) {
+        return new SelectGymDialog(context, onGymSelectedListener);
     }
 
     private static MaterialDialog.Builder getBuilder(Context context) {

@@ -201,12 +201,12 @@ public class SeekArc extends View {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if(!(state instanceof SavedState)) {
+        if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
         }
 
-        SavedState ss = (SavedState)state;
+        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         setProgress(ss.mProgress);
     }
@@ -565,6 +565,7 @@ public class SeekArc extends View {
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
+
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }

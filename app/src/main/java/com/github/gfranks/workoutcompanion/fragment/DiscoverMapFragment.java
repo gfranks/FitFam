@@ -27,8 +27,8 @@ import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
 import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
-import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
+import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.DiscoverManager;
@@ -103,7 +103,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapView.onCreate(savedInstanceState);
+        mMapView.onCreate(null);
         mEmptyView.setSubtitle(R.string.empty_gym);
         mListView.setEmptyView(mEmptyView);
         mListView.setOnItemClickListener(this);
@@ -126,6 +126,24 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public void onDestroyView() {
         super.onDestroyView();
         mDiscoverManager.disconnect();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
     }
 
     @Override
@@ -157,10 +175,12 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        mClusterManager = new ClusterManager<>(getContext(), getMap());
-        mClusterManager.setRenderer(new DiscoverMapRenderer(getContext(), getMap(), mClusterManager));
-        mClusterManager.setOnClusterClickListener(this);
-        mClusterManager.setOnClusterItemClickListener(this);
+        if (mClusterManager == null) {
+            mClusterManager = new ClusterManager<>(getContext(), getMap());
+            mClusterManager.setRenderer(new DiscoverMapRenderer(getContext(), getMap(), mClusterManager));
+            mClusterManager.setOnClusterClickListener(this);
+            mClusterManager.setOnClusterItemClickListener(this);
+        }
         getMap().setOnCameraChangeListener(mClusterManager);
         getMap().setOnMarkerClickListener(mClusterManager);
         getMap().setOnMapClickListener(this);

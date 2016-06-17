@@ -54,6 +54,33 @@ public class WCGymHours implements Parcelable, Type {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(open_now ? "Status: Open" : "Status: Closed");
+        sb.append("\n");
+        for (String text : weekday_text) {
+            sb.append("\n");
+            sb.append(text.substring(0, text.indexOf(":") + 1));
+            if (text.contains("Mon")) {
+                sb.append("\t\t\t\t\t");
+            } else if (text.contains("Tue")) {
+                sb.append("\t\t\t\t\t");
+            } else if (text.contains("Wed")) {
+                sb.append("\t\t");
+            } else if (text.contains("Thur")) {
+                sb.append("\t\t\t\t");
+            } else if (text.contains("Fri")) {
+                sb.append("\t\t\t\t\t\t\t");
+            } else if (text.contains("Sat")) {
+                sb.append("\t\t\t\t\t");
+            } else if (text.contains("Sun")) {
+                sb.append("\t\t\t\t\t\t");
+            }
+            sb.append(text.substring(text.indexOf(":") + 1, text.length()));
+        }
+        return sb.toString();
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

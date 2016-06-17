@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:iconifiedByDefault="false"
-        app:queryHint="@string/search_hint"/>
+        app:queryHint="@string/search_hint" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/list_cell_vertical_padding"
-            app:wcrv_dividers="true"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:wcrv_dividers="true" />
 
         <include layout="@layout/layout_list_empty" />
 

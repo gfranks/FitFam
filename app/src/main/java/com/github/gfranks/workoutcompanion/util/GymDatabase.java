@@ -66,9 +66,9 @@ public class GymDatabase {
 
     public boolean isFavorite(String userId, String gymId) {
         Cursor cursor = mDatabase.query(GymSQLiteHelper.TABLE_GYMS,
-        ALL_COLUMNS, GymSQLiteHelper.COLUMN_ID + "=? AND " + GymSQLiteHelper.COLUMN_USER_ID + "=?",
+                ALL_COLUMNS, GymSQLiteHelper.COLUMN_ID + "=? AND " + GymSQLiteHelper.COLUMN_USER_ID + "=?",
                 new String[]{gymId, userId}, null, null, null);
-        if(cursor.getCount() <= 0){
+        if (cursor.getCount() <= 0) {
             cursor.close();
             return false;
         }

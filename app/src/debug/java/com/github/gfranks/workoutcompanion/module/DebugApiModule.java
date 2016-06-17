@@ -7,7 +7,6 @@ import com.github.gfranks.workoutcompanion.data.IsMockMode;
 import com.github.gfranks.workoutcompanion.data.api.MockWorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.util.UserDatabase;
 
 import javax.inject.Singleton;
 

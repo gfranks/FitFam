@@ -13,7 +13,7 @@ public class AnimationUtils {
 
         @Override
         public void onAnimationStart(Animator animation) {
-            
+
         }
 
         @Override

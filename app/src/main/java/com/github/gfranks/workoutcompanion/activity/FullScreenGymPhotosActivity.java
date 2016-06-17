@@ -1,21 +1,18 @@
-package com.github.gfranks.workoutcompanion.fragment;
+package com.github.gfranks.workoutcompanion.activity;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
-import com.github.gfranks.workoutcompanion.activity.FullScreenGymPhotosActivity;
+import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
-import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.util.GymPhotoHelper;
 import com.squareup.picasso.Picasso;
 
@@ -25,49 +22,52 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public class GymPhotosFragment extends BaseFragment {
+public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
-    public static final String TAG = "gym_photos_fragment";
+    public static final String EXTRA_INDEX = "index";
 
     @Inject
     Picasso mPicasso;
 
     @InjectView(R.id.pager)
     ViewPager mViewPager;
+    @InjectView(R.id.pager_indicator)
+    TextView mViewPagerIndicator;
 
     private WCGym mGym;
-    private PhotoPagerAdapter mAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mGym = getArguments().getParcelable(WCGym.EXTRA);
-        }
-    }
+        setContentView(R.layout.activity_fullscreen_gym_photos);
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_gym_photos, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        mGym = getIntent().getParcelableExtra(WCGym.EXTRA);
         mViewPager.setOffscreenPageLimit(3);
-        setGym(mGym);
+        mViewPager.addOnPageChangeListener(this);
+        mViewPager.setAdapter(new PhotoPagerAdapter(GymPhotoHelper.getFullScreenGymPhotos(this, mGym.getPhotos())));
+
+        mViewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_INDEX, 0));
+        mViewPagerIndicator.setAlpha(0f);
+        onPageSelected(mViewPager.getCurrentItem());
     }
 
-    public void setGym(WCGym gym) {
-        mGym = gym;
+    /**
+     * ******************************
+     * ViewPager.OnPageChangeListener
+     * ******************************
+     */
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-        if (isDetached() || getActivity() == null || mGym == null || mGym.getPhotos() == null) {
-            return;
-        }
+    @Override
+    public void onPageSelected(int position) {
+        mViewPagerIndicator.setText(++position + " of " + mGym.getPhotos().size());
+        setTitle(mViewPagerIndicator.getText().toString());
+    }
 
-        mAdapter = new PhotoPagerAdapter(GymPhotoHelper.getScaledGymPhotos(getContext(), mGym.getPhotos()));
-        mViewPager.setAdapter(mAdapter);
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 
     private class PhotoPagerAdapter extends PagerAdapter {
@@ -99,7 +99,7 @@ public class GymPhotosFragment extends BaseFragment {
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable defaultImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_gym);
+            Drawable defaultImage = ContextCompat.getDrawable(FullScreenGymPhotosActivity.this, R.drawable.ic_gym);
             mPicasso.load(getItem(position))
                     .placeholder(defaultImage)
                     .error(defaultImage)
@@ -110,10 +110,16 @@ public class GymPhotosFragment extends BaseFragment {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), FullScreenGymPhotosActivity.class);
-                    intent.putExtra(WCGym.EXTRA, mGym);
-                    intent.putExtra(FullScreenGymPhotosActivity.EXTRA_INDEX, mViewPager.getCurrentItem());
-                    startActivity(intent);
+                    final int vis = mViewPager.getSystemUiVisibility();
+                    if ((vis & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0) {
+                        mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                        mAppBarLayout.animate().translationY(0).start();
+                        mViewPagerIndicator.animate().alpha(0f).start();
+                    } else {
+                        mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                        mAppBarLayout.animate().translationY((int) (-mAppBarLayout.getHeight()*1.5)).start();
+                        mViewPagerIndicator.animate().alpha(1f).start();
+                    }
                 }
             });
 

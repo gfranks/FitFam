@@ -15,6 +15,11 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="GymDetailsView">
+        <attr name="gdv_title" format="string|reference" />
+        <attr name="gdv_description" format="string|reference" />
+    </declare-styleable>
+
     <declare-styleable name="SeekArc">
         <attr name="sa_thumb" format="reference" />
         <attr name="sa_thumbOffset" format="dimension" />

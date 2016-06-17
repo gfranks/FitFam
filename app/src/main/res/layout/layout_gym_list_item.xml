@@ -9,22 +9,22 @@
     android:layout_marginRight="@dimen/user_list_cell_left_right_margin"
     android:layout_marginStart="@dimen/user_list_cell_left_right_margin"
     android:layout_marginTop="@dimen/user_list_cell_top_bottom_margin"
+    app:cardBackgroundColor="@color/theme_background"
     app:cardCornerRadius="@dimen/card_view_rounded_corner_radius"
-    app:cardPreventCornerOverlap="true"
-    app:cardBackgroundColor="@color/theme_background">
+    app:cardPreventCornerOverlap="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_list_selector">
+        android:background="@drawable/bg_list_selector"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/gym_image"
             android:layout_width="@dimen/gym_list_item_height"
             android:layout_height="match_parent"
-            android:transitionName="@string/transition_gym_image"
             android:scaleType="centerCrop"
+            android:transitionName="@string/transition_gym_image"
             app:srcCompat="@drawable/ic_gym" />
 
         <LinearLayout
@@ -51,12 +51,12 @@
                 android:id="@+id/gym_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:paddingBottom="2dp"
                 android:paddingTop="2dp"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:transitionName="@string/transition_gym_address"/>
+                android:transitionName="@string/transition_gym_address" />
 
         </LinearLayout>
 

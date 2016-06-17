@@ -33,10 +33,10 @@
                 android:layout_gravity="bottom"
                 android:layout_margin="@dimen/activity_vertical_margin"
                 android:enabled="false"
-                android:transitionName="@string/transition_user_image"
                 android:scaleType="centerCrop"
+                android:transitionName="@string/transition_user_image"
                 app:layout_collapseMode="parallax"
-                app:srcCompat="@drawable/ic_avatar"/>
+                app:srcCompat="@drawable/ic_avatar" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -173,8 +173,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/birthday"
@@ -193,7 +193,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:tint="@color/theme_icon_color"
-                    app:srcCompat="@drawable/ic_calendar"/>
+                    app:srcCompat="@drawable/ic_calendar" />
 
             </LinearLayout>
 

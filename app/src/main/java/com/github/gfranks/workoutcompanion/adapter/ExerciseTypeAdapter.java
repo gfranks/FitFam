@@ -24,13 +24,13 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
         mEnabled = enabled;
     }
 
+    public List<String> getExercises() {
+        return mExercises;
+    }
+
     public void setExercises(List<String> exercises) {
         mExercises = exercises;
         notifyDataSetChanged();
-    }
-
-    public List<String> getExercises() {
-        return mExercises;
     }
 
     public void setEnabled(boolean enabled) {

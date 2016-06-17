@@ -36,8 +36,14 @@
 
     <!-- Gym Details Strings -->
     <string name="gym_details">Gym Details</string>
+    <string name="gym_photos">Gym Photos</string>
     <string name="gym_favorited">Gym has been added to favorites</string>
     <string name="gym_unfavorited">Gym has been unfavorited</string>
+    <string name="gym_name">Name</string>
+    <string name="gym_address">Address</string>
+    <string name="gym_map">Map</string>
+    <string name="gym_website">Website</string>
+    <string name="gym_hours">Hours of Operation</string>
 
     <!-- Settings Strings -->
     <string name="notification_quiet_time">Quiet Time:</string>
@@ -105,7 +111,7 @@
     <string name="empty_favorite_gyms_subtitle">Tap the heart icon to save a gym</string>
     <string name="empty_select_home_gym">Search by location to select your home gym</string>
     <string name="empty_gym">No gyms to display</string>
-    <string name="empty_users">No users found at this gym</string>
+    <string name="empty_users">No companions found at this gym</string>
 
     <!-- Error Strings -->
     <string name="error_network">Network error, please try again</string>

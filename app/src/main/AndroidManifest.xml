@@ -41,7 +41,7 @@
         <activity
             android:name=".activity.WorkoutCompanionActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.UserProfileActivity"
@@ -51,6 +51,10 @@
         <activity
             android:name=".activity.GymDetailsActivity"
             android:label="@string/gym_details" />
+
+        <activity
+            android:name=".activity.FullScreenGymPhotosActivity"
+            android:label="@string/gym_photos" />
 
         <receiver android:name=".notification.WCNotificationPublisher" />
 

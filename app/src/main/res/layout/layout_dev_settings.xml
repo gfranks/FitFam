@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dev_settings_container"
+    class="com.github.gfranks.workoutcompanion.fragment.DevSettingsFragment"
     android:layout_width="@dimen/activity_drawer_width"
     android:layout_height="match_parent"
     android:visibility="gone"
-    app:layout_behavior="com.github.gfranks.workoutcompanion.util.EndSheetBehavior"
     app:esb_peekWidth="25dp"
-    class="com.github.gfranks.workoutcompanion.fragment.DevSettingsFragment"
+    app:layout_behavior="com.github.gfranks.workoutcompanion.util.EndSheetBehavior"
     tools:layout="@layout/fragment_dev_settings" />

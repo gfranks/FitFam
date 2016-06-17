@@ -59,12 +59,12 @@ public class EmptyView extends FrameLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if(!(state instanceof SavedState)) {
+        if (!(state instanceof SavedState)) {
             super.onRestoreInstanceState(state);
             return;
         }
 
-        SavedState ss = (SavedState)state;
+        SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
         mEmptyTitle.setText(ss.mEmptyTitle);
@@ -195,6 +195,7 @@ public class EmptyView extends FrameLayout {
             public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
+
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
