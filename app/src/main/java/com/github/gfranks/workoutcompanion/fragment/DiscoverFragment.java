@@ -1,5 +1,6 @@
 package com.github.gfranks.workoutcompanion.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,11 +14,17 @@ import com.github.gfranks.workoutcompanion.adapter.ViewPagerAdapter;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.util.Utils;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 
 public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
 
     public static final String TAG = "discover_fragment";
+    private static final String PAGE = "page";
+
+    @Inject
+    SharedPreferences mPrefs;
 
     @InjectView(R.id.tabs)
     TabLayout mTabLayout;
@@ -28,6 +35,12 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
 
     public static DiscoverFragment newInstance() {
         return new DiscoverFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -51,7 +64,13 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
         mTabLayout.getTabAt(1).setIcon(Utils.getTabIcon(getActivity(), R.drawable.ic_gym));
         mTabLayout.getTabAt(2).setIcon(Utils.getTabIcon(getActivity(), R.drawable.ic_users));
 
-        onTabSelected(mTabLayout.getTabAt(0));
+        onTabSelected(mTabLayout.getTabAt(mPrefs.getInt(PAGE, 0)));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(PAGE, mViewPager.getCurrentItem());
     }
 
     /**
@@ -73,6 +92,7 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
                 getActivity().setTitle(R.string.discover_my_companions);
                 break;
         }
+        mPrefs.edit().putInt(PAGE, tab.getPosition()).apply();
     }
 
     @Override
