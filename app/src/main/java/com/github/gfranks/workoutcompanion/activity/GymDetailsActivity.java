@@ -1,23 +1,30 @@
 package com.github.gfranks.workoutcompanion.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.transition.Transition;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
@@ -32,17 +39,14 @@ import com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
-import com.github.gfranks.workoutcompanion.util.EndSheetBehavior;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
-import com.github.gfranks.workoutcompanion.view.GymDetailsView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.maps.android.clustering.ClusterManager;
-import com.squareup.picasso.Picasso;
 import com.urbanairship.UAirship;
 
 import java.util.List;
@@ -55,8 +59,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>, WCRecyclerView.OnItemClickListener,
-        OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
+public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>, NestedScrollView.OnScrollChangeListener,
+        WCRecyclerView.OnItemClickListener, OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
+
+    private static final int REQUEST_CODE_PHONE_CALL = 1;
 
     @Inject
     GoogleApiService mGoogleApiService;
@@ -64,23 +70,33 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     WorkoutCompanionService mService;
     @Inject
     AccountManager mAccountManager;
-    @Inject
-    Picasso mPicasso;
 
     @InjectView(R.id.gym_favorite)
     ToggleButton mFavorite;
-    @InjectView(R.id.fab)
-    FloatingActionButton mFab;
+    @InjectView(R.id.gym_set_as_current)
+    View mSetAsCurrent;
+    @InjectView(R.id.scroll_view)
+    NestedScrollView mScrollView;
     @InjectView(R.id.gym_name)
-    GymDetailsView mName;
+    TextView mName;
     @InjectView(R.id.gym_address)
-    GymDetailsView mAddress;
+    TextView mAddress;
+    @InjectView(R.id.gym_action_buttons)
+    View mActionButtons;
+    @InjectView(R.id.gym_share)
+    ImageButton mShare;
+    @InjectView(R.id.gym_call)
+    ImageButton mCall;
+    @InjectView(R.id.gym_favorite_alt)
+    ImageButton mFavoriteAlt;
+    @InjectView(R.id.gym_website)
+    TextView mWebsite;
+    @InjectView(R.id.gym_hours_container)
+    View mHoursContainer;
+    @InjectView(R.id.gym_hours)
+    TextView mHours;
     @InjectView(R.id.mapview)
     MapView mMapView;
-    @InjectView(R.id.gym_website)
-    GymDetailsView mWebsite;
-    @InjectView(R.id.gym_hours)
-    GymDetailsView mHours;
     @InjectView(R.id.user_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
@@ -92,7 +108,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     private GoogleMap mMap;
     private ClusterManager<WCGym> mClusterManager;
 
-    private boolean mTransitioned;
+    private boolean mTransitioned, mShowActionMenuItems;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +125,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
         mGymDatabase = new GymDatabase(this);
 
+        mScrollView.setOnScrollChangeListener(this);
         mMapView.onCreate(null);
         initGym();
         mGoogleApiService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
@@ -132,6 +149,17 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_PHONE_CALL: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    makePhoneCall();
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_gym_details, menu);
         return true;
@@ -139,35 +167,30 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mTransitioned && mGym.getFormatted_phone_number() != null &&
-                mGym.getFormatted_phone_number().length() > 0) {
-            showFab();
-        } else {
-            hideFab();
-        }
-
+        menu.findItem(R.id.action_share).setVisible(mShowActionMenuItems);
+        menu.findItem(R.id.action_call).setVisible(mShowActionMenuItems);
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public void onStateChanged(@NonNull View endSheet, @EndSheetBehavior.State int newState) {
-        if (newState == EndSheetBehavior.STATE_COLLAPSED) {
-            showFab();
-        } else {
-            hideFab();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                onClick(mShare);
+                break;
+            case R.id.action_call:
+                onClick(mCall);
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected boolean popBackStackEntryOnBackPress() {
-        hideFab();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                supportFinishAfterTransition();
-            }
-        }, AnimationUtils.DEFAULT_FAB_ANIM_DURATION);
-        return false;
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        super.onOffsetChanged(appBarLayout, verticalOffset);
+        if (mAppBarCollapsed) {
+            mSetAsCurrent.bringToFront();
+        }
     }
 
     /**
@@ -196,6 +219,22 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     }
 
     /**
+     * ***************************************
+     * NestedScrollView.OnScrollChangeListener
+     * ***************************************
+     */
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        if (scrollY > mActionButtons.getTop() && !mShowActionMenuItems) {
+            mShowActionMenuItems = true;
+            supportInvalidateOptionsMenu();
+        } else if (scrollY < mActionButtons.getTop() && mShowActionMenuItems) {
+            mShowActionMenuItems = false;
+            supportInvalidateOptionsMenu();
+        }
+    }
+
+    /**
      * **********************************
      * WCRecyclerView.OnItemClickListener
      * **********************************
@@ -218,9 +257,55 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * View.OnClickListener
      * ********************
      */
-    @OnClick(R.id.fab)
-    void onCallClick() {
-        // TODO: call gym
+    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt})
+    void onClick(View v) {
+        if (v.getId() == R.id.gym_set_as_current) {
+            WCUser user = mAccountManager.getUser();
+            user.setGym(mGym.getName());
+            user.setGymId(mGym.getPlace_id());
+            mService.updateUser(user.getId(), user).enqueue(new Callback<WCUser>() {
+                @Override
+                public void onResponse(Call<WCUser> call, Response<WCUser> response) {
+                    if (isFinishing()) {
+                        return;
+                    }
+                    mAccountManager.setUser(response.body());
+                    mSetAsCurrent.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Call<WCUser> call, Throwable t) {
+                    if (isFinishing()) {
+                        return;
+                    }
+                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                            .setAlert(t.getMessage())
+                            .create());
+                }
+            });
+        } else if (v.getId() == R.id.gym_share) {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/html");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share, mGym.getName(), mGym.getUrl())));
+            startActivity(Intent.createChooser(sharingIntent,"Share using"));
+        } else if (v.getId() == R.id.gym_call) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.CALL_PHONE)) {
+                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getInfoBuilder()
+                            .setAlert(getString(R.string.gym_call_permission_reason))
+                            .create());
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            REQUEST_CODE_PHONE_CALL);
+                }
+            } else {
+                makePhoneCall();
+            }
+        } else if (v.getId() == R.id.gym_favorite_alt) {
+            mFavorite.toggle();
+        }
     }
 
     /**
@@ -231,11 +316,13 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
+            mFavoriteAlt.setImageResource(R.drawable.ic_heart_on);
             mGymDatabase.saveGym(mAccountManager.getUser().getId(), mGym);
             UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
                     .setAlert(getString(R.string.gym_favorited))
                     .create());
         } else {
+            mFavoriteAlt.setImageResource(R.drawable.ic_heart_off);
             mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mGym.getId());
             UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
                     .setAlert(getString(R.string.gym_unfavorited))
@@ -267,17 +354,23 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     private void initGym() {
         setTitle(mGym.getName());
-        mName.setDescription(mGym.getName());
+
+        // TODO: figure out how to keep this above toolbar when collapsed
+//        if (mAccountManager.getUser().getGymId().equals(mGym.getPlace_id())) {
+            mSetAsCurrent.setVisibility(View.GONE);
+//        }
+
+        mName.setText(mGym.getName());
         if (mGym.getFormatted_address() != null && mGym.getFormatted_address().length() > 0) {
-            mAddress.setDescription(mGym.getFormatted_address());
+            mAddress.setText(mGym.getFormatted_address());
         } else {
-            mAddress.setDescription(mGym.getVicinity());
+            mAddress.setText(mGym.getVicinity());
         }
 
         if (mGym.getWebsite() != null && mGym.getWebsite().length() > 0) {
             mWebsite.setVisibility(View.VISIBLE);
-            mWebsite.setDescription(mGym.getWebsite());
-            mWebsite.setOnDescriptionClickListener(new View.OnClickListener() {
+            mWebsite.setText(mGym.getWebsite());
+            mWebsite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -287,10 +380,16 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             });
         }
 
+        if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
+            mCall.setVisibility(View.VISIBLE);
+        } else {
+            mCall.setVisibility(View.GONE);
+        }
+
         if (mGym.getOpening_hours() != null && mGym.getOpening_hours().getWeekday_text() != null
                 && !mGym.getOpening_hours().getWeekday_text().isEmpty()) {
-            mHours.setVisibility(View.VISIBLE);
-            mHours.setDescription(mGym.getOpening_hours().toString());
+            mHoursContainer.setVisibility(View.VISIBLE);
+            mHours.setText(mGym.getOpening_hours().toString());
         }
 
         ((GymPhotosFragment) getSupportFragmentManager().findFragmentById(R.id.images_fragment)).setGym(mGym);
@@ -319,12 +418,36 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         try {
             mGymDatabase.open();
             mFavorite.setOnCheckedChangeListener(null);
-            mFavorite.setChecked(mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId()));
+            boolean isFavorite = mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId());
+            mFavorite.setChecked(isFavorite);
+            if (isFavorite) {
+                mFavoriteAlt.setImageResource(R.drawable.ic_heart_on);
+            } else {
+                mFavoriteAlt.setImageResource(R.drawable.ic_heart_off);
+            }
             mFavorite.setOnCheckedChangeListener(this);
         } catch (Throwable t) {
             t.printStackTrace();
             // unable to open gym db
         }
+    }
+
+    private void makePhoneCall() {
+        new MaterialDialog.Builder(this)
+                .content(getString(R.string.gym_call, mGym.getName(), mGym.getFormatted_phone_number()))
+                .positiveText(R.string.action_call)
+                .negativeText(R.string.action_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (ContextCompat.checkSelfPermission(GymDetailsActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                            String uri = "tel:" + mGym.getFormatted_phone_number();
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse(uri));
+                            startActivity(intent);
+                        }
+                    }
+                });
     }
 
     private void setupTransitionListener() {
@@ -340,34 +463,5 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mTransitioned = true;
             supportInvalidateOptionsMenu();
         }
-    }
-
-    private void showFab() {
-        if (mFab.getScaleX() == 1 && mFab.getScaleY() == 1) {
-            return;
-        }
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION);
-        set.playTogether(ObjectAnimator.ofFloat(mFab, "scaleX", 0, 1), ObjectAnimator.ofFloat(mFab, "scaleY", 0, 1));
-        set.start();
-        mFab.setVisibility(View.VISIBLE);
-    }
-
-    private void hideFab() {
-        if (mFab.getScaleX() == 0 && mFab.getScaleY() == 0) {
-            // handle case where user rotates to ensure we remove the fab
-            mFab.setVisibility(View.GONE);
-            return;
-        }
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION);
-        set.playTogether(ObjectAnimator.ofFloat(mFab, "scaleX", 1, 0), ObjectAnimator.ofFloat(mFab, "scaleY", 1, 0));
-        set.addListener(new AnimationUtils.DefaultAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mFab.setVisibility(View.GONE);
-            }
-        });
-        set.start();
     }
 }

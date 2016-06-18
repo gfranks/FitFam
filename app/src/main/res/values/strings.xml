@@ -44,6 +44,10 @@
     <string name="gym_map">Map</string>
     <string name="gym_website">Website</string>
     <string name="gym_hours">Hours of Operation</string>
+    <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
+    <string name="gym_call">Call %1$s at %2$s?</string>
+    <string name="gym_share"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
+    <string name="gym_set_as_current">Set as current gym</string>
 
     <!-- Settings Strings -->
     <string name="notification_quiet_time">Quiet Time:</string>
@@ -69,6 +73,7 @@
     <string name="action_save">Save</string>
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
 
     <!-- Prompt Strings -->
     <string name="email">Email</string>

@@ -6,6 +6,7 @@
     <!-- Day theme colors -->
     <color name="theme_background">#FAFAFA</color>
     <color name="theme_background_dark">@color/gray_super_lightest</color>
+    <color name="theme_background_darker">@color/gray_super_light</color>
     <color name="theme_accent">#4CAF50</color>
     <color name="theme_accent_translucent">#AA4CAF50</color>
     <color name="theme_accent_light">#81C784</color>

@@ -6,7 +6,7 @@
 
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@color/theme_primary_light" />
+                    <solid android:color="@color/theme_accent_light" />
                 </shape>
             </item>
 
@@ -20,7 +20,7 @@
 
             <item>
                 <shape android:shape="oval">
-                    <solid android:color="@color/theme_primary" />
+                    <solid android:color="@color/theme_accent" />
                 </shape>
             </item>
 
