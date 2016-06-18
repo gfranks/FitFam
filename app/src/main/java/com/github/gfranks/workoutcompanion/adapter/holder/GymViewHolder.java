@@ -16,7 +16,7 @@ import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplicati
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
-import com.github.gfranks.workoutcompanion.util.GymPhotoHelper;
+import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.squareup.picasso.Picasso;
@@ -93,7 +93,7 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
         Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_gym),
                 (int) (100F * itemView.getResources().getDisplayMetrics().density));
         if ((gym.getPhotos() != null && !gym.getPhotos().isEmpty()) || (gym.getIcon() != null && !gym.getIcon().isEmpty())) {
-            String photo = GymPhotoHelper.getRandomGymPhoto(itemView.getContext(), gym.getPhotos());
+            String photo = GymUtils.getRandomGymPhoto(itemView.getContext(), gym.getPhotos());
             if (photo == null || photo.isEmpty()) {
                 photo = gym.getIcon();
             }

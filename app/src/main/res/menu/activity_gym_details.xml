@@ -11,4 +11,9 @@
         android:title="@string/action_call"
         android:icon="@drawable/ic_call"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_heart_off"
+        app:showAsAction="always" />
 </menu>

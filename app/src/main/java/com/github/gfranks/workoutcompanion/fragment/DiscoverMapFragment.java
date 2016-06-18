@@ -398,12 +398,14 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                 }
                 mClusterManager.clearItems();
                 mClusterManager.addItems(response.body().getResults());
-                LatLngBounds.Builder builder = LatLngBounds.builder();
-                for (ClusterItem item : response.body().getResults()) {
-                    builder.include(item.getPosition());
+                if (response.body().getResults().size() > 0) {
+                    LatLngBounds.Builder builder = LatLngBounds.builder();
+                    for (ClusterItem item : response.body().getResults()) {
+                        builder.include(item.getPosition());
+                    }
+                    final LatLngBounds bounds = builder.build();
+                    getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
                 }
-                final LatLngBounds bounds = builder.build();
-                getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
             }
 
             @Override

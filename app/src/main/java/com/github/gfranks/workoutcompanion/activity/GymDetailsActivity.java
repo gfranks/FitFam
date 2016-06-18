@@ -18,8 +18,10 @@ import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -40,6 +42,7 @@ import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
+import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -82,7 +85,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @InjectView(R.id.gym_address)
     TextView mAddress;
     @InjectView(R.id.gym_action_buttons)
-    View mActionButtons;
+    ViewGroup mActionButtons;
     @InjectView(R.id.gym_share)
     ImageButton mShare;
     @InjectView(R.id.gym_call)
@@ -91,6 +94,12 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     ImageButton mFavoriteAlt;
     @InjectView(R.id.gym_website)
     TextView mWebsite;
+    @InjectView(R.id.gym_reviews)
+    TextView mReviews;
+    @InjectView(R.id.gym_ratings_container)
+    ViewGroup mRatingsContainer;
+    @InjectView(R.id.gym_ratings_title)
+    TextView mRatingsTitle;
     @InjectView(R.id.gym_hours_container)
     View mHoursContainer;
     @InjectView(R.id.gym_hours)
@@ -117,13 +126,13 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         setupTransitionListener();
 
         mGym = getIntent().getParcelableExtra(WCGym.EXTRA);
+        mGymDatabase = new GymDatabase(this);
+
         mAdapter = new UserListAdapter();
         mEmptyView.setSubtitle(R.string.empty_users);
         mListView.setEmptyView(mEmptyView);
         mListView.setOnItemClickListener(this);
         mListView.setAdapter(mAdapter);
-
-        mGymDatabase = new GymDatabase(this);
 
         mScrollView.setOnScrollChangeListener(this);
         mMapView.onCreate(null);
@@ -169,6 +178,16 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_share).setVisible(mShowActionMenuItems);
         menu.findItem(R.id.action_call).setVisible(mShowActionMenuItems);
+        menu.findItem(R.id.action_save).setVisible(mShowActionMenuItems);
+
+        if (mFavorite.isChecked()) {
+            menu.findItem(R.id.action_save).setIcon(R.drawable.ic_heart_on);
+            mFavoriteAlt.setImageResource(R.drawable.ic_heart_on);
+        } else {
+            menu.findItem(R.id.action_save).setIcon(R.drawable.ic_heart_off);
+            mFavoriteAlt.setImageResource(R.drawable.ic_heart_off);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -181,6 +200,9 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             case R.id.action_call:
                 onClick(mCall);
                 break;
+            case R.id.action_save:
+                onClick(mFavoriteAlt);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -190,6 +212,14 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         super.onOffsetChanged(appBarLayout, verticalOffset);
         if (mAppBarCollapsed) {
             mSetAsCurrent.bringToFront();
+        }
+
+        if (Math.abs(verticalOffset) >= mFavorite.getBottom() && !mFavoriteAlt.isEnabled()) {
+            mFavoriteAlt.setEnabled(true);
+            mFavoriteAlt.animate().alpha(1f).start();
+        } else if (Math.abs(verticalOffset) < mFavorite.getBottom() && mFavoriteAlt.isEnabled()) {
+            mFavoriteAlt.setEnabled(false);
+            mFavoriteAlt.animate().alpha(0.5f).start();
         }
     }
 
@@ -225,7 +255,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      */
     @Override
     public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-        if (scrollY > mActionButtons.getTop() && !mShowActionMenuItems) {
+        if (scrollY >= mActionButtons.getTop() && !mShowActionMenuItems) {
             mShowActionMenuItems = true;
             supportInvalidateOptionsMenu();
         } else if (scrollY < mActionButtons.getTop() && mShowActionMenuItems) {
@@ -257,54 +287,75 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * View.OnClickListener
      * ********************
      */
-    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt})
+    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container, R.id.gym_reviews})
     void onClick(View v) {
-        if (v.getId() == R.id.gym_set_as_current) {
-            WCUser user = mAccountManager.getUser();
-            user.setGym(mGym.getName());
-            user.setGymId(mGym.getPlace_id());
-            mService.updateUser(user.getId(), user).enqueue(new Callback<WCUser>() {
-                @Override
-                public void onResponse(Call<WCUser> call, Response<WCUser> response) {
-                    if (isFinishing()) {
-                        return;
+        switch (v.getId()) {
+            case R.id.gym_set_as_current: {
+                WCUser user = mAccountManager.getUser();
+                user.setGym(mGym.getName());
+                user.setGymId(mGym.getPlace_id());
+                mService.updateUser(user.getId(), user).enqueue(new Callback<WCUser>() {
+                    @Override
+                    public void onResponse(Call<WCUser> call, Response<WCUser> response) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        mAccountManager.setUser(response.body());
+                        mSetAsCurrent.setVisibility(View.GONE);
                     }
-                    mAccountManager.setUser(response.body());
-                    mSetAsCurrent.setVisibility(View.GONE);
-                }
 
-                @Override
-                public void onFailure(Call<WCUser> call, Throwable t) {
-                    if (isFinishing()) {
-                        return;
+                    @Override
+                    public void onFailure(Call<WCUser> call, Throwable t) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                                .setAlert(t.getMessage())
+                                .create());
                     }
-                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                            .setAlert(t.getMessage())
-                            .create());
-                }
-            });
-        } else if (v.getId() == R.id.gym_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/html");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share, mGym.getName(), mGym.getUrl())));
-            startActivity(Intent.createChooser(sharingIntent,"Share using"));
-        } else if (v.getId() == R.id.gym_call) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.CALL_PHONE)) {
-                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getInfoBuilder()
-                            .setAlert(getString(R.string.gym_call_permission_reason))
-                            .create());
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.CALL_PHONE},
-                            REQUEST_CODE_PHONE_CALL);
-                }
-            } else {
-                makePhoneCall();
+                });
+                break;
             }
-        } else if (v.getId() == R.id.gym_favorite_alt) {
-            mFavorite.toggle();
+            case R.id.gym_share: {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share, mGym.getName(), mGym.getUrl())));
+                startActivity(Intent.createChooser(sharingIntent,"Share using"));
+                break;
+            }
+            case R.id.gym_call: {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.CALL_PHONE)) {
+                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getInfoBuilder()
+                                .setAlert(getString(R.string.gym_call_permission_reason))
+                                .create());
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.CALL_PHONE},
+                                REQUEST_CODE_PHONE_CALL);
+                    }
+                } else {
+                    makePhoneCall();
+                }
+                break;
+            }
+            case R.id.gym_favorite_alt: {
+                mFavorite.toggle();
+                break;
+            }
+            case R.id.gym_website: {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mGym.getWebsite()));
+                startActivity(intent);
+            }
+            case R.id.gym_ratings_container:
+            case R.id.gym_reviews: {
+                Intent intent = new Intent(this, GymReviewsActivity.class);
+                intent.putExtra(WCGym.EXTRA, mGym);
+                startActivity(intent);
+                break;
+            }
         }
     }
 
@@ -328,6 +379,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                     .setAlert(getString(R.string.gym_unfavorited))
                     .create());
         }
+        supportInvalidateOptionsMenu();
     }
 
     /**
@@ -356,9 +408,9 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         setTitle(mGym.getName());
 
         // TODO: figure out how to keep this above toolbar when collapsed
-//        if (mAccountManager.getUser().getGymId().equals(mGym.getPlace_id())) {
+        if (mAccountManager.getUser().getGymId().equals(mGym.getPlace_id())) {
             mSetAsCurrent.setVisibility(View.GONE);
-//        }
+        }
 
         mName.setText(mGym.getName());
         if (mGym.getFormatted_address() != null && mGym.getFormatted_address().length() > 0) {
@@ -370,26 +422,42 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         if (mGym.getWebsite() != null && mGym.getWebsite().length() > 0) {
             mWebsite.setVisibility(View.VISIBLE);
             mWebsite.setText(mGym.getWebsite());
-            mWebsite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(mGym.getWebsite()));
-                    startActivity(intent);
-                }
-            });
+        } else {
+            mWebsite.setVisibility(View.GONE);
+        }
+
+        if (mGym.getRating() > 0f) {
+            mRatingsTitle.setText(getString(R.string.gym_rating) + ": " + String.valueOf(mGym.getRating()));
+            mRatingsContainer.setVisibility(View.VISIBLE);
+            ImageView[] ivs = new ImageView[] {
+                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(0),
+                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(1),
+                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(2),
+                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(3),
+                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(4)
+            };
+            GymUtils.adjustImageViewsForRating(this, mGym.getRating(), ivs);
+        } else if (mGym.getReviews() != null && mGym.getReviews().size() > 0) {
+            mReviews.setText(mGym.getReviews().size() + " " + getString(R.string.gym_reviews));
+            mReviews.setVisibility(View.VISIBLE);
+        } else {
+            mRatingsContainer.setVisibility(View.GONE);
         }
 
         if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
-            mCall.setVisibility(View.VISIBLE);
+            mCall.setEnabled(true);
+            mCall.setAlpha(0.5f);
         } else {
-            mCall.setVisibility(View.GONE);
+            mCall.setEnabled(false);
+            mCall.setAlpha(1f);
         }
 
         if (mGym.getOpening_hours() != null && mGym.getOpening_hours().getWeekday_text() != null
                 && !mGym.getOpening_hours().getWeekday_text().isEmpty()) {
             mHoursContainer.setVisibility(View.VISIBLE);
             mHours.setText(mGym.getOpening_hours().toString());
+        } else {
+            mHoursContainer.setVisibility(View.GONE);
         }
 
         ((GymPhotosFragment) getSupportFragmentManager().findFragmentById(R.id.images_fragment)).setGym(mGym);
@@ -420,11 +488,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mFavorite.setOnCheckedChangeListener(null);
             boolean isFavorite = mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId());
             mFavorite.setChecked(isFavorite);
-            if (isFavorite) {
-                mFavoriteAlt.setImageResource(R.drawable.ic_heart_on);
-            } else {
-                mFavoriteAlt.setImageResource(R.drawable.ic_heart_off);
-            }
+            supportInvalidateOptionsMenu();
             mFavorite.setOnCheckedChangeListener(this);
         } catch (Throwable t) {
             t.printStackTrace();

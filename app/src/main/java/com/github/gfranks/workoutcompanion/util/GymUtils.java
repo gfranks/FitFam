@@ -1,6 +1,10 @@
 package com.github.gfranks.workoutcompanion.util;
 
 import android.content.Context;
+import android.graphics.drawable.ClipDrawable;
+import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
+import android.widget.ImageView;
 
 import com.github.gfranks.workoutcompanion.BuildConfig;
 import com.github.gfranks.workoutcompanion.R;
@@ -10,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GymPhotoHelper {
+public class GymUtils {
 
     public static String getRandomGymPhoto(Context context, List<WCGymPhoto> photos) {
         String photoUrl = null;
@@ -61,5 +65,26 @@ public class GymPhotoHelper {
         sb.append("&key=");
         sb.append(context.getString(R.string.api_places_key));
         return sb.toString();
+    }
+
+    public static void adjustImageViewsForRating(Context context, float rating, ImageView[] ivs) {
+        for (ImageView iv : ivs) {
+            if (rating >= 1f) {
+                iv.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
+                iv.setImageDrawable(Utils.applyDrawableTint(context, R.drawable.ic_star,
+                        ContextCompat.getColor(context, R.color.yellow)));
+            } else if (rating > 0f) {
+                iv.setBackground(Utils.applyDrawableTint(context, R.drawable.ic_star,
+                        ContextCompat.getColor(context, R.color.theme_icon_color)));
+                iv.setImageDrawable(new ClipDrawable(Utils.applyDrawableTint(context, R.drawable.ic_star,
+                        ContextCompat.getColor(context, R.color.yellow)), Gravity.START, ClipDrawable.HORIZONTAL));
+                iv.getDrawable().setLevel((int) (10000 * rating));
+            } else {
+                iv.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
+                iv.setImageDrawable(Utils.applyDrawableTint(context, R.drawable.ic_star,
+                        ContextCompat.getColor(context, R.color.theme_icon_color)));
+            }
+            --rating;
+        }
     }
 }

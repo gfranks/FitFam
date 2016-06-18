@@ -54,6 +54,10 @@
             android:label="@string/gym_details" />
 
         <activity
+            android:name=".activity.GymReviewsActivity"
+            android:label="@string/gym_reviews" />
+
+        <activity
             android:name=".activity.FullScreenGymPhotosActivity"
             android:label="@string/gym_photos" />
 

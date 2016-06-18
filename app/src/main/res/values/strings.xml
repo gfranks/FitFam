@@ -44,6 +44,8 @@
     <string name="gym_map">Map</string>
     <string name="gym_website">Website</string>
     <string name="gym_hours">Hours of Operation</string>
+    <string name="gym_rating">Rating</string>
+    <string name="gym_reviews">Reviews</string>
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
     <string name="gym_call">Call %1$s at %2$s?</string>
     <string name="gym_share"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
@@ -109,6 +111,8 @@
     <string name="empty_companions_header_exercises">Biking, Crossfit, Hiking, Jogging, P90X, Running, Soccer, Swimming, Tennis, Walking, Weight Lifting</string>
     <string name="empty_workout_companions_title">See companions here</string>
     <string name="empty_workout_companions_subtitle">Request workouts from their profile</string>
+    <string name="empty_reviews_title">See gym reviews</string>
+    <string name="empty_reviews_subtitle">This gym does not have any reviews</string>
     <string name="empty_favorite_gyms_header_image">http://abenity.s3.amazonaws.com/external/images/logo_lafitness_250.jpg</string>
     <string name="empty_favorite_gyms_header_name">LA Fitness</string>
     <string name="empty_favorite_gyms_header_vicinity">75 5th St NW, Atlanta, GA 30308</string>

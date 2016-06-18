@@ -48,6 +48,8 @@ public class WCGym implements ClusterItem, Parcelable, Type {
     private String website;
     @SerializedName("opening_hours")
     private WCGymHours opening_hours;
+    @SerializedName("rating")
+    private float rating;
     @SerializedName("photos")
     private List<WCGymPhoto> photos;
     @SerializedName("reviews")
@@ -69,6 +71,7 @@ public class WCGym implements ClusterItem, Parcelable, Type {
         url = builder.url;
         website = builder.website;
         opening_hours = builder.opening_hours;
+        rating = builder.rating;
         photos = builder.photos;
         reviews = builder.reviews;
     }
@@ -173,6 +176,14 @@ public class WCGym implements ClusterItem, Parcelable, Type {
         this.opening_hours = opening_hours;
     }
 
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     public List<WCGymPhoto> getPhotos() {
         return photos;
     }
@@ -218,6 +229,7 @@ public class WCGym implements ClusterItem, Parcelable, Type {
         out.writeValue(url);
         out.writeValue(website);
         out.writeValue(opening_hours);
+        out.writeValue(rating);
         out.writeList(photos);
         out.writeList(reviews);
     }
@@ -235,6 +247,7 @@ public class WCGym implements ClusterItem, Parcelable, Type {
         url = (String) in.readValue(String.class.getClassLoader());
         website = (String) in.readValue(String.class.getClassLoader());
         opening_hours = (WCGymHours) in.readValue(WCGymHours.class.getClassLoader());
+        rating = (float) in.readValue(Float.class.getClassLoader());
         photos = in.readArrayList(WCGymPhoto.class.getClassLoader());
         reviews = in.readArrayList(WCGymReview.class.getClassLoader());
     }
@@ -253,6 +266,7 @@ public class WCGym implements ClusterItem, Parcelable, Type {
         private String url;
         private String website;
         private WCGymHours opening_hours;
+        private float rating;
         private List<WCGymPhoto> photos;
         private List<WCGymReview> reviews;
 
@@ -327,6 +341,12 @@ public class WCGym implements ClusterItem, Parcelable, Type {
 
         public Builder setOpening_hours(WCGymHours opening_hours) {
             this.opening_hours = opening_hours;
+
+            return this;
+        }
+
+        public Builder setRating(float rating) {
+            this.rating = rating;
 
             return this;
         }

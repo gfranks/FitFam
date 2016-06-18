@@ -31,7 +31,7 @@ public class WCGymReview implements Parcelable, Type {
     @SerializedName("language")
     private String language;
     @SerializedName("rating")
-    private int rating;
+    private float rating;
     @SerializedName("text")
     private String text;
     @SerializedName("time")
@@ -95,11 +95,11 @@ public class WCGymReview implements Parcelable, Type {
         this.language = language;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -142,7 +142,7 @@ public class WCGymReview implements Parcelable, Type {
         author_url = (String) in.readValue(String.class.getClassLoader());
         profile_photo_url = (String) in.readValue(String.class.getClassLoader());
         language = (String) in.readValue(String.class.getClassLoader());
-        rating = (int) in.readValue(Integer.class.getClassLoader());
+        rating = (float) in.readValue(Float.class.getClassLoader());
         text = (String) in.readValue(String.class.getClassLoader());
         time = (long) in.readValue(Long.class.getClassLoader());
     }
@@ -154,7 +154,7 @@ public class WCGymReview implements Parcelable, Type {
         private String author_url;
         private String profile_photo_url;
         private String language;
-        private int rating;
+        private float rating;
         private String text;
         private long time;
 
@@ -191,7 +191,7 @@ public class WCGymReview implements Parcelable, Type {
             return this;
         }
 
-        public Builder setRating(int rating) {
+        public Builder setRating(float rating) {
             this.rating = rating;
 
             return this;

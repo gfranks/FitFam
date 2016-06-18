@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.github.gfranks.workoutcompanion.activity.FullScreenGymPhotosActivity;
 import com.github.gfranks.workoutcompanion.activity.GymDetailsActivity;
+import com.github.gfranks.workoutcompanion.activity.GymReviewsActivity;
 import com.github.gfranks.workoutcompanion.activity.LoginActivity;
 import com.github.gfranks.workoutcompanion.activity.UserProfileActivity;
 import com.github.gfranks.workoutcompanion.activity.WorkoutCompanionActivity;
@@ -35,6 +36,7 @@ import dagger.Provides;
                 WorkoutCompanionActivity.class,
                 UserProfileActivity.class,
                 GymDetailsActivity.class,
+                GymReviewsActivity.class,
                 FullScreenGymPhotosActivity.class,
                 GymViewHolder.class,
                 UserViewHolder.class,

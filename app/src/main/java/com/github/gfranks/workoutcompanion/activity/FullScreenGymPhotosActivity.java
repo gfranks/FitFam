@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
-import com.github.gfranks.workoutcompanion.util.GymPhotoHelper;
+import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
         mGym = getIntent().getParcelableExtra(WCGym.EXTRA);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(this);
-        mViewPager.setAdapter(new PhotoPagerAdapter(GymPhotoHelper.getFullScreenGymPhotos(this, mGym.getPhotos())));
+        mViewPager.setAdapter(new PhotoPagerAdapter(GymUtils.getFullScreenGymPhotos(this, mGym.getPhotos())));
 
         mViewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_INDEX, 0));
         onPageSelected(mViewPager.getCurrentItem());

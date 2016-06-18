@@ -54,7 +54,7 @@ public class GymDatabase {
         values.put(GymSQLiteHelper.COLUMN_PLACE_ID, gym.getPlace_id());
         values.put(GymSQLiteHelper.COLUMN_NAME, gym.getName());
         if (gym.getPhotos() != null && !gym.getPhotos().isEmpty()) {
-            values.put(GymSQLiteHelper.COLUMN_ICON, GymPhotoHelper.getRandomGymPhoto(mContext, gym.getPhotos()));
+            values.put(GymSQLiteHelper.COLUMN_ICON, GymUtils.getRandomGymPhoto(mContext, gym.getPhotos()));
         } else {
             values.put(GymSQLiteHelper.COLUMN_ICON, gym.getIcon());
         }

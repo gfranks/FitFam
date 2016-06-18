@@ -17,7 +17,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.FullScreenGymPhotosActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
-import com.github.gfranks.workoutcompanion.util.GymPhotoHelper;
+import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class GymPhotosFragment extends BaseFragment {
             return;
         }
 
-        mAdapter = new PhotoPagerAdapter(GymPhotoHelper.getScaledGymPhotos(getContext(), mGym.getPhotos()));
+        mAdapter = new PhotoPagerAdapter(GymUtils.getScaledGymPhotos(getContext(), mGym.getPhotos()));
         mViewPager.setAdapter(mAdapter);
     }
 

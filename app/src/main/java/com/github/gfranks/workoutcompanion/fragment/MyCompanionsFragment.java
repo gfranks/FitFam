@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.UserProfileActivity;
@@ -63,7 +62,6 @@ public class MyCompanionsFragment extends BaseFragment implements Callback<List<
 
         setupEmptyView();
         mListView.setOnItemClickListener(this);
-        mListView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(), R.anim.recycler_view_layout_animation));
     }
 
     @Override
