@@ -45,6 +45,7 @@
     <string name="gym_website">Website</string>
     <string name="gym_hours">Hours of Operation</string>
     <string name="gym_rating">Rating</string>
+    <string name="gym_rating_unavailable">Rating Unavailable</string>
     <string name="gym_reviews">Reviews</string>
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
     <string name="gym_call">Call %1$s at %2$s?</string>

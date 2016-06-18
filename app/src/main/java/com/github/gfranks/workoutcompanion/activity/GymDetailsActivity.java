@@ -3,6 +3,7 @@ package com.github.gfranks.workoutcompanion.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerCon
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
+import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -287,7 +289,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * View.OnClickListener
      * ********************
      */
-    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container, R.id.gym_reviews})
+    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.gym_set_as_current: {
@@ -349,8 +351,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                 intent.setData(Uri.parse(mGym.getWebsite()));
                 startActivity(intent);
             }
-            case R.id.gym_ratings_container:
-            case R.id.gym_reviews: {
+            case R.id.gym_ratings_container: {
                 Intent intent = new Intent(this, GymReviewsActivity.class);
                 intent.putExtra(WCGym.EXTRA, mGym);
                 startActivity(intent);
@@ -426,20 +427,28 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mWebsite.setVisibility(View.GONE);
         }
 
-        if (mGym.getRating() > 0f) {
-            mRatingsTitle.setText(getString(R.string.gym_rating) + ": " + String.valueOf(mGym.getRating()));
+        if (mGym.getReviews() != null && mGym.getReviews().size() > 0) {
             mRatingsContainer.setVisibility(View.VISIBLE);
-            ImageView[] ivs = new ImageView[] {
-                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(0),
-                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(1),
-                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(2),
-                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(3),
-                    (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(1)).getChildAt(4)
-            };
-            GymUtils.adjustImageViewsForRating(this, mGym.getRating(), ivs);
-        } else if (mGym.getReviews() != null && mGym.getReviews().size() > 0) {
             mReviews.setText(mGym.getReviews().size() + " " + getString(R.string.gym_reviews));
-            mReviews.setVisibility(View.VISIBLE);
+            if (mGym.getRating() > 0f) {
+                mRatingsTitle.setText(getString(R.string.gym_rating) + ": " + String.valueOf(mGym.getRating()));
+                ImageView[] ivs = new ImageView[]{
+                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(0),
+                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(1),
+                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(2),
+                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(3),
+                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(4)
+                };
+                GymUtils.adjustImageViewsForRating(this, mGym.getRating(), ivs);
+            } else {
+                mRatingsTitle.setText(R.string.gym_rating_unavailable);
+                Drawable drawable = Utils.applyDrawableTint(this, R.drawable.ic_star, ContextCompat.getColor(this, R.color.gray_lightest));
+                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(0)).setImageDrawable(drawable);
+                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(1)).setImageDrawable(drawable);
+                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(2)).setImageDrawable(drawable);
+                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(3)).setImageDrawable(drawable);
+                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(4)).setImageDrawable(drawable);
+            }
         } else {
             mRatingsContainer.setVisibility(View.GONE);
         }
