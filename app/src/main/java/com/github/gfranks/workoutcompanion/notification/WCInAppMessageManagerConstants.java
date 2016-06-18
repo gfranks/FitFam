@@ -15,7 +15,7 @@ public class WCInAppMessageManagerConstants {
     public static InAppMessage.Builder getDefaultBuilder() {
         return new InAppMessage.Builder()
                 .setDuration(DURATION)
-                .setPosition(InAppMessage.POSITION_BOTTOM)
+                .setPosition(InAppMessage.POSITION_TOP)
                 .setExtras(getJsonMapForMessageType(MessageType.DEFAULT));
     }
 
@@ -29,14 +29,14 @@ public class WCInAppMessageManagerConstants {
     public static InAppMessage.Builder getSuccessBuilder() {
         return new InAppMessage.Builder()
                 .setDuration(DURATION)
-                .setPosition(InAppMessage.POSITION_BOTTOM)
+                .setPosition(InAppMessage.POSITION_TOP)
                 .setExtras(getJsonMapForMessageType(MessageType.SUCCESS));
     }
 
     public static InAppMessage.Builder getInfoBuilder() {
         return new InAppMessage.Builder()
                 .setDuration(DURATION)
-                .setPosition(InAppMessage.POSITION_BOTTOM)
+                .setPosition(InAppMessage.POSITION_TOP)
                 .setExtras(getJsonMapForMessageType(MessageType.INFO));
     }
 

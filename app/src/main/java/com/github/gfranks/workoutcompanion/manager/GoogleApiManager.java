@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import info.metadude.android.typedpreferences.DoublePreference;
 
-public class DiscoverManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int REQUEST_LOCATION_PERMISSION = 1;
 
@@ -31,7 +31,7 @@ public class DiscoverManager implements GoogleApiClient.ConnectionCallbacks, Goo
 
     private boolean mConnected;
 
-    public DiscoverManager(SharedPreferences prefs, Application app) {
+    public GoogleApiManager(SharedPreferences prefs, Application app) {
         mLatitudePreference = new DoublePreference(prefs, KEY_LAT, 0.0);
         mLongitudePreference = new DoublePreference(prefs, KEY_LNG, 0.0);
 

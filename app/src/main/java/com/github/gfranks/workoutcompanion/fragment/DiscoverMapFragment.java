@@ -37,7 +37,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.manager.DiscoverManager;
+import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
@@ -74,7 +74,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public static final String TAG = "discover_map_fragment";
 
     @Inject
-    DiscoverManager mDiscoverManager;
+    GoogleApiManager mGoogleApiManager;
     @Inject
     DiscoverService mDiscoverService;
     @Inject
@@ -100,7 +100,6 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new GymListAdapter(this);
         mSearchViewAdapter = new SearchSuggestionsAdapter(getContext());
         mGymDatabase = new GymDatabase(getActivity());
     }
@@ -118,7 +117,6 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         mEmptyView.setSubtitle(R.string.empty_gym);
         mListView.setEmptyView(mEmptyView);
         mListView.setOnItemClickListener(this);
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -129,8 +127,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
 
         if (getMap() == null) {
             mMapView.getMapAsync(this);
-        } else if (!mDiscoverManager.isConnected()) {
-            mDiscoverManager.connect(this, this, this);
+        } else if (!mGoogleApiManager.isConnected()) {
+            mGoogleApiManager.connect(this, this, this);
         }
     }
 
@@ -143,7 +141,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mDiscoverManager.disconnect();
+        mGoogleApiManager.disconnect();
     }
 
     @Override
@@ -173,9 +171,9 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == DiscoverManager.REQUEST_LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == GoogleApiManager.REQUEST_LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getMap().setMyLocationEnabled(true);
-            mDiscoverManager.connect(this, this, this);
+            mGoogleApiManager.connect(this, this, this);
         }
     }
 
@@ -196,7 +194,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         getMap().setOnCameraChangeListener(mClusterManager);
         getMap().setOnMarkerClickListener(mClusterManager);
         getMap().setOnMapClickListener(this);
-        if (mDiscoverManager.connect(this, this, this)) {
+        if (mGoogleApiManager.connect(this, this, this)) {
             map.setMyLocationEnabled(true);
         }
         getMap().setIndoorEnabled(true);
@@ -234,8 +232,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         } else {
             List<WCGym> results = new ArrayList<>();
             results.addAll(cluster.getItems());
-            mAdapter.setGyms(results);
-            showList(cluster.getPosition());
+            showList(results, cluster.getPosition());
             return false;
         }
     }
@@ -249,8 +246,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public boolean onClusterItemClick(final WCGym wcGym) {
         List<WCGym> results = new ArrayList<>();
         results.add(wcGym);
-        mAdapter.setGyms(results);
-        showList(wcGym.getPosition());
+        showList(results, wcGym.getPosition());
         return false;
     }
 
@@ -352,7 +348,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Override
     public boolean onSuggestionClick(int position) {
         mSearchView.setQuery(mSearchViewAdapter.getResultItem(position).getFormatted_address(), false);
-        mDiscoverManager.setLastKnownLocation(mSearchViewAdapter.getResultItem(position).getPosition());
+        mGoogleApiManager.setLastKnownLocation(mSearchViewAdapter.getResultItem(position).getPosition());
         getActivity().supportInvalidateOptionsMenu();
         loadGyms();
         return false;
@@ -390,7 +386,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     }
 
     private void loadGyms() {
-        LatLng latLng = mDiscoverManager.getLastKnownLocation();
+        LatLng latLng = mGoogleApiManager.getLastKnownLocation();
         mDiscoverService.getGyms(latLng.latitude + "," + latLng.longitude, getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
             @Override
             public void onResponse(Call<WCGyms> call, Response<WCGyms> response) {
@@ -419,7 +415,9 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         });
     }
 
-    private void showList(final LatLng position) {
+    private void showList(List<WCGym> gyms, final LatLng position) {
+        mAdapter = new GymListAdapter(gyms, this);
+        mListView.setAdapter(mAdapter);
         adjustListContainerHeight();
         if (BottomSheetBehavior.from(mBottomSheet).getState() != BottomSheetBehavior.STATE_EXPANDED) {
             // allow recycler view to pass initial drawing of children before animating up
@@ -502,11 +500,11 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(GymDatabase.BROADCAST)) {
-                if (isDetached() || getActivity() == null) {
-                    return;
+                try {
+                    mAdapter.notifyDataSetChanged();
+                } catch (Throwable t) {
+                    // do nothing
                 }
-
-                mAdapter.notifyDataSetChanged();
             }
         }
     };

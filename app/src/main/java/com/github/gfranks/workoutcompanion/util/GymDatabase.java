@@ -29,8 +29,10 @@ public class GymDatabase {
     private GymSQLiteHelper mDbHelper;
     private SQLiteDatabase mDatabase;
     private LocalBroadcastManager mBroadcastManager;
+    private Context mContext;
 
     public GymDatabase(Context context) {
+        mContext = context;
         mDbHelper = new GymSQLiteHelper(context);
         mBroadcastManager = LocalBroadcastManager.getInstance(context);
     }
@@ -51,7 +53,11 @@ public class GymDatabase {
         values.put(GymSQLiteHelper.COLUMN_USER_ID, userId);
         values.put(GymSQLiteHelper.COLUMN_PLACE_ID, gym.getPlace_id());
         values.put(GymSQLiteHelper.COLUMN_NAME, gym.getName());
-        values.put(GymSQLiteHelper.COLUMN_ICON, gym.getIcon());
+        if (gym.getPhotos() != null && !gym.getPhotos().isEmpty()) {
+            values.put(GymSQLiteHelper.COLUMN_ICON, GymPhotoHelper.getRandomGymPhoto(mContext, gym.getPhotos()));
+        } else {
+            values.put(GymSQLiteHelper.COLUMN_ICON, gym.getIcon());
+        }
         values.put(GymSQLiteHelper.COLUMN_VICINITY, gym.getVicinity());
         values.put(GymSQLiteHelper.COLUMN_GEOMETRY, Utils.getGson().toJson(gym.getGeometry()));
         mDatabase.insert(GymSQLiteHelper.TABLE_GYMS, null, values);

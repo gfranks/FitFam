@@ -67,7 +67,6 @@
 
     <style name="DefaultAppTheme.TextAppearance.SuperSmall" parent="@style/TextAppearance.AppCompat.Small">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="DefaultAppTheme.SwitchCompat">

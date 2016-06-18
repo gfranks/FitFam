@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
+import com.github.gfranks.workoutcompanion.util.GymDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class GymListAdapter extends RecyclerView.Adapter<GymViewHolder> {
 
     private OnFavoriteListener mListener;
     private List<WCGym> mGyms;
+    private GymDatabase mGymDatabase;
 
     public GymListAdapter(OnFavoriteListener listener) {
         mListener = listener;
@@ -52,7 +54,10 @@ public class GymListAdapter extends RecyclerView.Adapter<GymViewHolder> {
 
     @Override
     public void onBindViewHolder(GymViewHolder holder, int position) {
-        holder.populate(getItem(position));
+        if (mGymDatabase == null) {
+            mGymDatabase = new GymDatabase(holder.itemView.getContext());
+        }
+        holder.populate(mGymDatabase, getItem(position));
     }
 
     public interface OnFavoriteListener {

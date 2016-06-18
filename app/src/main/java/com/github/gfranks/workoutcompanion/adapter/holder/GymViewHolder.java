@@ -44,13 +44,11 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
     TextView mAddress;
 
     private GymListAdapter.OnFavoriteListener mListener;
-    private GymDatabase mGymDatabase;
 
     public GymViewHolder(View view, GymListAdapter.OnFavoriteListener listener) {
         super(view);
         ButterKnife.inject(this, view);
         WorkoutCompanionApplication.get(view.getContext()).inject(this);
-        mGymDatabase = new GymDatabase(view.getContext());
         mListener = listener;
     }
 
@@ -66,16 +64,16 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
         }
     }
 
-    public void populate(WCGym gym) {
+    public void populate(GymDatabase gymDatabase, WCGym gym) {
         setGymImage(gym);
         mName.setText(gym.getName());
         mAddress.setText(gym.getVicinity());
 
         mFavorite.setOnCheckedChangeListener(null);
         try {
-            mGymDatabase.open();
-            mFavorite.setChecked(mGymDatabase.isFavorite(mAccountManager.getUser().getId(), gym.getId()));
-            mGymDatabase.close();
+            gymDatabase.open();
+            mFavorite.setChecked(gymDatabase.isFavorite(mAccountManager.getUser().getId(), gym.getId()));
+            gymDatabase.close();
         } catch (Throwable t) {
             // unable to open db
         }
@@ -83,7 +81,7 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
     }
 
     public void populateAsPlaceHolder(WCGym gym) {
-        populate(gym);
+        populate(null, gym);
         itemView.setClickable(false);
         mName.setEnabled(false);
         mAddress.setEnabled(false);

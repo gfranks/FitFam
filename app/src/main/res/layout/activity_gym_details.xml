@@ -105,23 +105,25 @@
                     android:visibility="gone"
                     app:gdv_title="@string/gym_hours" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/list_cell_vertical_padding"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
-                    android:enabled="false"
-                    android:text="@string/gym_map"
-                    android:textAppearance="@style/DefaultAppTheme.TextAppearance.SuperSmall" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/gym_details_view_vertical_margin"
+                    android:layout_marginTop="@dimen/list_cell_vertical_padding"
                     android:background="@color/theme_divider" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/theme_background"
+                    android:enabled="false"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/gym_details_view_vertical_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="@dimen/gym_details_view_vertical_margin"
+                    android:text="@string/gym_map"
+                    android:textAppearance="@style/DefaultAppTheme.TextAppearance.SuperSmall" />
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapview"
@@ -139,23 +141,25 @@
                     android:layout_height="1dp"
                     android:background="@color/theme_divider" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/list_cell_vertical_padding"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
-                    android:enabled="false"
-                    android:text="@string/companions"
-                    android:textAppearance="@style/DefaultAppTheme.TextAppearance.SuperSmall" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/gym_details_view_vertical_margin"
+                    android:layout_marginTop="@dimen/list_cell_vertical_padding"
                     android:background="@color/theme_divider" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/theme_background"
+                    android:enabled="false"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/gym_details_view_vertical_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="@dimen/gym_details_view_vertical_margin"
+                    android:text="@string/companions"
+                    android:textAppearance="@style/DefaultAppTheme.TextAppearance.SuperSmall" />
 
             </LinearLayout>
 

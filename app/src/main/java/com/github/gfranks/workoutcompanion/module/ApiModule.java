@@ -12,7 +12,7 @@ import com.github.gfranks.workoutcompanion.data.api.RequestHeaderInterceptor;
 import com.github.gfranks.workoutcompanion.data.api.RequestLoggingInterceptor;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.manager.DiscoverManager;
+import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 import com.github.gfranks.workoutcompanion.util.Utils;
 
 import java.io.File;
@@ -117,8 +117,8 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    DiscoverManager provideDiscoverManager(SharedPreferences prefs, Application app) {
-        return new DiscoverManager(prefs, app);
+    GoogleApiManager provideGoogleApiManager(SharedPreferences prefs, Application app) {
+        return new GoogleApiManager(prefs, app);
     }
 
 }

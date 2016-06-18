@@ -19,7 +19,7 @@
     <dimen name="gym_list_item_height">190dp</dimen>
     <dimen name="user_list_item_height">190dp</dimen>
     <dimen name="seek_arc_size">175dp</dimen>
-    <dimen name="gym_details_view_vertical_margin">5dp</dimen>
+    <dimen name="gym_details_view_vertical_margin">10dp</dimen>
 
     <dimen name="default_image_size_small">30dp</dimen>
     <dimen name="default_image_size">45dp</dimen>
