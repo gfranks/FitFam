@@ -31,7 +31,7 @@ import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
 import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
-import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
+import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
@@ -76,7 +76,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @Inject
     GoogleApiManager mGoogleApiManager;
     @Inject
-    DiscoverService mDiscoverService;
+    GoogleApiService mGoogleApiService;
     @Inject
     AccountManager mAccountManager;
 
@@ -267,6 +267,9 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
      */
     @Override
     public void onConnected(Bundle bundle) {
+        if (isDetached() || getActivity() == null) {
+            return;
+        }
         loadGyms();
     }
 
@@ -315,9 +318,9 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     }
 
     @Override
-    public boolean onQueryTextChange(String address) {
-        if (address.length() == 3) {
-            mDiscoverService.getLocations(address, getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
+    public boolean onQueryTextChange(String query) {
+        if (query.length() >= 3) {
+            mGoogleApiService.getLocations(query, getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
                 @Override
                 public void onResponse(Call<WCLocations> call, Response<WCLocations> response) {
                     if (isDetached() || getActivity() == null) {
@@ -387,7 +390,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
 
     private void loadGyms() {
         LatLng latLng = mGoogleApiManager.getLastKnownLocation();
-        mDiscoverService.getGyms(latLng.latitude + "," + latLng.longitude, getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
+        mGoogleApiService.getGyms(latLng.latitude + "," + latLng.longitude, getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
             @Override
             public void onResponse(Call<WCGyms> call, Response<WCGyms> response) {
                 if (isDetached() || getActivity() == null) {

@@ -11,7 +11,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
-import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
+import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
@@ -37,7 +37,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
         SearchView.OnSuggestionListener, WCRecyclerView.OnItemClickListener, GymListAdapter.OnFavoriteListener {
 
     @Inject
-    DiscoverService mDiscoverService;
+    GoogleApiService mGoogleApiService;
     @Inject
     WorkoutCompanionService mService;
     @Inject
@@ -101,9 +101,9 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     }
 
     @Override
-    public boolean onQueryTextChange(String address) {
-        if (address.length() == 3) {
-            mDiscoverService.getLocations(address, getContext().getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
+    public boolean onQueryTextChange(String query) {
+        if (query.length() >= 3) {
+            mGoogleApiService.getLocations(query, getContext().getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
                 @Override
                 public void onResponse(Call<WCLocations> call, Response<WCLocations> response) {
                     if (!isShowing()) {
@@ -185,7 +185,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
 
     private void loadGyms(LatLng latLng) {
         mEmptyView.displayLoading(true);
-        mDiscoverService.getGyms(latLng.latitude + "," + latLng.longitude, getContext().getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
+        mGoogleApiService.getGyms(latLng.latitude + "," + latLng.longitude, getContext().getString(R.string.api_places_key)).enqueue(new Callback<WCGyms>() {
             @Override
             public void onResponse(Call<WCGyms> call, Response<WCGyms> response) {
                 if (!isShowing()) {

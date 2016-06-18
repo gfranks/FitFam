@@ -23,7 +23,7 @@ import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
 import com.github.gfranks.workoutcompanion.adapter.UserListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.UserViewHolder;
-import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
+import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
@@ -59,7 +59,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         OnMapReadyCallback, CompoundButton.OnCheckedChangeListener {
 
     @Inject
-    DiscoverService mDiscoverService;
+    GoogleApiService mGoogleApiService;
     @Inject
     WorkoutCompanionService mService;
     @Inject
@@ -111,7 +111,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
         mMapView.onCreate(null);
         initGym();
-        mDiscoverService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
+        mGoogleApiService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
     }
 
     @Override

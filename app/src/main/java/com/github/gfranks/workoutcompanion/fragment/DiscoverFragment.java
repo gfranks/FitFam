@@ -41,9 +41,9 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
         super.onViewCreated(view, savedInstanceState);
 
         mAdapter = new ViewPagerAdapter(getContext(), getChildFragmentManager(), mViewPager);
-        mAdapter.addTab(DiscoverMapFragment.class, getArguments(), 0);//R.string.discover_gyms);
-        mAdapter.addTab(FavoriteGymsFragment.class, getArguments(), 0);//R.string.discover_my_gyms);
-        mAdapter.addTab(MyCompanionsFragment.class, getArguments(), 0);//R.string.discover_my_companions);
+        mAdapter.addTab(DiscoverMapFragment.class, getArguments(), 0);
+        mAdapter.addTab(FavoriteGymsFragment.class, getArguments(), 0);
+        mAdapter.addTab(MyCompanionsFragment.class, getArguments(), 0);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setOnTabSelectedListener(this);
 
@@ -54,12 +54,6 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
         onTabSelected(mTabLayout.getTabAt(0));
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.nav_discover);
-    }
-
     /**
      * *******************************
      * TabLayout.OnTabSelectedListener
@@ -68,6 +62,17 @@ public class DiscoverFragment extends BaseFragment implements TabLayout.OnTabSel
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         mViewPager.setCurrentItem(tab.getPosition());
+        switch (tab.getPosition()) {
+            case 0:
+                getActivity().setTitle(R.string.discover_gyms);
+                break;
+            case 1:
+                getActivity().setTitle(R.string.discover_saved_gyms);
+                break;
+            case 2:
+                getActivity().setTitle(R.string.discover_my_companions);
+                break;
+        }
     }
 
     @Override

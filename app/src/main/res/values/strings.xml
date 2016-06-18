@@ -52,7 +52,7 @@
 
     <!-- Discover Nav Strings -->
     <string name="discover_gyms">Find Gyms</string>
-    <string name="discover_my_gyms">My Gyms</string>
+    <string name="discover_saved_gyms">Saved Gyms</string>
     <string name="discover_my_companions">My Companions</string>
 
     <!-- Menu Strings -->

@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.BuildConfig;
-import com.github.gfranks.workoutcompanion.data.api.DiscoverService;
+import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.Endpoint;
 import com.github.gfranks.workoutcompanion.data.api.Environment;
 import com.github.gfranks.workoutcompanion.data.api.ErrorHandlingExecutorCallAdapterFactory;
@@ -110,9 +110,9 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    DiscoverService provideDiscoverService(OkHttpClient client, ErrorHandlingExecutorCallAdapterFactory errorHandlingFactory) {
+    GoogleApiService provideGoogleApiService(OkHttpClient client, ErrorHandlingExecutorCallAdapterFactory errorHandlingFactory) {
         return provideRetrofit(Endpoint.newFixedEndpoint(BuildConfig.API_GOOGLE_PLACES),
-                client, errorHandlingFactory).create(DiscoverService.class);
+                client, errorHandlingFactory).create(GoogleApiService.class);
     }
 
     @Provides
