@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_margin="20dp"
+                android:layout_margin="25dp"
                 android:enabled="false"
                 android:textColor="@color/white"
                 android:text="@string/set_public"/>
