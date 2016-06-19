@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGymGeometry;
+import com.github.gfranks.workoutcompanion.data.model.WCGymGeometryLocation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class GymDatabase {
             values.put(GymSQLiteHelper.COLUMN_ICON, gym.getIcon());
         }
         values.put(GymSQLiteHelper.COLUMN_VICINITY, gym.getVicinity());
-        values.put(GymSQLiteHelper.COLUMN_GEOMETRY, Utils.getGson().toJson(gym.getGeometry()));
+        values.put(GymSQLiteHelper.COLUMN_GEOMETRY, getStringFromGeometry(gym.getGeometry()));
         mDatabase.insert(GymSQLiteHelper.TABLE_GYMS, null, values);
         mBroadcastManager.sendBroadcast(new Intent(BROADCAST));
     }
@@ -114,8 +115,26 @@ public class GymDatabase {
                 .setName(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_NAME)))
                 .setIcon(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_ICON)))
                 .setVicinity(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_VICINITY)))
-                .setGeometry(Utils.getGson().fromJson(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_GEOMETRY)), WCGymGeometry.class))
+                .setGeometry(getGeometryFromString(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_GEOMETRY))))
                 .build();
+    }
+
+    private String getStringFromGeometry(WCGymGeometry geometry) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(geometry.getLocation().getLat());
+        sb.append(",");
+        sb.append(geometry.getLocation().getLng());
+        return sb.toString();
+    }
+
+    private WCGymGeometry getGeometryFromString(String value) {
+        String[] values = value.split(",");
+        WCGymGeometry geometry = new WCGymGeometry();
+        WCGymGeometryLocation location = new WCGymGeometryLocation();
+        location.setLat(Double.parseDouble(values[0]));
+        location.setLng(Double.parseDouble(values[1]));
+        geometry.setLocation(location);
+        return geometry;
     }
 
     private class GymSQLiteHelper extends SQLiteOpenHelper {
@@ -135,7 +154,7 @@ public class GymDatabase {
         // Database creation sql statement
         private static final String DATABASE_CREATE = "create table "
                 + TABLE_GYMS + "("
-                + COLUMN_ID + " text primary key, "
+                + COLUMN_ID + " text, "
                 + COLUMN_USER_ID + " text, "
                 + COLUMN_PLACE_ID + " text, "
                 + COLUMN_NAME + " text, "

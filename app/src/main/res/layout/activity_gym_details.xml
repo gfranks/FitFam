@@ -85,13 +85,15 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:transitionName="@string/transition_gym_name"/>
 
                 <TextView
                     android:id="@+id/gym_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:transitionName="@string/transition_gym_address"/>
 
                 <LinearLayout
                     android:id="@+id/gym_action_buttons"
@@ -105,6 +107,8 @@
                         android:id="@+id/gym_call"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         android:padding="5dp"
                         android:background="@drawable/btn_theme_background_round"
                         android:tint="@color/theme_icon_color"
@@ -115,14 +119,23 @@
                         android:id="@+id/gym_share"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginRight="40dp"
-                        android:layout_marginEnd="40dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         android:padding="5dp"
                         android:background="@drawable/btn_theme_background_round"
                         android:tint="@color/theme_icon_color"
                         app:srcCompat="@drawable/ic_share" />
+
+                    <android.support.v7.widget.AppCompatImageButton
+                        android:id="@+id/gym_add_remove"
+                        android:layout_width="@dimen/default_image_size"
+                        android:layout_height="@dimen/default_image_size"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:padding="5dp"
+                        android:background="@drawable/btn_theme_background_round"
+                        android:tint="@color/theme_icon_color"
+                        app:srcCompat="@drawable/ic_add" />
 
                     <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/gym_favorite_alt"
@@ -133,7 +146,7 @@
                         android:tint="@color/theme_icon_color"
                         android:enabled="false"
                         android:alpha="0.5"
-                        app:srcCompat="@drawable/ic_heart_off"/>
+                        app:srcCompat="@drawable/ic_heart_on"/>
 
                 </LinearLayout>
 
@@ -320,6 +333,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/white"
         android:text="@string/gym_set_as_current"
+        android:fitsSystemWindows="true"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|center_horizontal"/>
 

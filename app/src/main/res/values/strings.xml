@@ -27,6 +27,9 @@
 
     <!-- Profile Strings -->
     <string name="user_profile">User Profile</string>
+    <string name="set_public">Set Public</string>
+    <string name="is_public">Public</string>
+    <string name="is_private">Private</string>
     <string name="workout_request_sent">Workout request sent</string>
 
     <!-- Navigation Strings -->
@@ -37,6 +40,8 @@
     <!-- Gym Details Strings -->
     <string name="gym_details">Gym Details</string>
     <string name="gym_photos">Gym Photos</string>
+    <string name="gym_added">Gym has been added to your list of active gyms</string>
+    <string name="gym_removed">Gym has been removed from your list of active gyms</string>
     <string name="gym_favorited">Gym has been added to favorites</string>
     <string name="gym_unfavorited">Gym has been unfavorited</string>
     <string name="gym_name">Name</string>
@@ -50,7 +55,7 @@
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
     <string name="gym_call">Call %1$s at %2$s?</string>
     <string name="gym_share"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
-    <string name="gym_set_as_current">Set as current gym</string>
+    <string name="gym_set_as_current">Set as home gym</string>
 
     <!-- Settings Strings -->
     <string name="notification_quiet_time">Quiet Time:</string>
@@ -100,7 +105,8 @@
     <string name="request_workout_to_see">To see %s\'s contact info, send them a workout request</string>
     <string name="request_exercise">Request Exercise</string>
     <string name="request">Request</string>
-    <string name="home_gym">Home Gym</string>
+    <string name="home_gym_select">Select Home Gym</string>
+    <string name="home_gym_not_selected">Home Gym Not Supplied</string>
     <string name="companions">Companions</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

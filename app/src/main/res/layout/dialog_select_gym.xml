@@ -21,8 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/list_cell_vertical_padding"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:wcrv_dividers="true" />
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         <include layout="@layout/layout_list_empty" />
 

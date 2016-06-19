@@ -18,6 +18,8 @@ import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -64,6 +66,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
 
     @InjectView(R.id.image)
     ImageView mImage;
+    @InjectView(R.id.set_public)
+    CheckBox mPublic;
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
     @InjectView(R.id.first_name)
@@ -83,7 +87,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     @InjectView(R.id.birthday_select)
     AppCompatImageView mBirthdaySelect;
     @InjectView(R.id.home_gym)
-    MaterialEditText mHomeGym;
+    Button mHomeGym;
 
     private WCUser mUser;
     private boolean mIsNewUser, mCanEdit, mEditMode, mTransitioned, mExiting;
@@ -120,7 +124,6 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mLastName.addValidator(ValidatorUtils.getNonEmptyValidator(getString(R.string.error_no_last_name)));
         mEmail.addValidator(ValidatorUtils.getEmailValidator(this));
         mPhoneNumber.addValidator(ValidatorUtils.getPhoneNumberValidator(this));
-        mHomeGym.addValidator(ValidatorUtils.getNonEmptyValidator(getString(R.string.error_no_home_gym_selected)));
 
         if (!mCanEdit) {
             mBirthdaySelect.setVisibility(View.GONE);
@@ -162,10 +165,10 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         } else {
             menu.findItem(R.id.action_cancel).setVisible(mEditMode && mCanEdit);
             menu.findItem(R.id.action_call).setVisible(!mUser.equals(mAccountManager.getUser())
-                    && Utils.isPhoneNumber(mUser.getPhoneNumber()) && mUser.isCanSeeContactInfo());
+                    && Utils.isPhoneNumber(mUser.getPhoneNumber()) && (mUser.isCanSeeContactInfo() || mUser.isPublic()));
             menu.findItem(R.id.action_message).setVisible(!mUser.equals(mAccountManager.getUser())
-                    && Utils.isPhoneNumber(mUser.getPhoneNumber()) && mUser.isCanSeeContactInfo());
-            menu.findItem(R.id.action_request_workout).setVisible(!mCanEdit && !mUser.isCanSeeContactInfo());
+                    && Utils.isPhoneNumber(mUser.getPhoneNumber()) && (mUser.isCanSeeContactInfo() || mUser.isPublic()));
+            menu.findItem(R.id.action_request_workout).setVisible(!mCanEdit && !mUser.isCanSeeContactInfo() && !mUser.isPublic());
         }
 
         if (mCanEdit && !mEditMode && !mIsNewUser && mTransitioned && !mExiting) {
@@ -175,6 +178,16 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         }
 
         mImage.setEnabled(mEditMode);
+        mPublic.setEnabled(mEditMode);
+        if (mPublic.isEnabled()) {
+            mPublic.setText(R.string.set_public);
+        } else {
+            if (mPublic.isChecked()) {
+                mPublic.setText(R.string.is_public);
+            } else {
+                mPublic.setText(R.string.is_private);
+            }
+        }
         mFirstName.setEnabled(mEditMode);
         mLastName.setEnabled(mEditMode);
         mEmail.setEnabled(mEditMode);
@@ -186,8 +199,14 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         mHomeGym.setEnabled(mEditMode);
         if (mCanEdit) {
             if (mEditMode) {
+                if (mUser.getHomeGym() == null || mUser.getHomeGym().length() == 0) {
+                    mHomeGym.setText(R.string.home_gym_select);
+                }
                 mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color));
             } else {
+                if (mUser.getHomeGym() == null || mUser.getHomeGym().length() == 0) {
+                    mHomeGym.setText(R.string.home_gym_not_selected);
+                }
                 mBirthdaySelect.setColorFilter(ContextCompat.getColor(this, R.color.theme_icon_color_light));
             }
         }
@@ -283,8 +302,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                 SelectGymDialog.newInstance(this, new SelectGymDialog.OnGymSelectedListener() {
                     @Override
                     public void onGymSelected(SelectGymDialog dialog, String placeId, String gym) {
-                        mUser.setGymId(placeId);
-                        mUser.setGym(gym);
+                        mUser.setHomeGymId(placeId);
+                        mUser.setHomeGym(gym);
                         mHomeGym.setText(gym);
                     }
                 }).show();
@@ -333,10 +352,15 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mImage.setImageDrawable(defaultImage);
         }
 
+        mPublic.setChecked(mUser.isPublic());
         mFirstName.setText(mUser.getFirstName());
         mLastName.setText(mUser.getLastName());
-        mHomeGym.setText(mUser.getGym());
-        if (!mCanEdit && !mUser.isCanSeeContactInfo()) {
+        if (mUser.getHomeGym() != null && mUser.getHomeGym().length() > 0) {
+            mHomeGym.setText(mUser.getHomeGym());
+        } else if (!mCanEdit) {
+            mHomeGym.setText(R.string.home_gym_not_selected);
+        }
+        if (!mCanEdit && !mUser.isCanSeeContactInfo() && !mUser.isPublic()) {
             mEmail.setText(R.string.email_blank);
             mPhoneNumber.setText(R.string.phone_number_blank);
             mBirthday.setText(R.string.birthday_blank);
@@ -362,6 +386,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     }
 
     private void saveInfo() {
+        mUser.setPublic(mPublic.isChecked());
         mUser.setFirstName(mFirstName.getText().toString());
         mUser.setLastName(mLastName.getText().toString());
         mUser.setEmail(mEmail.getText().toString());
@@ -375,7 +400,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     private void save() {
         mPhoneNumber.setText(Utils.removeNonDigitValuesFromPhoneNumber(mPhoneNumber.getText().toString(), true));
         if (mFirstName.validate() && mLastName.validate() && mEmail.validate() && mPhoneNumber.validate()
-                && mBirthday.validate() && mHomeGym.validate() && (mMale.isChecked() || mFemale.isChecked())) {
+                && mBirthday.validate() && (mMale.isChecked() || mFemale.isChecked())) {
             mEditMode = false;
             mExiting = true;
             supportInvalidateOptionsMenu();

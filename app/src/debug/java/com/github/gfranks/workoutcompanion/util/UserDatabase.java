@@ -24,7 +24,8 @@ public class UserDatabase {
             UserSQLiteHelper.COLUMN_EMAIL, UserSQLiteHelper.COLUMN_PASSWORD,
             UserSQLiteHelper.COLUMN_SEX, UserSQLiteHelper.COLUMN_WEIGHT,
             UserSQLiteHelper.COLUMN_EXERCISES, UserSQLiteHelper.COLUMN_CAN_SEE_INFO,
-            UserSQLiteHelper.COLUMN_GYM_ID, UserSQLiteHelper.COLUMN_GYM
+            UserSQLiteHelper.COLUMN_IS_PUBLIC, UserSQLiteHelper.COLUMN_HOME_GYM_ID,
+            UserSQLiteHelper.COLUMN_HOME_GYM, UserSQLiteHelper.COLUMN_GYM_IDS
     };
 
     private UserSQLiteHelper mDbHelper;
@@ -58,8 +59,10 @@ public class UserDatabase {
         values.put(UserSQLiteHelper.COLUMN_WEIGHT, user.getWeight());
         values.put(UserSQLiteHelper.COLUMN_EXERCISES, TextUtils.join(",", user.getExercises()));
         values.put(UserSQLiteHelper.COLUMN_CAN_SEE_INFO, user.isCanSeeContactInfo() ? 1 : 0);
-        values.put(UserSQLiteHelper.COLUMN_GYM_ID, user.getGymId());
-        values.put(UserSQLiteHelper.COLUMN_GYM, user.getGym());
+        values.put(UserSQLiteHelper.COLUMN_IS_PUBLIC, user.isPublic() ? 1 : 0);
+        values.put(UserSQLiteHelper.COLUMN_HOME_GYM_ID, user.getHomeGymId());
+        values.put(UserSQLiteHelper.COLUMN_HOME_GYM, user.getHomeGym());
+        values.put(UserSQLiteHelper.COLUMN_GYM_IDS, TextUtils.join(",", user.getGymIds()));
         mDatabase.insert(UserSQLiteHelper.TABLE_USERS, null, values);
     }
 
@@ -77,8 +80,10 @@ public class UserDatabase {
         values.put(UserSQLiteHelper.COLUMN_WEIGHT, user.getWeight());
         values.put(UserSQLiteHelper.COLUMN_EXERCISES, TextUtils.join(",", user.getExercises()));
         values.put(UserSQLiteHelper.COLUMN_CAN_SEE_INFO, user.isCanSeeContactInfo() ? 1 : 0);
-        values.put(UserSQLiteHelper.COLUMN_GYM_ID, user.getGymId());
-        values.put(UserSQLiteHelper.COLUMN_GYM, user.getGym());
+        values.put(UserSQLiteHelper.COLUMN_IS_PUBLIC, user.isPublic() ? 1 : 0);
+        values.put(UserSQLiteHelper.COLUMN_HOME_GYM_ID, user.getHomeGymId());
+        values.put(UserSQLiteHelper.COLUMN_HOME_GYM, user.getHomeGym());
+        values.put(UserSQLiteHelper.COLUMN_GYM_IDS, TextUtils.join(",", user.getGymIds()));
         mDatabase.update(UserSQLiteHelper.TABLE_USERS, values, UserSQLiteHelper.COLUMN_ID + "=?", new String[]{user.getId()});
     }
 
@@ -136,13 +141,20 @@ public class UserDatabase {
         builder.setWeight(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_WEIGHT)));
         builder.setExercises(new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_EXERCISES)).split(","))));
         builder.setCanSeeContactInfo(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_CAN_SEE_INFO)) == 1);
-        builder.setGymId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_GYM_ID)));
-        builder.setGym(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_GYM)));
+        builder.setIsPublic(cursor.getInt(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_IS_PUBLIC)) == 1);
+        builder.setHomeGymId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_HOME_GYM_ID)));
+        builder.setHomeGym(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_HOME_GYM)));
+        builder.setGymIds(new ArrayList<>(Arrays.asList(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_GYM_IDS)).split(","))));
         WCUser user = builder.build();
         user.setId(cursor.getString(cursor.getColumnIndex(UserSQLiteHelper.COLUMN_ID)));
         for (String exercise : new ArrayList<>(user.getExercises())) {
             if (exercise.length() == 0) {
                 user.getExercises().remove(exercise);
+            }
+        }
+        for (String gymId : new ArrayList<>(user.getGymIds())) {
+            if (gymId.length() == 0) {
+                user.getGymIds().remove(gymId);
             }
         }
         return user;
@@ -163,8 +175,10 @@ public class UserDatabase {
         static final String COLUMN_WEIGHT = "weight";
         static final String COLUMN_EXERCISES = "exercises";
         static final String COLUMN_CAN_SEE_INFO = "can_see_info";
-        static final String COLUMN_GYM_ID = "gym_id";
-        static final String COLUMN_GYM = "gym";
+        static final String COLUMN_IS_PUBLIC = "is_public";
+        static final String COLUMN_HOME_GYM_ID = "home_gym_id";
+        static final String COLUMN_HOME_GYM = "home_gym";
+        static final String COLUMN_GYM_IDS = "gym_ids";
 
         private static final String DATABASE_NAME = "users.db";
         private static final int DATABASE_VERSION = 1;
@@ -172,7 +186,7 @@ public class UserDatabase {
         // Database creation sql statement
         private static final String DATABASE_CREATE = "create table "
                 + TABLE_USERS + "("
-                + COLUMN_ID + " text primary key, "
+                + COLUMN_ID + " text, "
                 + COLUMN_IMAGE + " text, "
                 + COLUMN_FIRST_NAME + " text, "
                 + COLUMN_LAST_NAME + " text, "
@@ -184,8 +198,10 @@ public class UserDatabase {
                 + COLUMN_WEIGHT + " int, "
                 + COLUMN_EXERCISES + " text, "
                 + COLUMN_CAN_SEE_INFO + " int, "
-                + COLUMN_GYM_ID + " text, "
-                + COLUMN_GYM + " text);";
+                + COLUMN_IS_PUBLIC + " int, "
+                + COLUMN_HOME_GYM_ID + " text, "
+                + COLUMN_HOME_GYM + " text, "
+                + COLUMN_GYM_IDS + " text);";
 
         UserSQLiteHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);

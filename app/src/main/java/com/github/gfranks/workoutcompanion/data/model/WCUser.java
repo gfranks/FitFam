@@ -51,10 +51,14 @@ public class WCUser implements Parcelable, Type {
     private List<String> exercises;
     @SerializedName("canSeeContactInfo")
     private boolean canSeeContactInfo;
-    @SerializedName("gymId")
-    private String gymId;
-    @SerializedName("gym")
-    private String gym;
+    @SerializedName("isPublic")
+    private boolean isPublic;
+    @SerializedName("homeGymId")
+    private String homeGymId;
+    @SerializedName("homeGym")
+    private String homeGym;
+    @SerializedName("gyms")
+    private List<String> gymIds;
 
     public WCUser() {
     }
@@ -76,8 +80,10 @@ public class WCUser implements Parcelable, Type {
         weight = builder.weight;
         exercises = builder.exercises;
         canSeeContactInfo = builder.canSeeContactInfo;
-        gymId = builder.gymId;
-        gym = builder.gym;
+        isPublic = builder.isPublic;
+        homeGymId = builder.homeGymId;
+        homeGym = builder.homeGym;
+        gymIds = builder.gymIds;
     }
 
     public String getId() {
@@ -179,20 +185,39 @@ public class WCUser implements Parcelable, Type {
         this.canSeeContactInfo = canSeeContactInfo;
     }
 
-    public String getGymId() {
-        return gymId;
+    public String getHomeGymId() {
+        return homeGymId;
     }
 
-    public void setGymId(String gymId) {
-        this.gymId = gymId;
+    public void setHomeGymId(String homeGymId) {
+        this.homeGymId = homeGymId;
     }
 
-    public String getGym() {
-        return gym;
+    public String getHomeGym() {
+        return homeGym;
     }
 
-    public void setGym(String gym) {
-        this.gym = gym;
+    public void setHomeGym(String homeGym) {
+        this.homeGym = homeGym;
+    }
+
+    public List<String> getGymIds() {
+        if (gymIds == null) {
+            gymIds = new ArrayList<>();
+        }
+        return gymIds;
+    }
+
+    public void setGymIds(List<String> gymIds) {
+        this.gymIds = gymIds;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public String getFullName() {
@@ -246,8 +271,10 @@ public class WCUser implements Parcelable, Type {
         out.writeValue(weight);
         out.writeList(exercises);
         out.writeValue(canSeeContactInfo ? 1 : 0);
-        out.writeValue(gymId);
-        out.writeValue(gym);
+        out.writeValue(isPublic ? 1 : 0);
+        out.writeValue(homeGymId);
+        out.writeValue(homeGym);
+        out.writeList(gymIds);
     }
 
     private void readFromParcel(Parcel in) {
@@ -263,8 +290,10 @@ public class WCUser implements Parcelable, Type {
         weight = (int) in.readValue(Integer.class.getClassLoader());
         exercises = in.readArrayList(String.class.getClassLoader());
         canSeeContactInfo = ((int) in.readValue(Integer.class.getClassLoader())) == 1;
-        gymId = (String) in.readValue(String.class.getClassLoader());
-        gym = (String) in.readValue(String.class.getClassLoader());
+        isPublic = ((int) in.readValue(Integer.class.getClassLoader())) == 1;
+        homeGymId = (String) in.readValue(String.class.getClassLoader());
+        homeGym = (String) in.readValue(String.class.getClassLoader());
+        gymIds = in.readArrayList(String.class.getClassLoader());
     }
 
     public static class Builder {
@@ -281,8 +310,10 @@ public class WCUser implements Parcelable, Type {
         private int weight;
         private List<String> exercises;
         private boolean canSeeContactInfo;
-        private String gymId;
-        private String gym;
+        private boolean isPublic;
+        private String homeGymId;
+        private String homeGym;
+        private List<String> gymIds;
 
         public Builder() {
             id = UUID.randomUUID().toString();
@@ -355,14 +386,26 @@ public class WCUser implements Parcelable, Type {
             return this;
         }
 
-        public Builder setGymId(String gymId) {
-            this.gymId = gymId;
+        public Builder setIsPublic(boolean isPublic) {
+            this.isPublic = isPublic;
 
             return this;
         }
 
-        public Builder setGym(String gym) {
-            this.gym = gym;
+        public Builder setHomeGymId(String homeGymId) {
+            this.homeGymId = homeGymId;
+
+            return this;
+        }
+
+        public Builder setHomeGym(String homeGym) {
+            this.homeGym = homeGym;
+
+            return this;
+        }
+
+        public Builder setGymIds(List<String> gymIds) {
+            this.gymIds = gymIds;
 
             return this;
         }

@@ -300,6 +300,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         intent.putExtra(WCGym.EXTRA, mAdapter.getItem(position));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                    Pair.create(((GymViewHolder) vh).getNameViewForTransition(), getString(R.string.transition_gym_name)),
+                    Pair.create(((GymViewHolder) vh).getAddressViewForTransition(), getString(R.string.transition_gym_address)),
                     Pair.create(((GymViewHolder) vh).getFavoriteViewForTransition(), getString(R.string.transition_gym_favorite)));
             getActivity().startActivity(intent, options.toBundle());
         } else {

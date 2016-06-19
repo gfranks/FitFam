@@ -199,7 +199,8 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                     }
 
                     for (WCUser user : new ArrayList<>(users)) {
-                        if (user.equals(mAccountManager.getUser()) || !user.getGymId().equals(placeId)) {
+                        if (user.equals(mAccountManager.getUser()) || (!placeId.equals(user.getHomeGymId())
+                                && !user.getGymIds().contains(placeId))) {
                             users.remove(user);
                         }
                     }

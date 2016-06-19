@@ -90,6 +90,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     ViewGroup mActionButtons;
     @InjectView(R.id.gym_share)
     ImageButton mShare;
+    @InjectView(R.id.gym_add_remove)
+    ImageButton mAddRemoveGym;
     @InjectView(R.id.gym_call)
     ImageButton mCall;
     @InjectView(R.id.gym_favorite_alt)
@@ -289,13 +291,13 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * View.OnClickListener
      * ********************
      */
-    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container})
+    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_add_remove, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.gym_set_as_current: {
                 WCUser user = mAccountManager.getUser();
-                user.setGym(mGym.getName());
-                user.setGymId(mGym.getPlace_id());
+                user.setHomeGym(mGym.getName());
+                user.setHomeGymId(mGym.getPlace_id());
                 mService.updateUser(user.getId(), user).enqueue(new Callback<WCUser>() {
                     @Override
                     public void onResponse(Call<WCUser> call, Response<WCUser> response) {
@@ -323,6 +325,45 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                 sharingIntent.setType("text/html");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share, mGym.getName(), mGym.getUrl())));
                 startActivity(Intent.createChooser(sharingIntent,"Share using"));
+                break;
+            }
+            case R.id.gym_add_remove: {
+                WCUser user = mAccountManager.getUser();
+                if (user.getGymIds().contains(mGym.getPlace_id())) {
+                    user.getGymIds().remove(mGym.getPlace_id());
+                } else {
+                    user.getGymIds().add(mGym.getPlace_id());
+                }
+                mService.updateUser(user.getId(), user).enqueue(new Callback<WCUser>() {
+                    @Override
+                    public void onResponse(Call<WCUser> call, Response<WCUser> response) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        mAccountManager.setUser(response.body());
+                        if (response.body().getGymIds().contains(mGym.getPlace_id())) {
+                            mAddRemoveGym.setImageResource(R.drawable.ic_remove);
+                            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                                    .setAlert(getString(R.string.gym_added))
+                                    .create());
+                        } else {
+                            mAddRemoveGym.setImageResource(R.drawable.ic_add);
+                            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                                    .setAlert(getString(R.string.gym_removed))
+                                    .create());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<WCUser> call, Throwable t) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
+                                .setAlert(t.getMessage())
+                                .create());
+                    }
+                });
                 break;
             }
             case R.id.gym_call: {
@@ -409,7 +450,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         setTitle(mGym.getName());
 
         // TODO: figure out how to keep this above toolbar when collapsed
-        if (mAccountManager.getUser().getGymId().equals(mGym.getPlace_id())) {
+        if (mGym.getPlace_id().equals(mAccountManager.getUser().getHomeGymId())) {
             mSetAsCurrent.setVisibility(View.GONE);
         }
 
@@ -418,6 +459,20 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mAddress.setText(mGym.getFormatted_address());
         } else {
             mAddress.setText(mGym.getVicinity());
+        }
+
+        if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
+            mCall.setEnabled(true);
+            mCall.setAlpha(0.5f);
+        } else {
+            mCall.setEnabled(false);
+            mCall.setAlpha(1f);
+        }
+
+        if (mAccountManager.getUser().getGymIds().contains(mGym.getPlace_id())) {
+            mAddRemoveGym.setImageResource(R.drawable.ic_remove);
+        } else {
+            mAddRemoveGym.setImageResource(R.drawable.ic_add);
         }
 
         if (mGym.getWebsite() != null && mGym.getWebsite().length() > 0) {
@@ -451,14 +506,6 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             }
         } else {
             mRatingsContainer.setVisibility(View.GONE);
-        }
-
-        if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
-            mCall.setEnabled(true);
-            mCall.setAlpha(0.5f);
-        } else {
-            mCall.setEnabled(false);
-            mCall.setAlpha(1f);
         }
 
         if (mGym.getOpening_hours() != null && mGym.getOpening_hours().getWeekday_text() != null
