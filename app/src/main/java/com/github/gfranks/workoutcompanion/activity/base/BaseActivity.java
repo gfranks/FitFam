@@ -8,6 +8,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,12 @@ import dagger.ObjectGraph;
 
 public class BaseActivity extends AppCompatActivity implements AppContainerContentInterface, AppBarLayout.OnOffsetChangedListener,
         EndSheetBehavior.EndSheetCallback {
+
+    // TODO: unfortunately, this is needed to prevent a crash on pre-lollipop devices due to vector drawable issues
+    // TODO: maybe remove after gradle 2.0 upgrade?
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Optional
     @InjectView(R.id.drawer_layout)

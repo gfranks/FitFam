@@ -16,8 +16,8 @@
 
     <dimen name="shadow_elevation">3dp</dimen>
     <dimen name="card_view_rounded_corner_radius">5dp</dimen>
-    <dimen name="gym_list_item_height">190dp</dimen>
-    <dimen name="user_list_item_height">190dp</dimen>
+    <dimen name="gym_list_item_height">197dp</dimen>
+    <dimen name="user_list_item_height">197dp</dimen>
     <dimen name="seek_arc_size">175dp</dimen>
 
     <dimen name="default_image_size_small">30dp</dimen>

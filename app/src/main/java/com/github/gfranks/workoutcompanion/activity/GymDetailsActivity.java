@@ -12,6 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -78,8 +79,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     @InjectView(R.id.gym_favorite)
     ToggleButton mFavorite;
-    @InjectView(R.id.gym_set_as_current)
-    View mSetAsCurrent;
+    @InjectView(R.id.gym_set_as_home)
+    View mSetAsHomeGym;
     @InjectView(R.id.scroll_view)
     NestedScrollView mScrollView;
     @InjectView(R.id.gym_name)
@@ -215,7 +216,10 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         super.onOffsetChanged(appBarLayout, verticalOffset);
         if (mAppBarCollapsed) {
-            mSetAsCurrent.bringToFront();
+            // ensure the set as home gym button stays above the toolbar on collapse
+            ViewCompat.setElevation(mSetAsHomeGym, mAppBarLayout.getTargetElevation() + 1);
+        } else {
+            ViewCompat.setElevation(mSetAsHomeGym, mAppBarLayout.getTargetElevation());
         }
 
         if (Math.abs(verticalOffset) >= mFavorite.getBottom() && !mFavoriteAlt.isEnabled()) {
@@ -291,10 +295,10 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
      * View.OnClickListener
      * ********************
      */
-    @OnClick({R.id.gym_set_as_current, R.id.gym_share, R.id.gym_add_remove, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container})
+    @OnClick({R.id.gym_set_as_home, R.id.gym_share, R.id.gym_add_remove, R.id.gym_call, R.id.gym_favorite_alt, R.id.gym_website, R.id.gym_ratings_container})
     void onClick(View v) {
         switch (v.getId()) {
-            case R.id.gym_set_as_current: {
+            case R.id.gym_set_as_home: {
                 WCUser user = mAccountManager.getUser();
                 user.setHomeGym(mGym.getName());
                 user.setHomeGymId(mGym.getPlace_id());
@@ -305,7 +309,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                             return;
                         }
                         mAccountManager.setUser(response.body());
-                        mSetAsCurrent.setVisibility(View.GONE);
+                        mSetAsHomeGym.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -449,9 +453,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     private void initGym() {
         setTitle(mGym.getName());
 
-        // TODO: figure out how to keep this above toolbar when collapsed
         if (mGym.getPlace_id().equals(mAccountManager.getUser().getHomeGymId())) {
-            mSetAsCurrent.setVisibility(View.GONE);
+            mSetAsHomeGym.setVisibility(View.GONE);
         }
 
         mName.setText(mGym.getName());

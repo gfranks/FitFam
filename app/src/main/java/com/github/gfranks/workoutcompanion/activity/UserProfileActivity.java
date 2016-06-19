@@ -128,6 +128,10 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         if (!mCanEdit) {
             mBirthdaySelect.setVisibility(View.GONE);
         }
+
+        // TODO: unfortunately, this is needed to prevent a crash on pre-lollipop devices due to vector drawable issues
+        // TODO: maybe remove after gradle 2.0 upgrade?
+        mFab.setImageDrawable(Utils.getVectorDrawable(this, R.drawable.ic_edit));
     }
 
     @Override

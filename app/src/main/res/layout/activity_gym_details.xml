@@ -286,7 +286,8 @@
                     app:uiScrollGestures="false"
                     app:uiTiltGestures="false"
                     app:uiZoomControls="false"
-                    app:uiZoomGestures="false" />
+                    app:uiZoomGestures="false"
+                    app:liteMode="true"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -321,7 +322,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <Button
-        android:id="@+id/gym_set_as_current"
+        android:id="@+id/gym_set_as_home"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginTop="10dp"

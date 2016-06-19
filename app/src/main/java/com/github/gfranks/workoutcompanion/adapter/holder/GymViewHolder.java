@@ -103,7 +103,7 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 creator.transform(new RoundedCornersTransformation(
                         itemView.getResources().getDimensionPixelSize(R.dimen.card_view_rounded_corner_radius),
-                        0, RoundedCornersTransformation.CornerType.LEFT));
+                        0, RoundedCornersTransformation.CornerType.TOP));
             }
             creator.into(mImage);
         } else {

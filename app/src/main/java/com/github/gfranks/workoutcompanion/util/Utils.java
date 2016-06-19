@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -144,7 +146,7 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return applyDrawableTint(ContextCompat.getDrawable(context, drawable), color, alpha);
         } else {
-            return applyDrawableTint(ContextCompat.getDrawable(context, drawable), color, alpha);
+            return applyDrawableTintPreLol(ContextCompat.getDrawable(context, drawable), color, alpha);
         }
     }
 
@@ -160,6 +162,22 @@ public class Utils {
         }
 
         return drawable;
+    }
+
+    public static Drawable applyDrawableTintPreLol(Drawable drawable, int color, int alpha) {
+        if (drawable != null) {
+            drawable.mutate();
+            Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(wrappedDrawable, color);
+            wrappedDrawable.setAlpha(alpha);
+            return wrappedDrawable;
+        }
+
+        return drawable;
+    }
+
+    public static Drawable getVectorDrawable(Context context, int drawableResId) {
+        return ResourcesCompat.getDrawable(context.getResources(), drawableResId, context.getTheme());
     }
 
     public static Gson getGson() {
