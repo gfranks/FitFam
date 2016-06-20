@@ -24,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
@@ -32,7 +33,6 @@ import com.github.gfranks.workoutcompanion.dialog.SelectGymDialog;
 import com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment;
 import com.github.gfranks.workoutcompanion.fragment.WeightSelectFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.CropCircleTransformation;
 import com.github.gfranks.workoutcompanion.util.EndSheetBehavior;
@@ -40,7 +40,6 @@ import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.util.ValidatorUtils;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
-import com.urbanairship.UAirship;
 
 import java.util.Calendar;
 
@@ -334,9 +333,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         if (isFinishing()) {
             return;
         }
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                .setAlert(t.getMessage())
-                .create());
+        GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
 
         supportFinishAfterTransition();
     }
@@ -427,18 +424,14 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                     if (isFinishing()) {
                         return;
                     }
-                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                            .setAlert(t.getMessage())
-                            .create());
+                    GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
                 }
             });
         } else {
             if (isFinishing()) {
                 return;
             }
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                    .setAlert(getString(R.string.error_user_profile))
-                    .create());
+            GFMinimalNotification.make(mCoordinatorLayout, R.string.error_user_profile, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
         }
     }
 
@@ -449,9 +442,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                 if (isFinishing()) {
                     return;
                 }
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                        .setAlert(getString(R.string.workout_request_sent))
-                        .create());
+                GFMinimalNotification.make(mCoordinatorLayout, R.string.workout_request_sent, GFMinimalNotification.LENGTH_LONG).show();
             }
 
             @Override
@@ -459,9 +450,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                 if (isFinishing()) {
                     return;
                 }
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                        .setAlert(getString(R.string.error_user_profile))
-                        .create());
+                GFMinimalNotification.make(mCoordinatorLayout, R.string.error_user_profile, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
             }
         });
     }

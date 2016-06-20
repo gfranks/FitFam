@@ -10,17 +10,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.WorkoutCompanionActivity;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.util.ValidatorUtils;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.urbanairship.UAirship;
 
 import javax.inject.Inject;
 
@@ -88,9 +87,7 @@ public class LoginFragment extends BaseFragment implements Callback<WCUser>, Tex
         if (mEmail.validate() && mPassword.validate()) {
             mService.login(mEmail.getText().toString(), mPassword.getText().toString()).enqueue(this);
         } else {
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                    .setAlert(getString(R.string.error_login))
-                    .create());
+            GFMinimalNotification.make(getView(), R.string.error_login, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
         }
     }
 
@@ -152,8 +149,6 @@ public class LoginFragment extends BaseFragment implements Callback<WCUser>, Tex
         if (isDetached() || getActivity() == null) {
             return;
         }
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                .setAlert(t.getMessage())
-                .create());
+        GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
     }
 }

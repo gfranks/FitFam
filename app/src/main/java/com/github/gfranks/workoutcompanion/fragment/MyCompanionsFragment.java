@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.UserProfileActivity;
 import com.github.gfranks.workoutcompanion.adapter.UserListAdapter;
@@ -19,10 +20,8 @@ import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
-import com.urbanairship.UAirship;
 
 import java.util.Arrays;
 import java.util.List;
@@ -96,9 +95,7 @@ public class MyCompanionsFragment extends BaseFragment implements Callback<List<
             return;
         }
         mEmptyView.displayLoading(false);
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                .setAlert(t.getMessage())
-                .create());
+        GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
     }
 
     /**

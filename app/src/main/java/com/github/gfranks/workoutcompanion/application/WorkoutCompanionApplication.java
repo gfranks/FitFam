@@ -8,7 +8,6 @@ import com.crashlytics.android.Crashlytics;
 import com.github.gfranks.workoutcompanion.BuildConfig;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.module.Modules;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageFragmentFactory;
 import com.github.gfranks.workoutcompanion.notification.WCNotificationFactory;
 import com.github.gfranks.workoutcompanion.util.Feature;
 import com.github.gfranks.workoutcompanion.util.Utils;
@@ -69,13 +68,8 @@ public class WorkoutCompanionApplication extends Application {
                 }
 
                 uAirship.getInAppMessageManager().setDisplayAsapEnabled(true);
-                uAirship.getInAppMessageManager().setFragmentFactory(new WCInAppMessageFragmentFactory());
             }
         });
-    }
-
-    public void buildObjectGraph() {
-        mObjectGraph = ObjectGraph.create(Modules.list(this));
     }
 
     public void inject(Object o) {
@@ -84,5 +78,9 @@ public class WorkoutCompanionApplication extends Application {
 
     public ObjectGraph getApplicationObjectGraph() {
         return mObjectGraph;
+    }
+
+    private void buildObjectGraph() {
+        mObjectGraph = ObjectGraph.create(Modules.list(this));
     }
 }

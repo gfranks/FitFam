@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.GymDetailsActivity;
 import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
@@ -24,11 +25,9 @@ import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
-import com.urbanairship.UAirship;
 
 import javax.inject.Inject;
 
@@ -114,9 +113,7 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
         try {
             mGymDatabase.open();
             mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                    .setAlert(getString(R.string.gym_unfavorited))
-                    .create());
+            GFMinimalNotification.make(getView(), R.string.gym_unfavorited, GFMinimalNotification.LENGTH_LONG).show();
             mAdapter.removeItem(position);
             mGymDatabase.close();
         } catch (Throwable t) {
@@ -141,9 +138,7 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
             mEmptyView.displayLoading(false);
         } catch (Throwable t) {
             mEmptyView.displayLoading(false);
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                    .setAlert(getString(R.string.error_unable_to_load_saved_gyms))
-                    .create());
+            GFMinimalNotification.make(getView(), R.string.error_unable_to_load_saved_gyms, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
         }
     }
 

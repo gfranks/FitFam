@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
@@ -18,12 +19,10 @@ import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.model.LatLng;
-import com.urbanairship.UAirship;
 
 import javax.inject.Inject;
 
@@ -117,9 +116,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
                     if (!isShowing()) {
                         return;
                     }
-                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                            .setAlert(t.getMessage())
-                            .create());
+                    GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG).show();
                 }
             });
         }
@@ -168,14 +165,10 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
             mGymDatabase.open();
             if (isFavorite) {
                 mGymDatabase.saveGym(mAccountManager.getUser().getId(), mAdapter.getItem(position));
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                        .setAlert(getContext().getString(R.string.gym_favorited))
-                        .create());
+                GFMinimalNotification.make(getView(), R.string.gym_favorited, GFMinimalNotification.LENGTH_LONG).show();
             } else {
                 mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                        .setAlert(getContext().getString(R.string.gym_unfavorited))
-                        .create());
+                GFMinimalNotification.make(getView(), R.string.gym_unfavorited, GFMinimalNotification.LENGTH_LONG).show();
             }
             mGymDatabase.close();
         } catch (Throwable t) {
@@ -207,9 +200,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
                     return;
                 }
                 mEmptyView.displayLoading(false);
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                        .setAlert(t.getMessage())
-                        .create());
+                GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
             }
         });
     }

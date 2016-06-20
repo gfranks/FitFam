@@ -11,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.ExerciseTypeAdapter;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
-import com.urbanairship.UAirship;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,9 +117,7 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         if (isDetached() || getActivity() == null) {
             return;
         }
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                .setAlert(getString(R.string.error_unable_to_load_exercises))
-                .create());
+        GFMinimalNotification.make(getView(), R.string.error_unable_to_load_exercises, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
         if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
             mAdapter = new ExerciseTypeAdapter(mUser, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))), mEditMode);
             mExerciseGrid.setAdapter(mAdapter);
@@ -156,9 +153,7 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
                                 if (isDetached() || getActivity() == null) {
                                     return;
                                 }
-                                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getWarningBuilder()
-                                        .setAlert(t.getMessage())
-                                        .create());
+                                GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
                             }
                         });
                     }

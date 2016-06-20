@@ -29,6 +29,7 @@ import android.widget.ToggleButton;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
@@ -41,7 +42,6 @@ import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
@@ -53,7 +53,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.maps.android.clustering.ClusterManager;
-import com.urbanairship.UAirship;
 
 import java.util.List;
 
@@ -251,9 +250,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         if (isFinishing()) {
             return;
         }
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                .setAlert(t.getMessage())
-                .create());
+        GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
     }
 
     /**
@@ -317,9 +314,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                         if (isFinishing()) {
                             return;
                         }
-                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                                .setAlert(t.getMessage())
-                                .create());
+                        GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG).show();
                     }
                 });
                 break;
@@ -347,14 +342,10 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                         mAccountManager.setUser(response.body());
                         if (response.body().getGymIds().contains(mGym.getPlace_id())) {
                             mAddRemoveGym.setImageResource(R.drawable.ic_remove);
-                            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                                    .setAlert(getString(R.string.gym_added))
-                                    .create());
+                            GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_added, GFMinimalNotification.LENGTH_LONG).show();
                         } else {
                             mAddRemoveGym.setImageResource(R.drawable.ic_add);
-                            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                                    .setAlert(getString(R.string.gym_removed))
-                                    .create());
+                            GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_removed, GFMinimalNotification.LENGTH_LONG).show();
                         }
                     }
 
@@ -363,9 +354,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                         if (isFinishing()) {
                             return;
                         }
-                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                                .setAlert(t.getMessage())
-                                .create());
+                        GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG).show();
                     }
                 });
                 break;
@@ -374,9 +363,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                             Manifest.permission.CALL_PHONE)) {
-                        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getInfoBuilder()
-                                .setAlert(getString(R.string.gym_call_permission_reason))
-                                .create());
+                        GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_call_permission_reason, GFMinimalNotification.LENGTH_LONG).show();
                     } else {
                         ActivityCompat.requestPermissions(this,
                                 new String[]{Manifest.permission.CALL_PHONE},
@@ -415,15 +402,11 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         if (isChecked) {
             mFavoriteAlt.setImageResource(R.drawable.ic_heart_on);
             mGymDatabase.saveGym(mAccountManager.getUser().getId(), mGym);
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                    .setAlert(getString(R.string.gym_favorited))
-                    .create());
+            GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_favorited, GFMinimalNotification.LENGTH_LONG).show();
         } else {
             mFavoriteAlt.setImageResource(R.drawable.ic_heart_off);
             mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mGym.getId());
-            UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                    .setAlert(getString(R.string.gym_unfavorited))
-                    .create());
+            GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_unfavorited, GFMinimalNotification.LENGTH_LONG).show();
         }
         supportInvalidateOptionsMenu();
     }
@@ -536,14 +519,14 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                 if (isFinishing()) {
                     return;
                 }
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                        .setAlert(t.getMessage())
-                        .create());
+                GFMinimalNotification.make(mCoordinatorLayout, t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
             }
         });
 
         try {
-            mGymDatabase.open();
+            if (!mGymDatabase.isOpen()) {
+                mGymDatabase.open();
+            }
             mFavorite.setOnCheckedChangeListener(null);
             boolean isFavorite = mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId());
             mFavorite.setChecked(isFavorite);

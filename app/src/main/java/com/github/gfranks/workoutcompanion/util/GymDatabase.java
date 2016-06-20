@@ -48,6 +48,10 @@ public class GymDatabase {
         }
     }
 
+    public boolean isOpen() {
+        return mDatabase != null && mDatabase.isOpen();
+    }
+
     public void saveGym(String userId, WCGym gym) {
         ContentValues values = new ContentValues();
         values.put(GymSQLiteHelper.COLUMN_ID, gym.getId());

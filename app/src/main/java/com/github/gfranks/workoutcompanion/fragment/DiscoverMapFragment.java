@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.GymDetailsActivity;
 import com.github.gfranks.workoutcompanion.adapter.DiscoverMapRenderer;
@@ -38,7 +39,6 @@ import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
-import com.github.gfranks.workoutcompanion.notification.WCInAppMessageManagerConstants;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
@@ -53,7 +53,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.urbanairship.UAirship;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,9 +283,10 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
      */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                .setAlert(getString(R.string.error_no_location))
-                .create());
+        if (isDetached() || getActivity() == null) {
+            return;
+        }
+        GFMinimalNotification.make(getView(), R.string.error_no_location, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
     }
 
     /**
@@ -336,9 +336,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                     if (isDetached() || getActivity() == null) {
                         return;
                     }
-                    UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                            .setAlert(t.getMessage())
-                            .create());
+                    GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
                 }
             });
         }
@@ -375,14 +373,10 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
             mGymDatabase.open();
             if (isFavorite) {
                 mGymDatabase.saveGym(mAccountManager.getUser().getId(), mAdapter.getItem(position));
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                        .setAlert(getString(R.string.gym_favorited))
-                        .create());
+                GFMinimalNotification.make(getView(), R.string.gym_favorited, GFMinimalNotification.LENGTH_LONG).show();
             } else {
                 mGymDatabase.deleteGym(mAccountManager.getUser().getId(), mAdapter.getItem(position).getId());
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getSuccessBuilder()
-                        .setAlert(getString(R.string.gym_unfavorited))
-                        .create());
+                GFMinimalNotification.make(getView(), R.string.gym_unfavorited, GFMinimalNotification.LENGTH_LONG).show();
             }
             mGymDatabase.close();
         } catch (Throwable t) {
@@ -415,9 +409,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                 if (isDetached() || getActivity() == null) {
                     return;
                 }
-                UAirship.shared().getInAppMessageManager().setPendingMessage(WCInAppMessageManagerConstants.getErrorBuilder()
-                        .setAlert(t.getMessage())
-                        .create());
+                GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
             }
         });
     }
