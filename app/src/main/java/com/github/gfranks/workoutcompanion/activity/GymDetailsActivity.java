@@ -180,9 +180,30 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_share).setVisible(mShowActionMenuItems);
         menu.findItem(R.id.action_call).setVisible(mShowActionMenuItems);
+        menu.findItem(R.id.action_share).setVisible(mShowActionMenuItems);
+        menu.findItem(R.id.action_add_remove).setVisible(mShowActionMenuItems);
         menu.findItem(R.id.action_save).setVisible(mShowActionMenuItems);
+
+        if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
+            menu.findItem(R.id.action_call).setEnabled(true);
+            mCall.setEnabled(true);
+            mCall.setAlpha(1f);
+        } else {
+            menu.findItem(R.id.action_call).setEnabled(false);
+            mCall.setEnabled(false);
+            mCall.setAlpha(0.5f);
+        }
+
+        if (mAccountManager.getUser().getGymIds().contains(mGym.getPlace_id())) {
+            menu.findItem(R.id.action_add_remove).setIcon(R.drawable.ic_remove);
+            menu.findItem(R.id.action_add_remove).setTitle(R.string.action_remove);
+            mAddRemoveGym.setImageResource(R.drawable.ic_remove);
+        } else {
+            menu.findItem(R.id.action_add_remove).setIcon(R.drawable.ic_add);
+            menu.findItem(R.id.action_add_remove).setTitle(R.string.action_add);
+            mAddRemoveGym.setImageResource(R.drawable.ic_add);
+        }
 
         if (mFavorite.isChecked()) {
             menu.findItem(R.id.action_save).setIcon(R.drawable.ic_heart_on);
@@ -198,11 +219,14 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_call:
+                onClick(mCall);
+                break;
             case R.id.action_share:
                 onClick(mShare);
                 break;
-            case R.id.action_call:
-                onClick(mCall);
+            case R.id.action_add_remove:
+                onClick(mAddRemoveGym);
                 break;
             case R.id.action_save:
                 onClick(mFavoriteAlt);
@@ -341,12 +365,11 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                         }
                         mAccountManager.setUser(response.body());
                         if (response.body().getGymIds().contains(mGym.getPlace_id())) {
-                            mAddRemoveGym.setImageResource(R.drawable.ic_remove);
                             GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_added, GFMinimalNotification.LENGTH_LONG).show();
                         } else {
-                            mAddRemoveGym.setImageResource(R.drawable.ic_add);
                             GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_removed, GFMinimalNotification.LENGTH_LONG).show();
                         }
+                        supportInvalidateOptionsMenu();
                     }
 
                     @Override
@@ -447,20 +470,6 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mAddress.setText(mGym.getVicinity());
         }
 
-        if (mGym.getFormatted_phone_number() != null && mGym.getFormatted_phone_number().length() > 0) {
-            mCall.setEnabled(true);
-            mCall.setAlpha(0.5f);
-        } else {
-            mCall.setEnabled(false);
-            mCall.setAlpha(1f);
-        }
-
-        if (mAccountManager.getUser().getGymIds().contains(mGym.getPlace_id())) {
-            mAddRemoveGym.setImageResource(R.drawable.ic_remove);
-        } else {
-            mAddRemoveGym.setImageResource(R.drawable.ic_add);
-        }
-
         if (mGym.getWebsite() != null && mGym.getWebsite().length() > 0) {
             mWebsite.setVisibility(View.VISIBLE);
             mWebsite.setText(mGym.getWebsite());
@@ -530,12 +539,12 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             mFavorite.setOnCheckedChangeListener(null);
             boolean isFavorite = mGymDatabase.isFavorite(mAccountManager.getUser().getId(), mGym.getId());
             mFavorite.setChecked(isFavorite);
-            supportInvalidateOptionsMenu();
             mFavorite.setOnCheckedChangeListener(this);
         } catch (Throwable t) {
             t.printStackTrace();
             // unable to open gym db
         }
+        supportInvalidateOptionsMenu();
     }
 
     private void makePhoneCall() {

@@ -68,6 +68,7 @@
     <string name="discover_my_companions">My Companions</string>
 
     <!-- Menu Strings -->
+    <string name="action_add">Add</string>
     <string name="action_call">Call</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_continue">Continue</string>
@@ -77,6 +78,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_logout">Logout</string>
     <string name="action_message">Message</string>
+    <string name="action_remove">Remove</string>
     <string name="action_request_workout">Request Workout</string>
     <string name="action_save">Save</string>
     <string name="action_search">Search</string>

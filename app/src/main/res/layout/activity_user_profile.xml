@@ -42,8 +42,10 @@
                 android:id="@+id/set_public"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="25dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginEnd="25dp"
                 android:enabled="false"
                 android:textColor="@color/white"
                 android:text="@string/set_public"/>

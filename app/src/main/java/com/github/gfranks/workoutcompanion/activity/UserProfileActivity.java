@@ -226,6 +226,8 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         if (id == R.id.action_save) {
             save();
         } else if (id == R.id.action_cancel) {
+            // reset data
+            initUser();
             mEditMode = false;
             supportInvalidateOptionsMenu();
         } else if (id == R.id.action_call) {
