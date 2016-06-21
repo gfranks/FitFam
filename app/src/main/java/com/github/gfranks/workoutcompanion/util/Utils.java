@@ -68,7 +68,7 @@ public class Utils {
         if (context == null || context.getResources() == null) {
             return;
         }
-        applyMenuTintColor(menu, ContextCompat.getColor(context, R.color.theme_default_text_light), ContextCompat.getColor(context, R.color.theme_default_text));
+        applyMenuTintColor(menu, ContextCompat.getColor(context, R.color.white), ContextCompat.getColor(context, R.color.theme_default_text));
     }
 
     public static void applyMenuTintColor(Menu menu, int color, int subMenuColor) {
@@ -92,6 +92,7 @@ public class Utils {
                             }
                         }
                         ((TextView) actionView).setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3]);
+                        ((TextView) actionView).setTextColor(color);
                     } else if (actionView instanceof SearchView) {
                         try {
                             SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) actionView.findViewById(android.support.v7.appcompat.R.id.search_src_text);

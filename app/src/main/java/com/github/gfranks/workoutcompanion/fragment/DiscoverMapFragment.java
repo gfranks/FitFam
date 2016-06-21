@@ -22,6 +22,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -83,6 +84,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     MapView mMapView;
     @InjectView(R.id.map_view_list_container)
     View mBottomSheet;
+    @InjectView(R.id.map_view_list_top_shadow)
+    View mListViewTopShadow;
     @InjectView(R.id.map_view_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
@@ -90,6 +93,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
 
     private GoogleMap mMap;
     private ClusterManager<WCGym> mClusterManager;
+    private List<WCGym> mGyms;
     private GymListAdapter mAdapter;
     private SearchView mSearchView;
     private SearchSuggestionsAdapter mSearchViewAdapter;
@@ -168,10 +172,33 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (isListShown()) {
+            menu.findItem(R.id.action_show_list).setTitle(R.string.action_hide_list);
+        } else {
+            menu.findItem(R.id.action_show_list).setTitle(R.string.action_show_list);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_show_list) {
+            if (isListShown()) {
+                hideList();
+            } else {
+                showList(mGyms, getMap().getCameraPosition().target, true);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == GoogleApiManager.REQUEST_LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getMap().setMyLocationEnabled(true);
+            getMap().setMyLocationEnabled(true); // no need to check permission, we have been granted access
             mGoogleApiManager.connect(this, this, this);
         }
     }
@@ -194,7 +221,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         getMap().setOnMarkerClickListener(mClusterManager);
         getMap().setOnMapClickListener(this);
         if (mGoogleApiManager.connect(this, this, this)) {
-            map.setMyLocationEnabled(true);
+            getMap().setMyLocationEnabled(true); // no need to check permission, we have been granted access
         }
         getMap().setIndoorEnabled(true);
         getMap().setBuildingsEnabled(true);
@@ -231,7 +258,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         } else {
             List<WCGym> results = new ArrayList<>();
             results.addAll(cluster.getItems());
-            showList(results, cluster.getPosition());
+            showList(results, cluster.getPosition(), false);
             return false;
         }
     }
@@ -245,7 +272,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     public boolean onClusterItemClick(final WCGym wcGym) {
         List<WCGym> results = new ArrayList<>();
         results.add(wcGym);
-        showList(results, wcGym.getPosition());
+        showList(results, wcGym.getPosition(), false);
         return false;
     }
 
@@ -392,11 +419,12 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                 if (isDetached() || getActivity() == null) {
                     return;
                 }
+                mGyms = response.body().getResults();
                 mClusterManager.clearItems();
-                mClusterManager.addItems(response.body().getResults());
-                if (response.body().getResults().size() > 0) {
+                mClusterManager.addItems(mGyms);
+                if (mGyms.size() > 0) {
                     LatLngBounds.Builder builder = LatLngBounds.builder();
-                    for (ClusterItem item : response.body().getResults()) {
+                    for (ClusterItem item : mGyms) {
                         builder.include(item.getPosition());
                     }
                     final LatLngBounds bounds = builder.build();
@@ -414,11 +442,11 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         });
     }
 
-    private void showList(List<WCGym> gyms, final LatLng position) {
+    private void showList(List<WCGym> gyms, final LatLng position, final boolean isFullscreen) {
         mAdapter = new GymListAdapter(gyms, this);
         mListView.setAdapter(mAdapter);
-        adjustListContainerHeight();
-        if (BottomSheetBehavior.from(mBottomSheet).getState() != BottomSheetBehavior.STATE_EXPANDED) {
+        adjustListContainerHeight(isFullscreen);
+        if (!isListShown()) {
             // allow recycler view to pass initial drawing of children before animating up
             // this prevents an empty list showing after animation
             new Handler().postDelayed(new Runnable() {
@@ -428,10 +456,13 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                     BottomSheetBehavior.from(mBottomSheet).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                         @Override
                         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                            ensureSelectedMarkerVisible(position);
                             if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
                                 BottomSheetBehavior.from(mBottomSheet).setBottomSheetCallback(null);
+                            } else if (!isFullscreen) {
+                                ensureSelectedMarkerVisible(position);
                             }
+
+                            getActivity().supportInvalidateOptionsMenu();
                         }
 
                         @Override
@@ -446,16 +477,23 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ensureSelectedMarkerVisible(position);
+                    if (!isFullscreen) {
+                        ensureSelectedMarkerVisible(position);
+                    }
                 }
             }, 200);
         }
     }
 
     private void hideList() {
-        if (BottomSheetBehavior.from(mBottomSheet).getState() != BottomSheetBehavior.STATE_COLLAPSED) {
+        if (isListShown()) {
             BottomSheetBehavior.from(mBottomSheet).setState(BottomSheetBehavior.STATE_COLLAPSED);
+            getActivity().supportInvalidateOptionsMenu();
         }
+    }
+
+    private boolean isListShown() {
+        return BottomSheetBehavior.from(mBottomSheet).getState() == BottomSheetBehavior.STATE_EXPANDED;
     }
 
     private void ensureSelectedMarkerVisible(LatLng position) {
@@ -473,7 +511,16 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         return mMap;
     }
 
-    private void adjustListContainerHeight() {
+    private void adjustListContainerHeight(boolean isFullscreen) {
+        if (isFullscreen) {
+            ViewGroup.LayoutParams params = mBottomSheet.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            mBottomSheet.setLayoutParams(params);
+            mListViewTopShadow.setVisibility(View.GONE);
+            return;
+        }
+
+        mListViewTopShadow.setVisibility(View.VISIBLE);
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

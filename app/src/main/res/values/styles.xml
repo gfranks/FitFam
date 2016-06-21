@@ -32,13 +32,11 @@
     <style name="DefaultAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
-        <item name="android:textColor">@color/white</item>
     </style>
-
-    <style name="DefaultAppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="DefaultAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColor">@color/theme_default_text</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="DefaultAppTheme.CollapsingToolbarLayoutCollapsedTitleTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">

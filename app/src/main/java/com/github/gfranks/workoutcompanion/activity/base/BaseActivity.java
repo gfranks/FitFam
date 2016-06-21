@@ -1,6 +1,7 @@
 package com.github.gfranks.workoutcompanion.activity.base;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -112,6 +114,12 @@ public class BaseActivity extends AppCompatActivity implements AppContainerConte
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        Utils.applyMenuTintColor(this, menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (popBackStackEntryOnBackPress()) {
@@ -182,6 +190,18 @@ public class BaseActivity extends AppCompatActivity implements AppContainerConte
             return false;
         }
         return true;
+    }
+
+    protected void delayCloseDrawerLayout() {
+        if (mDrawerLayout == null) {
+            return;
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        }, 200);
     }
 
     public void inject(Object object) {

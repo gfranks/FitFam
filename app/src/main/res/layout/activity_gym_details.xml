@@ -50,7 +50,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/transparent"
                 app:layout_collapseMode="pin"
-                app:theme="@style/DefaultAppTheme.Toolbar"
                 app:popupTheme="@style/DefaultAppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>

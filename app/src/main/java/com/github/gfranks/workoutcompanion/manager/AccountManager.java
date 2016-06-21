@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.util.Utils;
-import com.google.gson.Gson;
 
 import info.metadude.android.typedpreferences.BooleanPreference;
 import info.metadude.android.typedpreferences.StringPreference;
@@ -51,7 +50,7 @@ public class AccountManager {
 
     public void setUser(WCUser user) {
         mUser = user;
-        mUserStringPreference.set(new Gson().toJson(mUser));
+        mUserStringPreference.set(Utils.getGson().toJson(mUser));
         setEmail(user.getEmail());
     }
 

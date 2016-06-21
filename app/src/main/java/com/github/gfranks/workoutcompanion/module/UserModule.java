@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
+import com.github.gfranks.workoutcompanion.manager.FilterManager;
 
 import javax.inject.Singleton;
 
@@ -23,5 +24,11 @@ public class UserModule {
     @Singleton
     AccountManager provideAccountManager(SharedPreferences sharedPreferences) {
         return new AccountManager(sharedPreferences);
+    }
+
+    @Provides
+    @Singleton
+    FilterManager provideFilterManager(SharedPreferences preferences) {
+        return new FilterManager(preferences);
     }
 }

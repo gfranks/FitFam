@@ -5,6 +5,7 @@ import android.database.MatrixCursor;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 
+import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.data.model.WCLocation;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class SearchSuggestionsAdapter extends SimpleCursorAdapter {
     private List<WCLocation> mResults;
 
     public SearchSuggestionsAdapter(Context context) {
-        super(context, android.R.layout.simple_list_item_1, null, new String[]{COLUMN_TEXT},
+        super(context, R.layout.layout_search_suggestions_list_item, null, new String[]{COLUMN_TEXT},
                 new int[]{android.R.id.text1}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 

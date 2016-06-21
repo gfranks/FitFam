@@ -19,6 +19,7 @@
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <View
+            android:id="@+id/map_view_list_top_shadow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/shadow_elevation"
             android:background="@drawable/img_shadow_top" />

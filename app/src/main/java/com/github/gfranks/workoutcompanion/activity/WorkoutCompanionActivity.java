@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -132,7 +131,7 @@ public class WorkoutCompanionActivity extends BaseActivity implements Navigation
             supportFinishAfterTransition();
         }
 
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        delayCloseDrawerLayout();
         return true;
     }
 
