@@ -75,6 +75,7 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnSuggestionListener(this);
         mSearchView.setSuggestionsAdapter(mSearchViewAdapter);
+        initFilterOptions();
     }
 
     @Override

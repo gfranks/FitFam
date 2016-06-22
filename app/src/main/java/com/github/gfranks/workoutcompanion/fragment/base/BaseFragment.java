@@ -53,7 +53,12 @@ public class BaseFragment extends Fragment {
 
     protected void setupTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Slide slideInTransition = new Slide(Gravity.END);
+            Slide slideInTransition;
+            try {
+                slideInTransition = new Slide(Gravity.END);
+            } catch (Throwable t) {
+                slideInTransition = new Slide(Gravity.RIGHT);
+            }
             slideInTransition.setDuration(200);
 
             setEnterTransition(slideInTransition);
@@ -61,7 +66,12 @@ public class BaseFragment extends Fragment {
             setAllowReturnTransitionOverlap(false);
             setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.transition_default));
 
-            Slide slideOutTransition = new Slide(Gravity.START);
+            Slide slideOutTransition;
+            try {
+                slideOutTransition = new Slide(Gravity.START);
+            } catch (Throwable t) {
+                slideOutTransition = new Slide(Gravity.LEFT);
+            }
             slideOutTransition.setDuration(200);
 
             setReenterTransition(slideOutTransition);
