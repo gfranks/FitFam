@@ -44,7 +44,7 @@ public class GymReviewViewHolder extends WCRecyclerView.ViewHolder {
     public void populate(WCGymReview review) {
         mUser.setText(review.getAuthor_name());
         mDate.setText(DateTimeFormat.forPattern(DATE_TIME_PATTERN).print(new DateTime(review.getTime())));
-        GymUtils.adjustImageViewsForRating(itemView.getContext(), review.getRating(), new ImageView[] {
+        GymUtils.adjustImageViewsForRating(itemView.getContext(), review.getRating(), new ImageView[]{
                 mRating1, mRating2, mRating3, mRating4, mRating5
         });
         mText.setText(review.getText());

@@ -117,7 +117,7 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
                         mAppBarLayout.animate().translationY(0).start();
                     } else {
                         mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                        mAppBarLayout.animate().translationY((int) (-mAppBarLayout.getHeight()*1.5)).start();
+                        mAppBarLayout.animate().translationY((int) (-mAppBarLayout.getHeight() * 1.5)).start();
                     }
                 }
             });

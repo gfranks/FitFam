@@ -47,6 +47,14 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
 
     private GymListAdapter mAdapter;
     private GymDatabase mGymDatabase;
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
+                loadGyms();
+            }
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,13 +162,4 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
                 .build());
         mListView.setEmptyView(mEmptyView);
     }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
-                loadGyms();
-            }
-        }
-    };
 }

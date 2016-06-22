@@ -45,10 +45,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.FilterCompanionsActivity"
-            android:label="@string/nav_filter_companions" />
-
-        <activity
             android:name=".activity.UserProfileActivity"
             android:label="@string/user_profile"
             android:windowSoftInputMode="stateHidden" />
@@ -64,6 +60,8 @@
         <activity
             android:name=".activity.FullScreenGymPhotosActivity"
             android:label="@string/gym_photos" />
+
+        <activity android:name=".activity.FragmentActivity" />
 
         <receiver android:name=".notification.WCNotificationPublisher" />
 

@@ -100,6 +100,18 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     private SearchView mSearchView;
     private SearchSuggestionsAdapter mSearchViewAdapter;
     private GymDatabase mGymDatabase;
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
+                try {
+                    mAdapter.notifyDataSetChanged();
+                } catch (Throwable t) {
+                    // do nothing
+                }
+            }
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -345,9 +357,20 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
      */
     @Override
     public boolean onQueryTextSubmit(String query) {
-        if (mGoogleApiManager.setLastLocationFromQuery(query)) {
-            loadGyms();
-        }
+        mGoogleApiManager.setLastLocationFromQuery(query, new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == GoogleApiManager.STATUS_SUCCESS) {
+                    loadGyms();
+                } else {
+                    if (!isDetached() && getActivity() != null) {
+                        Throwable t = msg.getData().getParcelable(WCErrorResponse.EXTRA);
+                        GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
+                    }
+                }
+                return true;
+            }
+        }));
         return false;
     }
 
@@ -546,17 +569,4 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         }
         mBottomSheet.setLayoutParams(params);
     }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(GymDatabase.BROADCAST)) {
-                try {
-                    mAdapter.notifyDataSetChanged();
-                } catch (Throwable t) {
-                    // do nothing
-                }
-            }
-        }
-    };
 }

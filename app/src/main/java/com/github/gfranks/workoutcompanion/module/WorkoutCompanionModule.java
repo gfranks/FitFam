@@ -2,7 +2,6 @@ package com.github.gfranks.workoutcompanion.module;
 
 import android.app.Application;
 
-import com.github.gfranks.workoutcompanion.activity.FilterCompanionsActivity;
 import com.github.gfranks.workoutcompanion.activity.FullScreenGymPhotosActivity;
 import com.github.gfranks.workoutcompanion.activity.GymDetailsActivity;
 import com.github.gfranks.workoutcompanion.activity.GymReviewsActivity;
@@ -36,7 +35,6 @@ import dagger.Provides;
                 LoginActivity.class,
                 WorkoutCompanionActivity.class,
                 UserProfileActivity.class,
-                FilterCompanionsActivity.class,
                 GymDetailsActivity.class,
                 GymReviewsActivity.class,
                 FullScreenGymPhotosActivity.class,

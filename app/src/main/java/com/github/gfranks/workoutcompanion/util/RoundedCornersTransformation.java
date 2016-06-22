@@ -15,6 +15,7 @@ public class RoundedCornersTransformation implements Transformation {
     private int mDiameter;
     private int mMargin;
     private CornerType mCornerType;
+
     public RoundedCornersTransformation(int radius, int margin) {
         this(radius, margin, CornerType.ALL);
     }

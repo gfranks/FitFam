@@ -13,14 +13,14 @@
             android:id="@+id/empty_view_header_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/empty_view_text_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="10dp">
 
             <TextView
@@ -29,18 +29,18 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                 android:text="title"
-                android:visibility="gone"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/empty_view_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:text="subtitle"
-                android:visibility="gone"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -51,6 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </FrameLayout>

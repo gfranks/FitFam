@@ -4,10 +4,10 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.BuildConfig;
-import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.Endpoint;
 import com.github.gfranks.workoutcompanion.data.api.Environment;
 import com.github.gfranks.workoutcompanion.data.api.ErrorHandlingExecutorCallAdapterFactory;
+import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.RequestHeaderInterceptor;
 import com.github.gfranks.workoutcompanion.data.api.RequestLoggingInterceptor;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;

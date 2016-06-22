@@ -20,6 +20,7 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
+import com.github.gfranks.workoutcompanion.fragment.CompanionFiltersFragment;
 import com.github.gfranks.workoutcompanion.fragment.DiscoverFragment;
 import com.github.gfranks.workoutcompanion.fragment.SettingsFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
@@ -116,6 +117,14 @@ public class WorkoutCompanionActivity extends BaseActivity implements Navigation
                     fragment = DiscoverFragment.newInstance();
                 }
                 replaceMainFragment(fragment, DiscoverFragment.TAG);
+            }
+        } else if (id == R.id.nav_companion_filters) {
+            CompanionFiltersFragment fragment = (CompanionFiltersFragment) getSupportFragmentManager().findFragmentByTag(CompanionFiltersFragment.TAG);
+            if (fragment == null || getSupportFragmentManager().findFragmentById(R.id.activity_fragment_content) != fragment) {
+                if (fragment == null) {
+                    fragment = CompanionFiltersFragment.newInstance();
+                }
+                replaceMainFragment(fragment, CompanionFiltersFragment.TAG);
             }
         } else if (id == R.id.nav_settings) {
             SettingsFragment fragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(SettingsFragment.TAG);

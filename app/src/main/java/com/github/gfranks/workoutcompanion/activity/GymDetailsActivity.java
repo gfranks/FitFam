@@ -346,8 +346,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
             case R.id.gym_share: {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/html");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share, mGym.getName(), mGym.getUrl())));
-                startActivity(Intent.createChooser(sharingIntent,"Share using"));
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(getString(R.string.gym_share_text, mGym.getName(), mGym.getUrl())));
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.gym_share)));
                 break;
             }
             case R.id.gym_add_remove: {

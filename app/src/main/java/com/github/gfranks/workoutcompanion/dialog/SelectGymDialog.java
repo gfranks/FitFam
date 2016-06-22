@@ -19,6 +19,7 @@ import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
 import com.github.gfranks.workoutcompanion.data.model.WCErrorResponse;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
+import com.github.gfranks.workoutcompanion.data.model.WCLocation;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
@@ -102,6 +103,25 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
      */
     @Override
     public boolean onQueryTextSubmit(String query) {
+        mGoogleApiManager.getLocationFromQuery(query, new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.what) {
+                    case GoogleApiManager.STATUS_SUCCESS:
+                        WCLocation location = msg.getData().getParcelable(WCLocation.EXTRA);
+                        mSearchView.setQuery(location.getFormatted_address(), false);
+                        loadGyms(location.getPosition());
+                        break;
+                    case GoogleApiManager.STATUS_FAILURE:
+                        if (isShowing()) {
+                            Throwable t = msg.getData().getParcelable(WCErrorResponse.EXTRA);
+                            GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
+                        }
+                        break;
+                }
+                return false;
+            }
+        }));
         return false;
     }
 
@@ -193,7 +213,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
 
                 mEmptyView.displayLoading(false);
                 if (mAdapter == null || mListView.getAdapter() == null) {
-                    mAdapter = new GymListAdapter(response.body().getResults(),SelectGymDialog. this);
+                    mAdapter = new GymListAdapter(response.body().getResults(), SelectGymDialog.this);
                     mListView.setAdapter(mAdapter);
                 } else {
                     mAdapter.setGyms(response.body().getResults());

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/transparent"
-            app:theme="@style/DefaultAppTheme.Toolbar"
+            android:theme="@style/DefaultAppTheme.Toolbar"
             app:popupTheme="@style/DefaultAppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -33,10 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:padding="10dp"
-        android:gravity="center"
         android:background="@color/black_transparent"
+        android:gravity="center"
+        android:padding="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white" />
 
 </android.support.design.widget.CoordinatorLayout>

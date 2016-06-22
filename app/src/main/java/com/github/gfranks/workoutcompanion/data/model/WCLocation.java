@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 
 public class WCLocation implements Parcelable, Type {
 
+    public static final String EXTRA = "location";
     public static final Parcelable.Creator<WCLocation> CREATOR = new Parcelable.Creator<WCLocation>() {
         public WCLocation createFromParcel(Parcel in) {
             return new WCLocation(in);

@@ -35,7 +35,7 @@
     <!-- Navigation Strings -->
     <string name="nav_account_section">Account</string>
     <string name="nav_discover">Discover</string>
-    <string name="nav_filter_companions">@string/action_filter_companions</string>
+    <string name="nav_companion_filters">@string/action_companion_filters</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Filter Strings -->
@@ -58,7 +58,8 @@
     <string name="gym_reviews">Reviews</string>
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
     <string name="gym_call">Call %1$s at %2$s?</string>
-    <string name="gym_share"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
+    <string name="gym_share">Share Gym Using</string>
+    <string name="gym_share_text"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
     <string name="gym_set_as_current">Set as home gym</string>
 
     <!-- Settings Strings -->
@@ -80,7 +81,7 @@
     <string name="action_discover">Discover</string>
     <string name="action_done">Done</string>
     <string name="action_edit">Edit</string>
-    <string name="action_filter_companions">Filter Companions</string>
+    <string name="action_companion_filters">Companion Filters</string>
     <string name="action_logout">Logout</string>
     <string name="action_message">Message</string>
     <string name="action_remove">Remove</string>

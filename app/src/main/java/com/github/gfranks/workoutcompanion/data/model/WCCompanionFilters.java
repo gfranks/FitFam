@@ -1,5 +1,6 @@
 package com.github.gfranks.workoutcompanion.data.model;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,21 +8,25 @@ import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
 
-public class WCCompanionFilterOptions implements Parcelable, Type {
+public class WCCompanionFilters implements Parcelable, Type {
 
-    public static final Creator<WCCompanionFilterOptions> CREATOR = new Creator<WCCompanionFilterOptions>() {
+    public static final String EXTRA = "companion_filters";
+    public static final Creator<WCCompanionFilters> CREATOR = new Creator<WCCompanionFilters>() {
         @Override
-        public WCCompanionFilterOptions createFromParcel(Parcel in) {
-            return new WCCompanionFilterOptions(in);
+        public WCCompanionFilters createFromParcel(Parcel in) {
+            return new WCCompanionFilters(in);
         }
+
         @Override
-        public WCCompanionFilterOptions[] newArray(int size) {
-            return new WCCompanionFilterOptions[size];
+        public WCCompanionFilters[] newArray(int size) {
+            return new WCCompanionFilters[size];
         }
     };
 
-    @SerializedName("gymName")
-    private String gymName;
+    @SerializedName("location")
+    private WCLocation location;
+    @SerializedName("gymId")
+    private String gymId;
     @SerializedName("sex")
     private String sex;
     @SerializedName("age")
@@ -29,26 +34,35 @@ public class WCCompanionFilterOptions implements Parcelable, Type {
     @SerializedName("weight")
     private int weight;
 
-    public WCCompanionFilterOptions() {
+    public WCCompanionFilters() {
     }
 
-    public WCCompanionFilterOptions(Parcel in) {
+    public WCCompanionFilters(Parcel in) {
         readFromParcel(in);
     }
 
-    public WCCompanionFilterOptions(Builder builder) {
-        gymName = builder.gymName;
+    public WCCompanionFilters(Builder builder) {
+        location = builder.location;
+        gymId = builder.gymId;
         sex = builder.sex;
         age = builder.age;
         weight = builder.weight;
     }
 
-    public String getGymName() {
-        return gymName;
+    public WCLocation getLocation() {
+        return location;
     }
 
-    public void setGymName(String gymName) {
-        this.gymName = gymName;
+    public void setLocation(WCLocation location) {
+        this.location = location;
+    }
+
+    public String getGymId() {
+        return gymId;
+    }
+
+    public void setGymId(String gymId) {
+        this.gymId = gymId;
     }
 
     public String getSex() {
@@ -82,14 +96,16 @@ public class WCCompanionFilterOptions implements Parcelable, Type {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeValue(gymName);
+        out.writeValue(location);
+        out.writeValue(gymId);
         out.writeValue(sex);
         out.writeValue(age);
         out.writeValue(weight);
     }
 
     private void readFromParcel(Parcel in) {
-        gymName = (String) in.readValue(String.class.getClassLoader());
+        location = (WCLocation) in.readValue(Location.class.getClassLoader());
+        gymId = (String) in.readValue(String.class.getClassLoader());
         sex = (String) in.readValue(String.class.getClassLoader());
         age = (int) in.readValue(Integer.class.getClassLoader());
         weight = (int) in.readValue(Integer.class.getClassLoader());
@@ -97,7 +113,8 @@ public class WCCompanionFilterOptions implements Parcelable, Type {
 
     public static class Builder {
 
-        private String gymName;
+        private WCLocation location;
+        private String gymId;
         private String sex;
         private int age;
         private int weight;
@@ -105,8 +122,14 @@ public class WCCompanionFilterOptions implements Parcelable, Type {
         public Builder() {
         }
 
-        public Builder setGymName(String gymName) {
-            this.gymName = gymName;
+        public Builder setLocation(WCLocation location) {
+            this.location = location;
+
+            return this;
+        }
+
+        public Builder setGymId(String gymId) {
+            this.gymId = gymId;
 
             return this;
         }
@@ -129,8 +152,8 @@ public class WCCompanionFilterOptions implements Parcelable, Type {
             return this;
         }
 
-        public WCCompanionFilterOptions build() {
-            return new WCCompanionFilterOptions(this);
+        public WCCompanionFilters build() {
+            return new WCCompanionFilters(this);
         }
     }
 }

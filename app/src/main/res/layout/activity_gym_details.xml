@@ -37,12 +37,12 @@
                 android:id="@+id/gym_favorite"
                 android:layout_width="@dimen/default_image_size_medium"
                 android:layout_height="@dimen/default_image_size_medium"
-                android:layout_margin="@dimen/fab_margin"
                 android:layout_gravity="end"
-                android:textOn="@null"
-                android:textOff="@null"
+                android:layout_margin="@dimen/fab_margin"
                 android:background="@drawable/ic_heart"
-                android:transitionName="@string/transition_gym_favorite"/>
+                android:textOff="@null"
+                android:textOn="@null"
+                android:transitionName="@string/transition_gym_favorite" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -50,7 +50,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/transparent"
                 app:layout_collapseMode="pin"
-                app:theme="@style/DefaultAppTheme.Toolbar"
+                android:theme="@style/DefaultAppTheme.Toolbar"
                 app:popupTheme="@style/DefaultAppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -61,72 +61,72 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/theme_background"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:descendantFocusability="beforeDescendants">
+            android:focusableInTouchMode="true">
 
             <LinearLayout
                 android:id="@+id/gym_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin">
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin">
 
                 <TextView
                     android:id="@+id/gym_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:gravity="center"
-                    android:transitionName="@string/transition_gym_name"/>
+                    android:transitionName="@string/transition_gym_name" />
 
                 <TextView
                     android:id="@+id/gym_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:transitionName="@string/transition_gym_address"/>
+                    android:transitionName="@string/transition_gym_address" />
 
                 <LinearLayout
                     android:id="@+id/gym_action_buttons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/gym_call"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
-                        android:layout_marginRight="20dp"
                         android:layout_marginEnd="20dp"
-                        android:padding="5dp"
+                        android:layout_marginRight="20dp"
                         android:background="@drawable/btn_theme_background_round"
-                        android:tint="@color/theme_icon_color"
                         android:enabled="false"
+                        android:padding="5dp"
+                        android:tint="@color/theme_icon_color"
                         app:srcCompat="@drawable/ic_call" />
 
                     <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/gym_share"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
-                        android:layout_marginRight="20dp"
                         android:layout_marginEnd="20dp"
-                        android:padding="5dp"
+                        android:layout_marginRight="20dp"
                         android:background="@drawable/btn_theme_background_round"
+                        android:padding="5dp"
                         android:tint="@color/theme_icon_color"
                         app:srcCompat="@drawable/ic_share" />
 
@@ -134,10 +134,10 @@
                         android:id="@+id/gym_add_remove"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
-                        android:layout_marginRight="20dp"
                         android:layout_marginEnd="20dp"
-                        android:padding="5dp"
+                        android:layout_marginRight="20dp"
                         android:background="@drawable/btn_theme_background_round"
+                        android:padding="5dp"
                         android:tint="@color/theme_icon_color"
                         app:srcCompat="@drawable/ic_add" />
 
@@ -145,12 +145,12 @@
                         android:id="@+id/gym_favorite_alt"
                         android:layout_width="@dimen/default_image_size"
                         android:layout_height="@dimen/default_image_size"
-                        android:padding="5dp"
-                        android:background="@drawable/btn_theme_background_round"
-                        android:tint="@color/theme_icon_color"
-                        android:enabled="false"
                         android:alpha="0.5"
-                        app:srcCompat="@drawable/ic_heart_on"/>
+                        android:background="@drawable/btn_theme_background_round"
+                        android:enabled="false"
+                        android:padding="5dp"
+                        android:tint="@color/theme_icon_color"
+                        app:srcCompat="@drawable/ic_heart_on" />
 
                 </LinearLayout>
 
@@ -158,28 +158,28 @@
                     android:id="@+id/gym_website"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:background="@drawable/btn_accent_round"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingEnd="15dp"
                     android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
                     android:paddingStart="15dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="10dp"
-                    android:background="@drawable/btn_accent_round"
                     android:textColor="@color/white"
-                    android:gravity="center"
-                    android:layout_gravity="center_horizontal"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:id="@+id/gym_ratings_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/list_cell_vertical_padding"
-                    android:paddingBottom="@dimen/list_cell_vertical_padding"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/btn_theme_background"
+                    android:paddingBottom="@dimen/list_cell_vertical_padding"
+                    android:paddingTop="@dimen/list_cell_vertical_padding"
                     android:visibility="gone">
 
                     <TextView
@@ -189,57 +189,57 @@
                         android:gravity="center_horizontal"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="?android:attr/textColorPrimary"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/gym_ratings_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
                         android:layout_below="@+id/gym_reviews"
+                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
                         android:gravity="center_horizontal"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:text="@string/gym_rating"/>
+                        android:text="@string/gym_rating"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
-                        android:layout_centerHorizontal="true"
                         android:layout_below="@+id/gym_ratings_title"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/rating_1_image_view"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginRight="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@color/transparent"/>
+                            android:layout_marginRight="2dp"
+                            android:src="@color/transparent" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/rating_2_image_view"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginRight="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@color/transparent"/>
+                            android:layout_marginRight="2dp"
+                            android:src="@color/transparent" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/rating_3_image_view"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginRight="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@color/transparent"/>
+                            android:layout_marginRight="2dp"
+                            android:src="@color/transparent" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/rating_4_image_view"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_marginRight="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@color/transparent"/>
+                            android:layout_marginRight="2dp"
+                            android:src="@color/transparent" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/rating_5_image_view"
@@ -262,45 +262,45 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:text="@string/gym_hours"/>
+                        android:text="@string/gym_hours"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                     <TextView
                         android:id="@+id/gym_hours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/list_cell_vertical_padding"/>
+                        android:layout_marginTop="@dimen/list_cell_vertical_padding" />
 
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginBottom="5dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:text="@string/gym_map" />
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/gym_map"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapview"
                     android:layout_width="match_parent"
                     android:layout_height="225dp"
                     android:clickable="true"
+                    app:liteMode="true"
                     app:uiRotateGestures="false"
                     app:uiScrollGestures="false"
                     app:uiTiltGestures="false"
                     app:uiZoomControls="false"
-                    app:uiZoomGestures="false"
-                    app:liteMode="true"/>
+                    app:uiZoomGestures="false" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginBottom="@dimen/list_cell_top_bottom_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:background="@color/theme_background"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:text="@string/companions" />
+                    android:text="@string/companions"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             </LinearLayout>
 
@@ -313,8 +313,8 @@
                     android:id="@+id/user_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:minHeight="@dimen/user_list_item_height"
                     android:background="@color/theme_background_dark"
+                    android:minHeight="@dimen/user_list_item_height"
                     app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
                 <include layout="@layout/layout_list_empty" />
@@ -330,17 +330,17 @@
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:paddingRight="10dp"
-        android:paddingEnd="10dp"
         android:background="@drawable/btn_primary_color_round"
+        android:fitsSystemWindows="true"
+        android:paddingEnd="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingStart="10dp"
+        android:text="@string/gym_set_as_current"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/white"
-        android:text="@string/gym_set_as_current"
-        android:fitsSystemWindows="true"
         app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|center_horizontal"/>
+        app:layout_anchorGravity="bottom|center_horizontal" />
 
     <include layout="@layout/layout_dev_settings" />
 

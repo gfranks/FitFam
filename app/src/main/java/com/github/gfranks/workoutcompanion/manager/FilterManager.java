@@ -2,7 +2,7 @@ package com.github.gfranks.workoutcompanion.manager;
 
 import android.content.SharedPreferences;
 
-import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilterOptions;
+import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilters;
 import com.github.gfranks.workoutcompanion.util.Utils;
 
 import org.joda.time.DateTime;
@@ -17,51 +17,51 @@ public class FilterManager {
 
     private StringPreference mFilterOptionsStringPreference;
 
-    private WCCompanionFilterOptions mFilterOptions;
+    private WCCompanionFilters mFilterOptions;
 
     public FilterManager(SharedPreferences prefs) {
         mFilterOptionsStringPreference = new StringPreference(prefs, KEY_FILTER_OPTIONS, DEFAULT_FILTER_OPTIONS);
     }
 
-    public void setFilterOptions(WCCompanionFilterOptions filterOptions) {
-        mFilterOptions = filterOptions;
-        mFilterOptionsStringPreference.set(Utils.getGson().toJson(filterOptions));
-    }
-
-    public WCCompanionFilterOptions getFilterOptions() {
+    public WCCompanionFilters getFilterOptions() {
         if (mFilterOptions == null) {
-            mFilterOptions = Utils.getGson().fromJson(mFilterOptionsStringPreference.get(), WCCompanionFilterOptions.class);
+            mFilterOptions = Utils.getGson().fromJson(mFilterOptionsStringPreference.get(), WCCompanionFilters.class);
         }
 
         return mFilterOptions;
     }
 
-    public void setFilterByGym(String gym) {
-        WCCompanionFilterOptions filterOptions = getFilterOptions();
-        filterOptions.setGymName(gym);
+    public void setFilterOptions(WCCompanionFilters filterOptions) {
+        mFilterOptions = filterOptions;
+        mFilterOptionsStringPreference.set(Utils.getGson().toJson(filterOptions));
+    }
+
+    public void setFilterByGymId(String gymId) {
+        WCCompanionFilters filterOptions = getFilterOptions();
+        filterOptions.setGymId(gymId);
         setFilterOptions(filterOptions);
     }
 
     public void setFilterBySex(String sex) {
-        WCCompanionFilterOptions filterOptions = getFilterOptions();
+        WCCompanionFilters filterOptions = getFilterOptions();
         filterOptions.setSex(sex);
         setFilterOptions(filterOptions);
     }
 
     public void setFilterByAge(int age) {
-        WCCompanionFilterOptions filterOptions = getFilterOptions();
+        WCCompanionFilters filterOptions = getFilterOptions();
         filterOptions.setAge(age);
         setFilterOptions(filterOptions);
     }
 
     public void setFilterByAge(DateTime dateTime) {
-        WCCompanionFilterOptions filterOptions = getFilterOptions();
+        WCCompanionFilters filterOptions = getFilterOptions();
         filterOptions.setAge(new DateTime().get(DateTimeFieldType.year()) - dateTime.get(DateTimeFieldType.year()));
         setFilterOptions(filterOptions);
     }
 
     public void setFilterByWeight(int weight) {
-        WCCompanionFilterOptions filterOptions = getFilterOptions();
+        WCCompanionFilters filterOptions = getFilterOptions();
         filterOptions.setWeight(weight);
         setFilterOptions(filterOptions);
     }

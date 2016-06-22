@@ -11,6 +11,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
@@ -150,19 +151,65 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
                 || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public boolean setLastLocationFromQuery(String query) {
-        try {
-            List<Address> addresses = restrictAddressResultsToLocale(mGeocoder.getFromLocationName(query, 1));
-            if (addresses.size() > 0) {
-                Address address = addresses.get(0);
-                setLastKnownLocation(new LatLng(address.getLatitude(), address.getLongitude()));
+    public boolean setLastLocationFromQuery(String query, final Handler handler) {
+        getLocationFromQuery(query, new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                Message message = Message.obtain();
+                message.setTarget(handler);
+                message.what = msg.what;
+                switch (msg.what) {
+                    case STATUS_SUCCESS:
+                        WCLocation location = msg.getData().getParcelable(WCLocation.EXTRA);
+                        setLastKnownLocation(location.getPosition());
+                        break;
+                    case STATUS_FAILURE:
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(WCErrorResponse.EXTRA, new WCErrorResponse.Builder()
+                                .setMessage("Unable to use the selected location")
+                                .build());
+                        break;
+                }
+                message.sendToTarget();
                 return true;
             }
-        } catch (Throwable t) {
-            // do nothing
-        }
+        }));
 
         return false;
+    }
+
+    public void getLocationFromQuery(final String query, final Handler handler) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                Message message = Message.obtain();
+                message.setTarget(handler);
+                String bundleKey;
+                Parcelable bundleExtra;
+                try {
+                    List<Address> addresses = restrictAddressResultsToLocale(mGeocoder.getFromLocationName(query, 10));
+                    if (addresses.size() > 0) {
+                        message.what = STATUS_SUCCESS;
+                        bundleKey = WCLocation.EXTRA;
+                        bundleExtra = getLocationFromAddress(addresses.get(0));
+                    } else {
+                        throw new Exception("");
+                    }
+                } catch (Throwable t) {
+                    message.what = STATUS_FAILURE;
+                    bundleKey = WCErrorResponse.EXTRA;
+                    bundleExtra = new WCErrorResponse.Builder()
+                            .setMessage("Unable to find locations")
+                            .build();
+                }
+
+                bundle.putParcelable(bundleKey, bundleExtra);
+                message.setData(bundle);
+                message.sendToTarget();
+            }
+        };
+        thread.start();
     }
 
     public void getLocationsFromQuery(final String query, final Handler handler) {
@@ -209,25 +256,30 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
     private List<WCLocation> getLocationArrayFromAddresses(List<Address> addresses) {
         List<WCLocation> locations = new ArrayList<>();
         for (Address address : addresses) {
-            WCLocation location = new WCLocation();
-            StringBuilder formattedAddress = new StringBuilder();
-            for(int i=0; i<address.getMaxAddressLineIndex(); i++) {
-                if (i > 0) {
-                    formattedAddress.append(", ");
-                }
-                formattedAddress.append(address.getAddressLine(i));
-            }
-            location.setFormatted_address(formattedAddress.toString());
-            WCGymGeometry geometry = new WCGymGeometry();
-            WCGymGeometryLocation geometryLocation = new WCGymGeometryLocation();
-            geometryLocation.setLat(address.getLatitude());
-            geometryLocation.setLng(address.getLongitude());
-            geometry.setLocation(geometryLocation);
-            location.setGeometry(geometry);
-            locations.add(location);
+            locations.add(getLocationFromAddress(address));
         }
 
         return locations;
+    }
+
+    private WCLocation getLocationFromAddress(Address address) {
+        WCLocation location = new WCLocation();
+        StringBuilder formattedAddress = new StringBuilder();
+        for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+            if (i > 0) {
+                formattedAddress.append(", ");
+            }
+            formattedAddress.append(address.getAddressLine(i));
+        }
+        location.setFormatted_address(formattedAddress.toString());
+        WCGymGeometry geometry = new WCGymGeometry();
+        WCGymGeometryLocation geometryLocation = new WCGymGeometryLocation();
+        geometryLocation.setLat(address.getLatitude());
+        geometryLocation.setLng(address.getLongitude());
+        geometry.setLocation(geometryLocation);
+        location.setGeometry(geometry);
+
+        return location;
     }
 
     private void connect(GoogleApiClient.ConnectionCallbacks onConnectedCallback,

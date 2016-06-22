@@ -9,7 +9,7 @@ repositories {
         url 'https://maven.fabric.io/public'
     }
     maven {
-        url  "https://urbanairship.bintray.com/android"
+        url "https://urbanairship.bintray.com/android"
     }
     mavenCentral()
     flatDir {
@@ -72,8 +72,8 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug-${gitSha}"
             signingConfig signingConfigs.debug
-            ext.betaDistributionReleaseNotes=releaseNotes
-            ext.betaDistributionGroupAliases=group
+            ext.betaDistributionReleaseNotes = releaseNotes
+            ext.betaDistributionGroupAliases = group
 
             buildConfigField "String", "API_URL_PROD", "\"" + API_URL_PROD + "\""
             buildConfigField "String", "API_URL_QA", "\"" + API_URL_QA + "\""
@@ -86,8 +86,8 @@ android {
 
         release {
             signingConfig signingConfigs.release
-            ext.betaDistributionReleaseNotes=releaseNotes
-            ext.betaDistributionGroupAliases=group
+            ext.betaDistributionReleaseNotes = releaseNotes
+            ext.betaDistributionGroupAliases = group
 
             buildConfigField "String", "API_URL_PROD", "\"" + API_URL_PROD + "\""
             buildConfigField "String", "API_URL_QA", "\"" + API_URL_QA + "\""

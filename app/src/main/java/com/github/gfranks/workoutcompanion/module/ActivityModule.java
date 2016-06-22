@@ -3,6 +3,7 @@ package com.github.gfranks.workoutcompanion.module;
 import android.app.Activity;
 import android.content.Context;
 
+import com.github.gfranks.workoutcompanion.fragment.CompanionFiltersFragment;
 import com.github.gfranks.workoutcompanion.fragment.CreateAccountFragment;
 import com.github.gfranks.workoutcompanion.fragment.DevSettingsFragment;
 import com.github.gfranks.workoutcompanion.fragment.DiscoverFragment;
@@ -35,6 +36,7 @@ import dagger.Provides;
                 DiscoverMapFragment.class,
                 FavoriteGymsFragment.class,
                 MyCompanionsFragment.class,
+                CompanionFiltersFragment.class,
                 WeightSelectFragment.class,
                 ExerciseTypeFragment.class,
                 GymPhotosFragment.class,
