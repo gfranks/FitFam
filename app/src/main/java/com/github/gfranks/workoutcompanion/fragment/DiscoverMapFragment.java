@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -34,6 +35,7 @@ import com.github.gfranks.workoutcompanion.adapter.GymListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.GymViewHolder;
 import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
+import com.github.gfranks.workoutcompanion.data.model.WCErrorResponse;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
@@ -343,29 +345,32 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
      */
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (mGoogleApiManager.setLastLocationFromQuery(query)) {
+            loadGyms();
+        }
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
         if (query.length() >= 3) {
-            mGoogleApiService.getLocations(query, getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
+            mGoogleApiManager.getLocationsFromQuery(query, new Handler(new Handler.Callback() {
                 @Override
-                public void onResponse(Call<WCLocations> call, Response<WCLocations> response) {
-                    if (isDetached() || getActivity() == null) {
-                        return;
+                public boolean handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case GoogleApiManager.STATUS_SUCCESS:
+                            mSearchViewAdapter.updateWithLocationResults(((WCLocations) msg.getData().getParcelable(WCLocations.EXTRA)).getResults());
+                            break;
+                        case GoogleApiManager.STATUS_FAILURE:
+                            if (!isDetached() && getActivity() != null) {
+                                Throwable t = msg.getData().getParcelable(WCErrorResponse.EXTRA);
+                                GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
+                            }
+                            break;
                     }
-                    mSearchViewAdapter.updateWithLocationResults(response.body().getResults());
+                    return true;
                 }
-
-                @Override
-                public void onFailure(Call<WCLocations> call, Throwable t) {
-                    if (isDetached() || getActivity() == null) {
-                        return;
-                    }
-                    GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
-                }
-            });
+            }));
         }
         return false;
     }

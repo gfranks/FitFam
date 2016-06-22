@@ -5,27 +5,43 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
+import com.github.gfranks.workoutcompanion.data.model.WCErrorResponse;
+import com.github.gfranks.workoutcompanion.data.model.WCGymGeometry;
+import com.github.gfranks.workoutcompanion.data.model.WCGymGeometryLocation;
+import com.github.gfranks.workoutcompanion.data.model.WCLocation;
+import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import info.metadude.android.typedpreferences.DoublePreference;
 
 public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int REQUEST_LOCATION_PERMISSION = 1;
+    public static final int STATUS_SUCCESS = 1;
+    public static final int STATUS_FAILURE = 2;
 
     private static final String KEY_LAT = "lat";
     private static final String KEY_LNG = "lng";
 
     private GoogleApiClient mGoogleApiClient;
+    private Geocoder mGeocoder;
     private DoublePreference mLatitudePreference;
     private DoublePreference mLongitudePreference;
 
@@ -44,6 +60,7 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+        mGeocoder = new Geocoder(app, Locale.US);
     }
 
     /**
@@ -131,6 +148,86 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
     public boolean hasLocationPermission(Activity activity) {
         return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public boolean setLastLocationFromQuery(String query) {
+        try {
+            List<Address> addresses = restrictAddressResultsToLocale(mGeocoder.getFromLocationName(query, 1));
+            if (addresses.size() > 0) {
+                Address address = addresses.get(0);
+                setLastKnownLocation(new LatLng(address.getLatitude(), address.getLongitude()));
+                return true;
+            }
+        } catch (Throwable t) {
+            // do nothing
+        }
+
+        return false;
+    }
+
+    public void getLocationsFromQuery(final String query, final Handler handler) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                Message message = Message.obtain();
+                message.setTarget(handler);
+                try {
+                    List<Address> addresses = restrictAddressResultsToLocale(mGeocoder.getFromLocationName(query, 10));
+
+                    WCLocations locations = new WCLocations();
+                    locations.setResults(getLocationArrayFromAddresses(addresses));
+                    message.what = STATUS_SUCCESS;
+                    bundle.putParcelable(WCLocations.EXTRA, locations);
+                } catch (Throwable t) {
+                    message.what = STATUS_FAILURE;
+                    bundle.putParcelable(WCErrorResponse.EXTRA, new WCErrorResponse.Builder()
+                            .setMessage("Unable to find locations")
+                            .build());
+                }
+
+                message.setData(bundle);
+                message.sendToTarget();
+            }
+        };
+        thread.start();
+    }
+
+    private List<Address> restrictAddressResultsToLocale(List<Address> addresses) {
+        List<Address> restrictedAddresses = new ArrayList<>();
+        Locale locale = Locale.US;
+        for (Address address : addresses) {
+            if (!locale.getCountry().equals(address.getCountryCode())) {
+                continue;
+            }
+            restrictedAddresses.add(address);
+        }
+
+        return restrictedAddresses;
+    }
+
+    private List<WCLocation> getLocationArrayFromAddresses(List<Address> addresses) {
+        List<WCLocation> locations = new ArrayList<>();
+        for (Address address : addresses) {
+            WCLocation location = new WCLocation();
+            StringBuilder formattedAddress = new StringBuilder();
+            for(int i=0; i<address.getMaxAddressLineIndex(); i++) {
+                if (i > 0) {
+                    formattedAddress.append(", ");
+                }
+                formattedAddress.append(address.getAddressLine(i));
+            }
+            location.setFormatted_address(formattedAddress.toString());
+            WCGymGeometry geometry = new WCGymGeometry();
+            WCGymGeometryLocation geometryLocation = new WCGymGeometryLocation();
+            geometryLocation.setLat(address.getLatitude());
+            geometryLocation.setLng(address.getLongitude());
+            geometry.setLocation(geometryLocation);
+            location.setGeometry(geometry);
+            locations.add(location);
+        }
+
+        return locations;
     }
 
     private void connect(GoogleApiClient.ConnectionCallbacks onConnectedCallback,

@@ -10,6 +10,8 @@ import java.util.List;
 
 public class WCLocations implements Parcelable, Type {
 
+    public static final String EXTRA = "locations";
+
     public static final Parcelable.Creator<WCLocations> CREATOR = new Parcelable.Creator<WCLocations>() {
         public WCLocations createFromParcel(Parcel in) {
             return new WCLocations(in);
@@ -22,6 +24,9 @@ public class WCLocations implements Parcelable, Type {
 
     @SerializedName("results")
     private List<WCLocation> results;
+
+    public WCLocations() {
+    }
 
     public WCLocations(Parcel in) {
         readFromParcel(in);

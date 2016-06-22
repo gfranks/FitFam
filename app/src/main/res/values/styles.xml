@@ -34,6 +34,11 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
+    <style name="DefaultAppTheme.Toolbar" parent="DefaultAppTheme.AppBarOverlay">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+    </style>
+
     <style name="DefaultAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColor">@color/theme_default_text</item>
         <item name="android:textSize">17sp</item>

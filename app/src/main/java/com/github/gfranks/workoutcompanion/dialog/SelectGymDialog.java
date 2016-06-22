@@ -1,6 +1,8 @@
 package com.github.gfranks.workoutcompanion.dialog;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -14,11 +16,13 @@ import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
 import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplication;
 import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
+import com.github.gfranks.workoutcompanion.data.model.WCErrorResponse;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
+import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.view.EmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
@@ -35,6 +39,8 @@ import retrofit2.Response;
 public class SelectGymDialog extends MaterialDialog implements SearchView.OnQueryTextListener,
         SearchView.OnSuggestionListener, WCRecyclerView.OnItemClickListener, GymListAdapter.OnFavoriteListener {
 
+    @Inject
+    GoogleApiManager mGoogleApiManager;
     @Inject
     GoogleApiService mGoogleApiService;
     @Inject
@@ -102,23 +108,23 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String query) {
         if (query.length() >= 3) {
-            mGoogleApiService.getLocations(query, getContext().getString(R.string.api_places_key)).enqueue(new Callback<WCLocations>() {
+            mGoogleApiManager.getLocationsFromQuery(query, new Handler(new Handler.Callback() {
                 @Override
-                public void onResponse(Call<WCLocations> call, Response<WCLocations> response) {
-                    if (!isShowing()) {
-                        return;
+                public boolean handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case GoogleApiManager.STATUS_SUCCESS:
+                            mSearchViewAdapter.updateWithLocationResults(((WCLocations) msg.getData().getParcelable(WCLocations.EXTRA)).getResults());
+                            break;
+                        case GoogleApiManager.STATUS_FAILURE:
+                            if (isShowing()) {
+                                Throwable t = msg.getData().getParcelable(WCErrorResponse.EXTRA);
+                                GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_ERROR).show();
+                            }
+                            break;
                     }
-                    mSearchViewAdapter.updateWithLocationResults(response.body().getResults());
+                    return true;
                 }
-
-                @Override
-                public void onFailure(Call<WCLocations> call, Throwable t) {
-                    if (!isShowing()) {
-                        return;
-                    }
-                    GFMinimalNotification.make(getView(), t.getMessage(), GFMinimalNotification.LENGTH_LONG).show();
-                }
-            });
+            }));
         }
         return false;
     }

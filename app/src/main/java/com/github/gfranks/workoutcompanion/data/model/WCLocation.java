@@ -25,6 +25,9 @@ public class WCLocation implements Parcelable, Type {
     @SerializedName("geometry")
     private WCGymGeometry geometry;
 
+    public WCLocation() {
+    }
+
     public WCLocation(Parcel in) {
         readFromParcel(in);
     }
