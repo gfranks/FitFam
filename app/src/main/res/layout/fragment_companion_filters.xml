@@ -35,18 +35,36 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/list_cell_vertical_padding"
                 android:text="@string/sex"/>
 
             <CheckBox
+                android:id="@+id/filter_male"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/male"/>
 
             <CheckBox
+                android:id="@+id/filter_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/female"/>
 
+            <Button
+                android:id="@+id/filter_gym"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/list_cell_vertical_padding"
+                android:background="@drawable/btn_accent"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="@dimen/list_cell_horizontal_padding"
+                android:paddingStart="@dimen/list_cell_horizontal_padding"
+                android:paddingTop="@dimen/list_cell_top_bottom_margin"
+                android:paddingRight="@dimen/list_cell_horizontal_padding"
+                android:paddingEnd="@dimen/list_cell_horizontal_padding"
+                android:paddingBottom="@dimen/list_cell_top_bottom_margin"
+                android:text="@string/filter_by_select"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

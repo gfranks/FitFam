@@ -28,6 +28,7 @@ import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
+import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.dialog.SelectGymDialog;
 import com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment;
@@ -302,10 +303,10 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             case R.id.home_gym:
                 SelectGymDialog.newInstance(this, new SelectGymDialog.OnGymSelectedListener() {
                     @Override
-                    public void onGymSelected(SelectGymDialog dialog, String placeId, String gym) {
-                        mUser.setHomeGymId(placeId);
-                        mUser.setHomeGym(gym);
-                        mHomeGym.setText(gym);
+                    public void onGymSelected(SelectGymDialog dialog, WCGym gym) {
+                        mUser.setHomeGymId(gym.getPlace_id());
+                        mUser.setHomeGym(gym.getName());
+                        mHomeGym.setText(gym.getName());
                     }
                 }).show();
                 break;

@@ -23,7 +23,6 @@ import com.github.gfranks.workoutcompanion.data.model.WCLocations;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -54,8 +53,6 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(app)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

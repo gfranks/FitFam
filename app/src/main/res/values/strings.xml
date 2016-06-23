@@ -116,7 +116,9 @@
     <string name="request_exercise">Request Exercise</string>
     <string name="request">Request</string>
     <string name="home_gym_select">Select Home Gym</string>
+    <string name="gym_select">Select a Gym</string>
     <string name="home_gym_not_selected">Home Gym Not Supplied</string>
+    <string name="filter_by_select">Filter by Gym</string>
     <string name="companions">Companions</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

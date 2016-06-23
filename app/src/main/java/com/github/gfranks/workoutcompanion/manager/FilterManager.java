@@ -3,6 +3,7 @@ package com.github.gfranks.workoutcompanion.manager;
 import android.content.SharedPreferences;
 
 import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilters;
+import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.util.Utils;
 
 import org.joda.time.DateTime;
@@ -12,7 +13,7 @@ import info.metadude.android.typedpreferences.StringPreference;
 
 public class FilterManager {
 
-    private static final String KEY_FILTER_OPTIONS = "user";
+    private static final String KEY_FILTER_OPTIONS = "filters";
     private static final String DEFAULT_FILTER_OPTIONS = "{}";
 
     private StringPreference mFilterOptionsStringPreference;
@@ -36,9 +37,9 @@ public class FilterManager {
         mFilterOptionsStringPreference.set(Utils.getGson().toJson(filterOptions));
     }
 
-    public void setFilterByGymId(String gymId) {
+    public void setFilterByGym(WCGym gym) {
         WCCompanionFilters filterOptions = getFilterOptions();
-        filterOptions.setGymId(gymId);
+        filterOptions.setGym(gym);
         setFilterOptions(filterOptions);
     }
 

@@ -25,8 +25,8 @@ public class WCCompanionFilters implements Parcelable, Type {
 
     @SerializedName("location")
     private WCLocation location;
-    @SerializedName("gymId")
-    private String gymId;
+    @SerializedName("gym")
+    private WCGym gym;
     @SerializedName("sex")
     private String sex;
     @SerializedName("age")
@@ -43,7 +43,7 @@ public class WCCompanionFilters implements Parcelable, Type {
 
     public WCCompanionFilters(Builder builder) {
         location = builder.location;
-        gymId = builder.gymId;
+        gym = builder.gym;
         sex = builder.sex;
         age = builder.age;
         weight = builder.weight;
@@ -57,12 +57,12 @@ public class WCCompanionFilters implements Parcelable, Type {
         this.location = location;
     }
 
-    public String getGymId() {
-        return gymId;
+    public WCGym getGym() {
+        return gym;
     }
 
-    public void setGymId(String gymId) {
-        this.gymId = gymId;
+    public void setGym(WCGym gym) {
+        this.gym = gym;
     }
 
     public String getSex() {
@@ -97,7 +97,7 @@ public class WCCompanionFilters implements Parcelable, Type {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeValue(location);
-        out.writeValue(gymId);
+        out.writeValue(gym);
         out.writeValue(sex);
         out.writeValue(age);
         out.writeValue(weight);
@@ -105,7 +105,7 @@ public class WCCompanionFilters implements Parcelable, Type {
 
     private void readFromParcel(Parcel in) {
         location = (WCLocation) in.readValue(Location.class.getClassLoader());
-        gymId = (String) in.readValue(String.class.getClassLoader());
+        gym = (WCGym) in.readValue(WCGym.class.getClassLoader());
         sex = (String) in.readValue(String.class.getClassLoader());
         age = (int) in.readValue(Integer.class.getClassLoader());
         weight = (int) in.readValue(Integer.class.getClassLoader());
@@ -114,7 +114,7 @@ public class WCCompanionFilters implements Parcelable, Type {
     public static class Builder {
 
         private WCLocation location;
-        private String gymId;
+        private WCGym gym;
         private String sex;
         private int age;
         private int weight;
@@ -128,8 +128,8 @@ public class WCCompanionFilters implements Parcelable, Type {
             return this;
         }
 
-        public Builder setGymId(String gymId) {
-            this.gymId = gymId;
+        public Builder setGymId(WCGym gym) {
+            this.gym = gym;
 
             return this;
         }

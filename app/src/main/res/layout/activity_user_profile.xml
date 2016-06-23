@@ -96,7 +96,8 @@
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="@string/first_name" />
+                    android:hint="@string/first_name"
+                    android:inputType="textCapWords"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/last_name"
@@ -107,7 +108,8 @@
                     android:layout_marginStart="2dp"
                     android:layout_weight="1"
                     android:enabled="false"
-                    android:hint="@string/last_name" />
+                    android:hint="@string/last_name"
+                    android:inputType="textCapWords" />
 
             </LinearLayout>
 
@@ -221,10 +223,12 @@
                 android:background="@drawable/btn_accent"
                 android:enabled="false"
                 android:gravity="start|center_vertical"
-                android:paddingBottom="@dimen/list_cell_top_bottom_margin"
                 android:paddingLeft="@dimen/list_cell_horizontal_padding"
                 android:paddingStart="@dimen/list_cell_horizontal_padding"
                 android:paddingTop="@dimen/list_cell_top_bottom_margin"
+                android:paddingRight="@dimen/list_cell_horizontal_padding"
+                android:paddingEnd="@dimen/list_cell_horizontal_padding"
+                android:paddingBottom="@dimen/list_cell_top_bottom_margin"
                 android:text="@string/home_gym_select"
                 android:textColor="@color/white" />
 
@@ -254,6 +258,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:scaleX="0"
         android:scaleY="0"
+        android:src="@drawable/ic_edit"
         app:layout_anchor="@id/app_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 

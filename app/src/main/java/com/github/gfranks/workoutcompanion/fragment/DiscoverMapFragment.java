@@ -201,8 +201,8 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         if (item.getItemId() == R.id.action_show_list) {
             if (isListShown()) {
                 hideList();
-            } else if (getMap() != null) {
-                showList(mGyms, getMap().getCameraPosition().target, true);
+            } else if (mGyms != null) {
+                showList(mGyms, null, true);
             } else {
                 GFMinimalNotification.make(getView(), R.string.error_unable_to_show_list,
                         GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_DEFAULT).show();

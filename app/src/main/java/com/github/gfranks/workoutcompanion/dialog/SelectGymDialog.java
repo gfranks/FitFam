@@ -62,24 +62,36 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     private OnGymSelectedListener mOnGymSelectedListener;
     private GymDatabase mGymDatabase;
 
-    private SelectGymDialog(Context context, OnGymSelectedListener onGymSelectedListener) {
-        super(getBuilder(context));
+    private SelectGymDialog(Context context, boolean isSelectingHomeGym) {
+        super(getBuilder(context, isSelectingHomeGym));
         WorkoutCompanionApplication.get(context).inject(this);
-        mOnGymSelectedListener = onGymSelectedListener;
         mSearchViewAdapter = new SearchSuggestionsAdapter(getContext());
         mGymDatabase = new GymDatabase(context);
         setupViews();
     }
 
     public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener) {
-        return new SelectGymDialog(context, onGymSelectedListener);
+        SelectGymDialog dialog = new SelectGymDialog(context, true);
+        dialog.mOnGymSelectedListener = onGymSelectedListener;
+        return dialog;
     }
 
-    private static MaterialDialog.Builder getBuilder(Context context) {
+    public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener, WCLocation location) {
+        SelectGymDialog dialog = new SelectGymDialog(context, location == null);
+        dialog.mOnGymSelectedListener = onGymSelectedListener;
+
+        if (location != null) {
+            dialog.setupWithLocation(location);
+        }
+
+        return dialog;
+    }
+
+    private static MaterialDialog.Builder getBuilder(Context context, boolean isSelectingHomeGym) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_select_gym, null);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                 .negativeText(R.string.action_cancel)
-                .title("Select Home Gym")
+                .title(isSelectingHomeGym ? R.string.home_gym_select : R.string.gym_select)
                 .customView(view, false);
 
         return builder;
@@ -94,6 +106,11 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
         mEmptyView.setSubtitle(R.string.empty_select_home_gym);
         mListView.setOnItemClickListener(this);
         mListView.setEmptyView(mEmptyView);
+    }
+
+    private void setupWithLocation(WCLocation location) {
+        mSearchView.setVisibility(View.GONE);
+        loadGyms(location.getPosition());
     }
 
     /**
@@ -175,7 +192,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     public void onItemClick(RecyclerView recyclerView, RecyclerView.ViewHolder vh, int position) {
         if (mOnGymSelectedListener != null) {
             WCGym result = mAdapter.getItem(position);
-            mOnGymSelectedListener.onGymSelected(this, result.getPlace_id(), result.getName());
+            mOnGymSelectedListener.onGymSelected(this, result);
         }
         dismiss();
     }
@@ -232,6 +249,6 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     }
 
     public interface OnGymSelectedListener {
-        void onGymSelected(SelectGymDialog dialog, String placeId, String gym);
+        void onGymSelected(SelectGymDialog dialog, WCGym gym);
     }
 }
