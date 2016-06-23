@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
@@ -185,7 +185,9 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
     }
 
     private void initFilterOptions() {
-        mSearchView.setQuery(mFilterOptions.getLocation().getFormatted_address(), false);
+        if (mFilterOptions.getLocation() != null) {
+            mSearchView.setQuery(mFilterOptions.getLocation().getFormatted_address(), false);
+        }
     }
 
     private void setFiltersChanged(boolean changed) {

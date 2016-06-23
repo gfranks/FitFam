@@ -2,7 +2,6 @@ package com.github.gfranks.workoutcompanion.fragment;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +17,7 @@ import com.github.gfranks.workoutcompanion.activity.FullScreenGymPhotosActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -95,17 +95,25 @@ public class GymPhotosFragment extends BaseFragment {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(container.getContext());
+            final ImageView imageView = new ImageView(container.getContext());
             imageView.setFitsSystemWindows(true);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_gym),
-                    (int) (75F * getResources().getDisplayMetrics().density));
+            Drawable defaultImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_gym);
             mPicasso.load(getItem(position))
                     .placeholder(defaultImage)
                     .error(defaultImage)
-                    .into(imageView);
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onError() {
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        }
+                    });
 
             container.addView(imageView);
 

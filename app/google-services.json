@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "1058468277142",
+    "project_id": "workoutcompanion"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058468277142:android:e5ee8debb8d5b65f",
+        "android_client_info": {
+          "package_name": "com.github.gfranks.workoutcompanion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058468277142-04j1ta65rpkq1qj6kn1d0fdjnfrmlgqb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.gfranks.workoutcompanion",
+            "certificate_hash": "3732C6A3F5ACDFC7FF9BF64E8F7814C97227C964"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfU3GewEoPUCzlHjugZnbYaoOtFwJBSC0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058468277142:android:9f2f17654d66a401",
+        "android_client_info": {
+          "package_name": "com.github.gfranks.workoutcompanion.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfU3GewEoPUCzlHjugZnbYaoOtFwJBSC0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

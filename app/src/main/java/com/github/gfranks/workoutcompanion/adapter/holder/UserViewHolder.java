@@ -1,7 +1,6 @@
 package com.github.gfranks.workoutcompanion.adapter.holder;
 
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -14,6 +13,7 @@ import com.github.gfranks.workoutcompanion.application.WorkoutCompanionApplicati
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -60,9 +60,9 @@ public class UserViewHolder extends WCRecyclerView.ViewHolder {
     }
 
     private void setUserImage(WCUser user) {
-        Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_avatar),
-                (int) (200F * itemView.getResources().getDisplayMetrics().density));
+        Drawable defaultImage = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_avatar);
         if (user.getImage() != null && !user.getImage().isEmpty()) {
+            mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             RequestCreator creator = mPicasso.load(user.getImage())
                     .placeholder(defaultImage)
                     .error(defaultImage);
@@ -71,8 +71,18 @@ public class UserViewHolder extends WCRecyclerView.ViewHolder {
                         itemView.getResources().getDimensionPixelSize(R.dimen.card_view_rounded_corner_radius),
                         0, RoundedCornersTransformation.CornerType.TOP));
             }
-            creator.into(mImage);
+            creator.into(mImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                }
+
+                @Override
+                public void onError() {
+                    mImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+            });
         } else {
+            mImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             mImage.setImageDrawable(defaultImage);
         }
     }

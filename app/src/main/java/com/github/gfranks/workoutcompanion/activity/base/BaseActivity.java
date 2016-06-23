@@ -37,12 +37,6 @@ import dagger.ObjectGraph;
 public class BaseActivity extends AppCompatActivity implements AppContainerContentInterface, AppBarLayout.OnOffsetChangedListener,
         EndSheetBehavior.EndSheetCallback {
 
-    // TODO: unfortunately, this is needed to prevent a crash on pre-lollipop devices due to vector drawable issues
-    // TODO: maybe remove after gradle 2.0 upgrade?
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
-
     @Optional
     @InjectView(R.id.drawer_layout)
     protected DrawerLayout mDrawerLayout;

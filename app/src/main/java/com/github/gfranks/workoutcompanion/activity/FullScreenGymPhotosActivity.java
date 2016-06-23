@@ -1,7 +1,6 @@
 package com.github.gfranks.workoutcompanion.activity;
 
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +14,8 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
+import com.github.gfranks.workoutcompanion.util.Utils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -94,17 +95,25 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(container.getContext());
+            final ImageView imageView = new ImageView(container.getContext());
             imageView.setFitsSystemWindows(true);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(FullScreenGymPhotosActivity.this, R.drawable.ic_gym),
-                    (int) (100F * getResources().getDisplayMetrics().density));
+            Drawable defaultImage = ContextCompat.getDrawable(FullScreenGymPhotosActivity.this, R.drawable.ic_gym);
             mPicasso.load(getItem(position))
                     .placeholder(defaultImage)
                     .error(defaultImage)
-                    .into(imageView);
+                    .into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onError() {
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        }
+                    });
 
             container.addView(imageView);
 

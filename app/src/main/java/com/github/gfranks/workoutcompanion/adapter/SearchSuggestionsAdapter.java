@@ -2,8 +2,8 @@ package com.github.gfranks.workoutcompanion.adapter;
 
 import android.content.Context;
 import android.database.MatrixCursor;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.data.model.WCLocation;

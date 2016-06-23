@@ -177,10 +177,6 @@ public class Utils {
         return drawable;
     }
 
-    public static Drawable getVectorDrawable(Context context, int drawableResId) {
-        return ResourcesCompat.getDrawable(context.getResources(), drawableResId, context.getTheme());
-    }
-
     public static Gson getGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(DateTime.class, new DateTimeAdapter())

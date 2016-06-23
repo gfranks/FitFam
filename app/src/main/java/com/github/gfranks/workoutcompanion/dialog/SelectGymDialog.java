@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SearchView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.gfranks.minimal.notification.GFMinimalNotification;

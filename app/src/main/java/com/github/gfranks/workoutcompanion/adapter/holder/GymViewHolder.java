@@ -1,7 +1,6 @@
 package com.github.gfranks.workoutcompanion.adapter.holder;
 
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -18,7 +17,9 @@ import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
+import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -90,9 +91,9 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
     }
 
     private void setGymImage(WCGym gym) {
-        Drawable defaultImage = new InsetDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_gym),
-                (int) (100F * itemView.getResources().getDisplayMetrics().density));
+        Drawable defaultImage = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_gym);
         if ((gym.getPhotos() != null && !gym.getPhotos().isEmpty()) || (gym.getIcon() != null && !gym.getIcon().isEmpty())) {
+            mImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             String photo = GymUtils.getRandomGymPhoto(itemView.getContext(), gym.getPhotos());
             if (photo == null || photo.isEmpty()) {
                 photo = gym.getIcon();
@@ -105,8 +106,18 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
                         itemView.getResources().getDimensionPixelSize(R.dimen.card_view_rounded_corner_radius),
                         0, RoundedCornersTransformation.CornerType.TOP));
             }
-            creator.into(mImage);
+            creator.into(mImage, new Callback() {
+                @Override
+                public void onSuccess() {
+                }
+
+                @Override
+                public void onError() {
+                    mImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+            });
         } else {
+            mImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             mImage.setImageDrawable(defaultImage);
         }
     }

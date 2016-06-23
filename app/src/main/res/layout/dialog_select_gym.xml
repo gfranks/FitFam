@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.SearchView
+    <SearchView
         android:id="@+id/search_view_select_gym"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:iconifiedByDefault="false"
-        app:queryHint="@string/search_hint" />
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search_hint" />
 
     <FrameLayout
         android:layout_width="match_parent"

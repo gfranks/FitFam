@@ -157,6 +157,7 @@
     <string name="error_no_location">Unable to acquire location. Please use built in search.</string>
     <string name="error_unable_to_load_exercises">Unable to load exercises, loading default ones</string>
     <string name="error_unable_to_load_saved_gyms">Unable to load saved gyms</string>
+    <string name="error_unable_to_show_list">Unable to show list of gyms at this time</string>
 
     <!-- Dev Settings Strings -->
     <string name="dev_settings">Development Settings</string>
