@@ -20,7 +20,6 @@ import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.FragmentActivity;
 import com.github.gfranks.workoutcompanion.adapter.SearchSuggestionsAdapter;
-import com.github.gfranks.workoutcompanion.data.api.GoogleApiService;
 import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilters;
 import com.github.gfranks.workoutcompanion.data.model.WCErrorResponse;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
@@ -38,7 +37,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class CompanionFiltersFragment extends BaseFragment implements SearchView.OnQueryTextListener,
-        SearchView.OnSuggestionListener, CompoundButton.OnCheckedChangeListener {
+        SearchView.OnSuggestionListener, CompoundButton.OnCheckedChangeListener, AgeSelectFragment.OnAgeChangeListener,
+        WeightSelectFragment.OnWeightChangeListener {
 
     public static final String TAG = "companion_filters_fragment";
 
@@ -46,8 +46,6 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
     FilterManager mFilterManager;
     @Inject
     GoogleApiManager mGoogleApiManager;
-    @Inject
-    GoogleApiService mGoogleApiService;
 
     @InjectView(R.id.filter_location)
     SearchView mSearchView;
@@ -87,8 +85,6 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnSuggestionListener(this);
         mSearchView.setSuggestionsAdapter(mSearchViewAdapter);
-        mMale.setOnCheckedChangeListener(this);
-        mFemale.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -206,14 +202,14 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.filter_gym:
-                SelectGymDialog.newInstance(getContext(), new SelectGymDialog.OnGymSelectedListener() {
+                SelectGymDialog.newInstance(getContext(), false, mFilterOptions.getLocation(), new SelectGymDialog.OnGymSelectedListener() {
                     @Override
                     public void onGymSelected(SelectGymDialog dialog, WCGym gym) {
                         mFilterOptions.setGym(gym);
                         mGym.setText(gym.getName());
                         setFiltersChanged(true);
                     }
-                }, mFilterOptions.getLocation()).show();
+                }).show();
                 break;
         }
     }
@@ -224,42 +220,121 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
      * **************************************
      */
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        if (compoundButton.getId() == mMale.getId() && isChecked) {
-            mFemale.setOnCheckedChangeListener(null);
+    public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+        mMale.setOnCheckedChangeListener(null);
+        mFemale.setOnCheckedChangeListener(null);
+        if (button.getId() == mMale.getId() && isChecked) {
+            mFilterOptions.setSex(WCUser.MALE);
             mFemale.setChecked(false);
+            setFiltersChanged(true);
+        } else if (button.getId() == mFemale.getId() && isChecked) {
+            mMale.setChecked(false);
             mFilterOptions.setSex(WCUser.FEMALE);
             setFiltersChanged(true);
-            mFemale.setOnCheckedChangeListener(this);
-        } else if (isChecked) {
-            mMale.setOnCheckedChangeListener(null);
-            mMale.setChecked(false);
-            mFilterOptions.setSex(WCUser.MALE);
-            setFiltersChanged(true);
-            mMale.setOnCheckedChangeListener(this);
         } else {
             mFilterOptions.setSex(null);
-            setFiltersChanged(true);
         }
+
+        mMale.setOnCheckedChangeListener(this);
+        mFemale.setOnCheckedChangeListener(this);
+    }
+
+    /**
+     * *************************************
+     * AgeSelectFragment.OnAgeChangeListener
+     * *************************************
+     */
+    @Override
+    public void onAgeChanged(AgeSelectFragment fragment, int age) {
+        mFilterOptions.setAge(age);
+        setFiltersChanged(true);
+    }
+
+    /**
+     * *******************************************
+     * WeightSelectFragment.OnWeightChangeListener
+     * *******************************************
+     */
+    @Override
+    public void onWeightChanged(WeightSelectFragment fragment, int weight) {
+        mFilterOptions.setWeight(weight);
+        setFiltersChanged(true);
     }
 
     private void initFilterOptions() {
         mFilterOptions = mFilterManager.getFilterOptions();
+
+        // reset listeners so we do not receive callbacks
+        mMale.setOnCheckedChangeListener(null);
+        mFemale.setOnCheckedChangeListener(null);
+
         if (mFilterOptions.getLocation() != null) {
             mSearchView.setQuery(mFilterOptions.getLocation().getFormatted_address(), false);
+        } else {
+            mSearchView.setQuery("", false);
         }
 
-        if (mFilterOptions.getSex() != null && mFilterOptions.getSex().length() > 0) {
-            if (mFilterOptions.getSex().equals(WCUser.FEMALE)) {
-                mFemale.setChecked(true);
-            } else if (mFilterOptions.getSex().equals(WCUser.MALE)) {
-                mMale.setChecked(true);
-            }
+        if (WCUser.MALE.equals(mFilterOptions.getSex())) {
+            mMale.setChecked(true);
+            mFemale.setChecked(false);
+        } else if (WCUser.FEMALE.equals(mFilterOptions.getSex())) {
+            mMale.setChecked(false);
+            mFemale.setChecked(true);
+        } else {
+            mMale.setChecked(false);
+            mFemale.setChecked(false);
         }
 
         if (mFilterOptions.getGym() != null) {
             mGym.setText(mFilterOptions.getGym().getName());
+        } else {
+            mGym.setText(R.string.filter_by_select);
         }
+
+        AgeSelectFragment ageSelectFragment = (AgeSelectFragment) getChildFragmentManager().findFragmentById(R.id.filter_age_select_fragment);
+        if (ageSelectFragment != null) {
+            ageSelectFragment.setAge(mFilterOptions.getAge());
+            if (ageSelectFragment.isDetached()) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .attach(ageSelectFragment)
+                        .commit();
+            } else if (ageSelectFragment.getView() == null) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.filter_age_select_fragment, ageSelectFragment)
+                        .commit();
+            }
+        } else {
+            ageSelectFragment = AgeSelectFragment.newInstance(mFilterOptions.getAge(), true, this);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.filter_age_select_fragment, ageSelectFragment)
+                    .commit();
+        }
+
+        WeightSelectFragment weightSelectFragment = (WeightSelectFragment) getChildFragmentManager().findFragmentById(R.id.filter_weight_select_fragment);
+        if (weightSelectFragment != null) {
+            weightSelectFragment.setWeight(mFilterOptions.getWeight());
+            if (weightSelectFragment.isDetached()) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .attach(weightSelectFragment)
+                        .commit();
+            } else if (weightSelectFragment.getView() == null) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.filter_weight_select_fragment, weightSelectFragment)
+                        .commit();
+            }
+        } else {
+            weightSelectFragment = WeightSelectFragment.newInstance(mFilterOptions.getWeight(), true, this);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.filter_weight_select_fragment, weightSelectFragment)
+                    .commit();
+        }
+
+        mMale.setOnCheckedChangeListener(this);
+        mFemale.setOnCheckedChangeListener(this);
     }
 
     private void setFiltersChanged(boolean changed) {
@@ -270,8 +345,8 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
     }
 
     private void save() {
-        setFiltersChanged(false);
         mFilterManager.setFilterOptions(mFilterOptions);
+        setFiltersChanged(false);
         GFMinimalNotification notification = GFMinimalNotification.make(getView(), R.string.filters_saved, GFMinimalNotification.LENGTH_LONG);
         if (getActivity() instanceof FragmentActivity) {
             getActivity().setResult(Activity.RESULT_OK); // notify the caller activity that filters have been changed

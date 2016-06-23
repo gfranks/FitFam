@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.github.gfranks.workoutcompanion.R;
+import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilters;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.UserDatabase;
@@ -186,7 +187,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
     }
 
     @Override
-    public Call<List<WCUser>> getUsers(@Path("placeId") final String placeId) {
+    public Call<List<WCUser>> getUsers(@Path("placeId") final String placeId, @Body WCCompanionFilters filters) {
         return new MockCall<List<WCUser>>() {
             @Override
             public void enqueue(Callback<List<WCUser>> cb) {

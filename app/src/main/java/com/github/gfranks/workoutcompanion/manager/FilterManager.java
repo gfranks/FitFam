@@ -18,22 +18,15 @@ public class FilterManager {
 
     private StringPreference mFilterOptionsStringPreference;
 
-    private WCCompanionFilters mFilterOptions;
-
     public FilterManager(SharedPreferences prefs) {
         mFilterOptionsStringPreference = new StringPreference(prefs, KEY_FILTER_OPTIONS, DEFAULT_FILTER_OPTIONS);
     }
 
     public WCCompanionFilters getFilterOptions() {
-        if (mFilterOptions == null) {
-            mFilterOptions = Utils.getGson().fromJson(mFilterOptionsStringPreference.get(), WCCompanionFilters.class);
-        }
-
-        return mFilterOptions;
+            return Utils.getGson().fromJson(mFilterOptionsStringPreference.get(), WCCompanionFilters.class);
     }
 
     public void setFilterOptions(WCCompanionFilters filterOptions) {
-        mFilterOptions = filterOptions;
         mFilterOptionsStringPreference.set(Utils.getGson().toJson(filterOptions));
     }
 

@@ -103,9 +103,12 @@
     <string name="phone_number">Phone Number</string>
     <string name="phone_number_blank">(xxx) xxx-xxx</string>
     <string name="search_hint">City, State or Zip</string>
+    <string name="filter_search_hint">Filter by City, State or Zip</string>
+    <string name="age">Age</string>
     <string name="weight">Weight</string>
     <string name="exercises">Exercises</string>
     <string name="exercise">Exercise</string>
+    <string name="age_value">%d y.o.</string>
     <string name="weight_value">%d lbs</string>
     <string name="sex">Sex</string>
     <string name="male">Male</string>

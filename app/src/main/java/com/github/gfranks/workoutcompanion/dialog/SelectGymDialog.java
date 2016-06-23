@@ -70,14 +70,14 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
         setupViews();
     }
 
-    public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener) {
-        SelectGymDialog dialog = new SelectGymDialog(context, true);
-        dialog.mOnGymSelectedListener = onGymSelectedListener;
+    public static SelectGymDialog newInstance(Context context, boolean isSelectingHomeGym, OnGymSelectedListener onGymSelectedListener) {
+        SelectGymDialog dialog = new SelectGymDialog(context, isSelectingHomeGym);
+        dialog.setOnGymSelectedListener(onGymSelectedListener);
         return dialog;
     }
 
-    public static SelectGymDialog newInstance(Context context, OnGymSelectedListener onGymSelectedListener, WCLocation location) {
-        SelectGymDialog dialog = new SelectGymDialog(context, location == null);
+    public static SelectGymDialog newInstance(Context context, boolean isSelectingHomeGym, WCLocation location, OnGymSelectedListener onGymSelectedListener) {
+        SelectGymDialog dialog = new SelectGymDialog(context, isSelectingHomeGym);
         dialog.mOnGymSelectedListener = onGymSelectedListener;
 
         if (location != null) {
@@ -217,6 +217,10 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
         } catch (Throwable t) {
             // unable to open db
         }
+    }
+
+    public void setOnGymSelectedListener(OnGymSelectedListener onGymSelectedListener) {
+        mOnGymSelectedListener = onGymSelectedListener;
     }
 
     private void loadGyms(LatLng latLng) {

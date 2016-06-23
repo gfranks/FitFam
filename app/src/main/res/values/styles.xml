@@ -86,11 +86,19 @@
         <item name="android:paddingLeft">35dp</item>
         <item name="android:paddingRight">35dp</item>
         <item name="android:paddingTop">35dp</item>
-        <item name="sa_max">500</item>
-        <item name="sa_progress">0</item>
         <item name="sa_rotation">180</item>
         <item name="sa_startAngle">30</item>
         <item name="sa_sweepAngle">300</item>
+    </style>
+
+    <style name="DefaultAppTheme.AgeSelectStyle" parent="DefaultAppTheme.SeekArcStyle">
+        <item name="sa_max">99</item>
+        <item name="sa_progress">0</item>
+    </style>
+
+    <style name="DefaultAppTheme.WeightSelectStyle" parent="DefaultAppTheme.SeekArcStyle">
+        <item name="sa_max">500</item>
+        <item name="sa_progress">0</item>
     </style>
 
 </resources>

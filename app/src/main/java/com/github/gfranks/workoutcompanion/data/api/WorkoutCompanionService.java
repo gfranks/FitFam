@@ -1,5 +1,6 @@
 package com.github.gfranks.workoutcompanion.data.api;
 
+import com.github.gfranks.workoutcompanion.data.model.WCCompanionFilters;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 
 import java.util.List;
@@ -57,7 +58,8 @@ public interface WorkoutCompanionService {
 
     @GET("/v1/users/{placeId}")
     Call<List<WCUser>> getUsers(
-            @Path("placeId") String placeId);
+            @Path("placeId") String placeId,
+            @Body WCCompanionFilters filters);
 
     @GET("/v1/users/{userId}/companions")
     Call<List<WCUser>> getRecentCompanions(

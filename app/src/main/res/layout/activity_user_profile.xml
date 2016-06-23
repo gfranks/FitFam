@@ -222,7 +222,7 @@
                 android:layout_marginTop="@dimen/list_cell_vertical_padding"
                 android:background="@drawable/btn_accent"
                 android:enabled="false"
-                android:gravity="start|center_vertical"
+                android:gravity="center"
                 android:paddingLeft="@dimen/list_cell_horizontal_padding"
                 android:paddingStart="@dimen/list_cell_horizontal_padding"
                 android:paddingTop="@dimen/list_cell_top_bottom_margin"

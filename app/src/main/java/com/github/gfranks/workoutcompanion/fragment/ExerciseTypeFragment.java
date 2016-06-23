@@ -105,10 +105,10 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
             mExerciseRequest.setVisibility(View.GONE);
         }
         if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
-            mAdapter = new ExerciseTypeAdapter(mUser, response.body(), mEditMode);
+            mAdapter = new ExerciseTypeAdapter(response.body(), new ArrayList<>(mUser.getExercises()), mEditMode);
             mExerciseGrid.setAdapter(mAdapter);
         } else {
-            mAdapter.setExercises(response.body());
+            mAdapter.setExercises(response.body(), new ArrayList<>(mUser.getExercises()));
         }
     }
 
@@ -119,10 +119,12 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         }
         GFMinimalNotification.make(getView(), R.string.error_unable_to_load_exercises, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
         if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
-            mAdapter = new ExerciseTypeAdapter(mUser, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))), mEditMode);
+            mAdapter = new ExerciseTypeAdapter(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))),
+                    new ArrayList<>(mUser.getExercises()), mEditMode);
             mExerciseGrid.setAdapter(mAdapter);
         } else {
-            mAdapter.setExercises(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))));
+            mAdapter.setExercises(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))),
+                    new ArrayList<>(mUser.getExercises()));
         }
     }
 
@@ -145,7 +147,7 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
                             public void onResponse(Call<String> call, Response<String> response) {
                                 List<String> exercises = mAdapter.getExercises();
                                 exercises.add(response.body());
-                                mAdapter.setExercises(exercises);
+                                mAdapter.setExercises(exercises, new ArrayList<>(mUser.getExercises()));
                             }
 
                             @Override
@@ -163,12 +165,16 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
     public void setUser(WCUser user) {
         mUser = user;
         if (!isDetached() && getActivity() != null) {
-            mService.getExercises().enqueue(this);
+            if (mAdapter == null) {
+                mService.getExercises().enqueue(this);
+            } else {
+                mAdapter.setSelectedExercises(new ArrayList<>(mUser.getExercises()));
+            }
         }
     }
 
     public List<String> getExercises() {
-        return mUser.getExercises();
+        return mAdapter.getSelectedExercises();
     }
 
     public void edit(boolean editMode) {

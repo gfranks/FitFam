@@ -5,8 +5,9 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/weight"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -23,7 +24,7 @@
 
         <com.github.gfranks.workoutcompanion.view.SeekArc
             android:id="@+id/weight_seekbar"
-            style="@style/DefaultAppTheme.SeekArcStyle"
+            style="@style/DefaultAppTheme.WeightSelectStyle"
             android:layout_gravity="center" />
 
         <TextView

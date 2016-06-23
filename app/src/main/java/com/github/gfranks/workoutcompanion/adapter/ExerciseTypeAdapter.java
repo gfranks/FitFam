@@ -8,19 +8,18 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.github.gfranks.workoutcompanion.R;
-import com.github.gfranks.workoutcompanion.data.model.WCUser;
 
 import java.util.List;
 
 public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapter.CheckBoxViewHolder> {
 
     private List<String> mExercises;
-    private WCUser mUser;
+    private List<String> mSelectedExercises;
     private boolean mEnabled;
 
-    public ExerciseTypeAdapter(WCUser user, List<String> exercises, boolean enabled) {
-        mUser = user;
+    public ExerciseTypeAdapter(List<String> exercises, List<String> selectedExercises, boolean enabled) {
         mExercises = exercises;
+        mSelectedExercises = selectedExercises;
         mEnabled = enabled;
     }
 
@@ -28,9 +27,19 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
         return mExercises;
     }
 
-    public void setExercises(List<String> exercises) {
+    public void setExercises(List<String> exercises, List<String> selectedExercises) {
         mExercises = exercises;
+        mSelectedExercises = selectedExercises;
         notifyDataSetChanged();
+    }
+
+    public void setSelectedExercises(List<String> selectedExercises) {
+        mSelectedExercises = selectedExercises;
+        notifyDataSetChanged();
+    }
+
+    public List<String> getSelectedExercises() {
+        return mSelectedExercises;
     }
 
     public void setEnabled(boolean enabled) {
@@ -44,9 +53,6 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
 
     @Override
     public int getItemCount() {
-        if (mUser == null) {
-            return 0;
-        }
         return mExercises.size();
     }
 
@@ -60,15 +66,15 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
         holder.itemView.setEnabled(mEnabled);
         String exercise = getItem(position);
         ((CheckBox) holder.itemView).setOnCheckedChangeListener(null); // clear listener if any exists
-        ((CheckBox) holder.itemView).setChecked(mUser.getExercises().contains(exercise));
+        ((CheckBox) holder.itemView).setChecked(mSelectedExercises.contains(exercise));
         ((CheckBox) holder.itemView).setText(getItem(position));
         ((CheckBox) holder.itemView).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    mUser.getExercises().add(getItem(position));
+                    mSelectedExercises.add(getItem(position));
                 } else {
-                    mUser.getExercises().remove(getItem(position));
+                    mSelectedExercises.remove(getItem(position));
                 }
             }
         });

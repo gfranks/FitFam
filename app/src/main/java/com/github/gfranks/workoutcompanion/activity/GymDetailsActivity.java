@@ -42,6 +42,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCGyms;
 import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
+import com.github.gfranks.workoutcompanion.manager.FilterManager;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
@@ -75,6 +76,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     WorkoutCompanionService mService;
     @Inject
     AccountManager mAccountManager;
+    @Inject
+    FilterManager mFilterManager;
 
     @InjectView(R.id.gym_favorite)
     ToggleButton mFavorite;
@@ -513,7 +516,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
         ((GymPhotosFragment) getSupportFragmentManager().findFragmentById(R.id.images_fragment)).setGym(mGym);
 
-        mService.getUsers(mGym.getPlace_id()).enqueue(new Callback<List<WCUser>>() {
+        mService.getUsers(mGym.getPlace_id(), mFilterManager.getFilterOptions()).enqueue(new Callback<List<WCUser>>() {
             @Override
             public void onResponse(Call<List<WCUser>> call, Response<List<WCUser>> response) {
                 if (isFinishing()) {

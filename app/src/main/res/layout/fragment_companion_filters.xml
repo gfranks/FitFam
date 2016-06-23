@@ -21,7 +21,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:iconifiedByDefault="false"
-            android:queryHint="@string/search_hint" />
+            android:queryHint="@string/filter_search_hint" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/list_cell_vertical_padding"
                 android:background="@drawable/btn_accent"
-                android:gravity="start|center_vertical"
+                android:gravity="center"
                 android:paddingLeft="@dimen/list_cell_horizontal_padding"
                 android:paddingStart="@dimen/list_cell_horizontal_padding"
                 android:paddingTop="@dimen/list_cell_top_bottom_margin"
@@ -65,6 +65,31 @@
                 android:paddingBottom="@dimen/list_cell_top_bottom_margin"
                 android:text="@string/filter_by_select"
                 android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <FrameLayout
+                    android:id="@+id/filter_age_select_fragment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginEnd="2dp"/>
+
+                <FrameLayout
+                    android:id="@+id/filter_weight_select_fragment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

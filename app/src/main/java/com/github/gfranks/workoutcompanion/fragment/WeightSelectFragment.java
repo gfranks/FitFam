@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
-import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.view.SeekArc;
 
@@ -16,20 +15,29 @@ import butterknife.InjectView;
 
 public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeekArcChangeListener {
 
+    private static final String EXTRA_WEIGHT = "weight";
+
     @InjectView(R.id.weight_seekbar)
     SeekArc mWeightSeekBar;
     @InjectView(R.id.weight_seekbar_progress)
     TextView mWeightText;
 
-    private WCUser mUser;
+    private int mWeight;
     private boolean mEditMode;
+    private OnWeightChangeListener mOnWeightChangeListener;
 
-    public static WeightSelectFragment newInstance(WCUser user) {
+    public static WeightSelectFragment newInstance(int weight, boolean isEditMode, OnWeightChangeListener onWeightChangeListener) {
         WeightSelectFragment fragment = new WeightSelectFragment();
         Bundle args = new Bundle();
-        args.putParcelable(WCUser.EXTRA, user);
+        args.putInt(EXTRA_WEIGHT, weight);
         fragment.setArguments(args);
+        fragment.setOnWeightChangeListener(onWeightChangeListener);
+        fragment.mEditMode = isEditMode;
         return fragment;
+    }
+
+    public static WeightSelectFragment newInstance(int weight, boolean isEditMode) {
+        return newInstance(weight, isEditMode, null);
     }
 
     @Override
@@ -37,9 +45,9 @@ public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeek
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         if (savedInstanceState != null) {
-            mUser = savedInstanceState.getParcelable(WCUser.EXTRA);
+            mWeight = savedInstanceState.getInt(EXTRA_WEIGHT, 0);
         } else if (getArguments() != null) {
-            mUser = getArguments().getParcelable(WCUser.EXTRA);
+            mWeight = getArguments().getInt(EXTRA_WEIGHT, 0);
         }
     }
 
@@ -53,10 +61,9 @@ public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeek
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mWeightSeekBar.setProgress(mWeight);
+        mWeightText.setText(getString(R.string.weight_value, mWeight));
         mWeightSeekBar.setOnSeekArcChangeListener(this);
-        if (mUser != null) {
-            setUser(mUser);
-        }
     }
 
     /**
@@ -67,6 +74,9 @@ public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeek
     @Override
     public void onProgressChanged(SeekArc circleSeekBar, int progress, boolean fromUser) {
         mWeightText.setText(getString(R.string.weight_value, mWeightSeekBar.getProgress()));
+        if (mOnWeightChangeListener != null) {
+            mOnWeightChangeListener.onWeightChanged(this, progress);
+        }
     }
 
     @Override
@@ -77,12 +87,12 @@ public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeek
     public void onStartTrackingTouch(SeekArc seekBar) {
     }
 
-    public void setUser(WCUser user) {
-        mUser = user;
-        if (!isDetached() && getActivity() != null) {
-            mWeightSeekBar.setProgress(mUser.getWeight());
-            mWeightText.setText(getString(R.string.weight_value, mWeightSeekBar.getProgress()));
-        }
+    public void setOnWeightChangeListener(OnWeightChangeListener onWeightChangeListener) {
+        mOnWeightChangeListener = onWeightChangeListener;
+    }
+
+    public void setWeight(int weight) {
+        mWeightSeekBar.setProgress(weight);
     }
 
     public int getWeight() {
@@ -92,5 +102,9 @@ public class WeightSelectFragment extends BaseFragment implements SeekArc.OnSeek
     public void edit(boolean editMode) {
         mEditMode = editMode;
         mWeightSeekBar.setEnabled(mEditMode);
+    }
+
+    public interface OnWeightChangeListener {
+        void onWeightChanged(WeightSelectFragment fragment, int weight);
     }
 }

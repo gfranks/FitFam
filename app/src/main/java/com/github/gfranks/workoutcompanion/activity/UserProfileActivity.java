@@ -301,7 +301,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
                 }, year, month, day).show();
                 break;
             case R.id.home_gym:
-                SelectGymDialog.newInstance(this, new SelectGymDialog.OnGymSelectedListener() {
+                SelectGymDialog.newInstance(this, false, new SelectGymDialog.OnGymSelectedListener() {
                     @Override
                     public void onGymSelected(SelectGymDialog dialog, WCGym gym) {
                         mUser.setHomeGymId(gym.getPlace_id());
@@ -379,7 +379,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         }
 
         WeightSelectFragment weightSelectFragment = (WeightSelectFragment) getSupportFragmentManager().findFragmentById(R.id.weight_select_fragment);
-        weightSelectFragment.setUser(mUser);
+        weightSelectFragment.setWeight(mUser.getWeight());
 
         ExerciseTypeFragment exerciseTypeFragment = (ExerciseTypeFragment) getSupportFragmentManager().findFragmentById(R.id.exercise_type_fragment);
         exerciseTypeFragment.setUser(mUser);
