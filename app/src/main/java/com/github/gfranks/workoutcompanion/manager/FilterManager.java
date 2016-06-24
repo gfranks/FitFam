@@ -9,6 +9,8 @@ import com.github.gfranks.workoutcompanion.util.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 
+import java.util.List;
+
 import info.metadude.android.typedpreferences.StringPreference;
 
 public class FilterManager {
@@ -57,6 +59,12 @@ public class FilterManager {
     public void setFilterByWeight(int weight) {
         WCCompanionFilters filterOptions = getFilterOptions();
         filterOptions.setWeight(weight);
+        setFilterOptions(filterOptions);
+    }
+
+    public void setFilterByExercises(List<String> exercises) {
+        WCCompanionFilters filterOptions = getFilterOptions();
+        filterOptions.setExercises(exercises);
         setFilterOptions(filterOptions);
     }
 }

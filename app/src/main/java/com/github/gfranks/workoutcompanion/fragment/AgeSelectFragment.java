@@ -24,14 +24,14 @@ public class AgeSelectFragment extends BaseFragment implements SeekArc.OnSeekArc
 
     private int mAge;
     private boolean mEditMode;
-    private OnAgeChangeListener mOnAgeChangeListener;
+    private OnAgeChangedListener mOnAgeChangedListener;
 
-    public static AgeSelectFragment newInstance(int age, boolean isEditMode, OnAgeChangeListener onAgeChangeListener) {
+    public static AgeSelectFragment newInstance(int age, boolean isEditMode, OnAgeChangedListener onAgeChangedListener) {
         AgeSelectFragment fragment = new AgeSelectFragment();
         Bundle args = new Bundle();
         args.putInt(EXTRA_AGE, age);
         fragment.setArguments(args);
-        fragment.setOnAgeChangeListener(onAgeChangeListener);
+        fragment.setOnAgeChangeListener(onAgeChangedListener);
         fragment.mEditMode = isEditMode;
         return fragment;
     }
@@ -74,8 +74,8 @@ public class AgeSelectFragment extends BaseFragment implements SeekArc.OnSeekArc
     @Override
     public void onProgressChanged(SeekArc circleSeekBar, int progress, boolean fromUser) {
         mAgeText.setText(getString(R.string.age_value, mAgeSeekBar.getProgress()));
-        if (mOnAgeChangeListener != null) {
-            mOnAgeChangeListener.onAgeChanged(this, progress);
+        if (mOnAgeChangedListener != null) {
+            mOnAgeChangedListener.onAgeChanged(this, progress);
         }
     }
 
@@ -87,8 +87,8 @@ public class AgeSelectFragment extends BaseFragment implements SeekArc.OnSeekArc
     public void onStartTrackingTouch(SeekArc seekBar) {
     }
 
-    public void setOnAgeChangeListener(OnAgeChangeListener onAgeChangeListener) {
-        mOnAgeChangeListener = onAgeChangeListener;
+    public void setOnAgeChangeListener(OnAgeChangedListener onAgeChangedListener) {
+        mOnAgeChangedListener = onAgeChangedListener;
     }
 
     public void setAge(int age) {
@@ -104,7 +104,7 @@ public class AgeSelectFragment extends BaseFragment implements SeekArc.OnSeekArc
         mAgeSeekBar.setEnabled(mEditMode);
     }
 
-    public interface OnAgeChangeListener {
+    public interface OnAgeChangedListener {
         void onAgeChanged(AgeSelectFragment fragment, int age);
     }
 }

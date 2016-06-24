@@ -382,7 +382,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         weightSelectFragment.setWeight(mUser.getWeight());
 
         ExerciseTypeFragment exerciseTypeFragment = (ExerciseTypeFragment) getSupportFragmentManager().findFragmentById(R.id.exercise_type_fragment);
-        exerciseTypeFragment.setUser(mUser);
+        exerciseTypeFragment.setExercises(mUser.getExercises(), mCanEdit);
     }
 
     private void saveInfo() {

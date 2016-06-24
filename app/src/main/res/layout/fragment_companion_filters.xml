@@ -63,14 +63,15 @@
                 android:paddingRight="@dimen/list_cell_horizontal_padding"
                 android:paddingEnd="@dimen/list_cell_horizontal_padding"
                 android:paddingBottom="@dimen/list_cell_top_bottom_margin"
-                android:text="@string/filter_by_select"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:text="@string/filter_by_select" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:orientation="horizontal"
+                android:baselineAligned="false"
                 android:weightSum="2">
 
                 <FrameLayout
@@ -90,6 +91,12 @@
                     android:layout_marginStart="2dp" />
 
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/filter_exercises_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin" />
 
         </LinearLayout>
 

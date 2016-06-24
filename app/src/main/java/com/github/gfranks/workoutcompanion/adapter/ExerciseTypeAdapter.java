@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.github.gfranks.workoutcompanion.R;
+import com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment;
 
 import java.util.List;
 
@@ -16,11 +17,21 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
     private List<String> mExercises;
     private List<String> mSelectedExercises;
     private boolean mEnabled;
+    private ExerciseTypeFragment.OnExercisesChangedListener mOnExercisesChangedListener;
 
-    public ExerciseTypeAdapter(List<String> exercises, List<String> selectedExercises, boolean enabled) {
+    public ExerciseTypeAdapter(List<String> exercises, List<String> selectedExercises, boolean enabled, ExerciseTypeFragment.OnExercisesChangedListener onExercisesChangedListener) {
         mExercises = exercises;
         mSelectedExercises = selectedExercises;
         mEnabled = enabled;
+        mOnExercisesChangedListener = onExercisesChangedListener;
+    }
+
+    public ExerciseTypeAdapter(List<String> exercises, List<String> selectedExercises, boolean enabled) {
+        this(exercises, selectedExercises, enabled, null);
+    }
+
+    public void setOnExercisesChangedListener(ExerciseTypeFragment.OnExercisesChangedListener onExercisesChangedListener) {
+        mOnExercisesChangedListener = onExercisesChangedListener;
     }
 
     public List<String> getExercises() {
@@ -62,28 +73,35 @@ public class ExerciseTypeAdapter extends RecyclerView.Adapter<ExerciseTypeAdapte
     }
 
     @Override
-    public void onBindViewHolder(CheckBoxViewHolder holder, final int position) {
+    public void onBindViewHolder(CheckBoxViewHolder holder, int position) {
         holder.itemView.setEnabled(mEnabled);
-        String exercise = getItem(position);
-        ((CheckBox) holder.itemView).setOnCheckedChangeListener(null); // clear listener if any exists
-        ((CheckBox) holder.itemView).setChecked(mSelectedExercises.contains(exercise));
-        ((CheckBox) holder.itemView).setText(getItem(position));
-        ((CheckBox) holder.itemView).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mSelectedExercises.add(getItem(position));
-                } else {
-                    mSelectedExercises.remove(getItem(position));
-                }
-            }
-        });
+        holder.populate(getItem(position));
     }
 
     class CheckBoxViewHolder extends RecyclerView.ViewHolder {
 
         CheckBoxViewHolder(View view) {
             super(view);
+        }
+
+        void populate(String exercise) {
+            ((CheckBox) itemView).setOnCheckedChangeListener(null); // clear listener if any exists
+            ((CheckBox) itemView).setChecked(mSelectedExercises.contains(exercise));
+            ((CheckBox) itemView).setText(getItem(getAdapterPosition()));
+            ((CheckBox) itemView).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (isChecked) {
+                        mSelectedExercises.add(getItem(getAdapterPosition()));
+                    } else {
+                        mSelectedExercises.remove(getItem(getAdapterPosition()));
+                    }
+
+                    if (mOnExercisesChangedListener != null) {
+                        mOnExercisesChangedListener.onExercisesChanged(getSelectedExercises());
+                    }
+                }
+            });
         }
     }
 }

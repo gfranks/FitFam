@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WCCompanionFilters implements Parcelable, Type {
 
@@ -33,6 +35,8 @@ public class WCCompanionFilters implements Parcelable, Type {
     private int age;
     @SerializedName("weight")
     private int weight;
+    @SerializedName("exercises")
+    private List<String> exercises;
 
     public WCCompanionFilters() {
     }
@@ -47,6 +51,7 @@ public class WCCompanionFilters implements Parcelable, Type {
         sex = builder.sex;
         age = builder.age;
         weight = builder.weight;
+        exercises = builder.exercises;
     }
 
     public WCLocation getLocation() {
@@ -89,6 +94,17 @@ public class WCCompanionFilters implements Parcelable, Type {
         this.weight = weight;
     }
 
+    public List<String> getExercises() {
+        if (exercises == null) {
+            exercises = new ArrayList<>();
+        }
+        return exercises;
+    }
+
+    public void setExercises(List<String> exercises) {
+        this.exercises = exercises;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -101,6 +117,7 @@ public class WCCompanionFilters implements Parcelable, Type {
         out.writeValue(sex);
         out.writeValue(age);
         out.writeValue(weight);
+        out.writeList(exercises);
     }
 
     private void readFromParcel(Parcel in) {
@@ -109,6 +126,7 @@ public class WCCompanionFilters implements Parcelable, Type {
         sex = (String) in.readValue(String.class.getClassLoader());
         age = (int) in.readValue(Integer.class.getClassLoader());
         weight = (int) in.readValue(Integer.class.getClassLoader());
+        exercises = in.readArrayList(String.class.getClassLoader());
     }
 
     public static class Builder {
@@ -118,6 +136,7 @@ public class WCCompanionFilters implements Parcelable, Type {
         private String sex;
         private int age;
         private int weight;
+        private List<String> exercises;
 
         public Builder() {
         }
@@ -128,7 +147,7 @@ public class WCCompanionFilters implements Parcelable, Type {
             return this;
         }
 
-        public Builder setGymId(WCGym gym) {
+        public Builder setGym(WCGym gym) {
             this.gym = gym;
 
             return this;
@@ -148,6 +167,12 @@ public class WCCompanionFilters implements Parcelable, Type {
 
         public Builder setWeight(int weight) {
             this.weight = weight;
+
+            return this;
+        }
+
+        public Builder setExercises(List<String> exercises) {
+            this.exercises = exercises;
 
             return this;
         }

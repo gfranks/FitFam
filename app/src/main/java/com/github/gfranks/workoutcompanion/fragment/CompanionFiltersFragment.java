@@ -31,14 +31,16 @@ import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.FilterManager;
 import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class CompanionFiltersFragment extends BaseFragment implements SearchView.OnQueryTextListener,
-        SearchView.OnSuggestionListener, CompoundButton.OnCheckedChangeListener, AgeSelectFragment.OnAgeChangeListener,
-        WeightSelectFragment.OnWeightChangeListener {
+        SearchView.OnSuggestionListener, CompoundButton.OnCheckedChangeListener, AgeSelectFragment.OnAgeChangedListener,
+        WeightSelectFragment.OnWeightChangeListener, ExerciseTypeFragment.OnExercisesChangedListener {
 
     public static final String TAG = "companion_filters_fragment";
 
@@ -261,6 +263,17 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
         setFiltersChanged(true);
     }
 
+    /**
+     * ***********************************************
+     * ExerciseTypeFragment.OnExercisesChangedListener
+     * ***********************************************
+     */
+    @Override
+    public void onExercisesChanged(List<String> exercises) {
+        mFilterOptions.setExercises(exercises);
+        setFiltersChanged(true);
+    }
+
     private void initFilterOptions() {
         mFilterOptions = mFilterManager.getFilterOptions();
 
@@ -330,6 +343,27 @@ public class CompanionFiltersFragment extends BaseFragment implements SearchView
             weightSelectFragment = WeightSelectFragment.newInstance(mFilterOptions.getWeight(), true, this);
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.filter_weight_select_fragment, weightSelectFragment)
+                    .commit();
+        }
+
+        ExerciseTypeFragment exerciseTypeFragment= (ExerciseTypeFragment) getChildFragmentManager().findFragmentById(R.id.filter_exercises_fragment);
+        if (exerciseTypeFragment != null) {
+            exerciseTypeFragment.setExercises(mFilterOptions.getExercises(), true);
+            if (exerciseTypeFragment.isDetached()) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .attach(exerciseTypeFragment)
+                        .commit();
+            } else if (exerciseTypeFragment.getView() == null) {
+                getChildFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.filter_exercises_fragment, exerciseTypeFragment)
+                        .commit();
+            }
+        } else {
+            exerciseTypeFragment = ExerciseTypeFragment.newInstance(mFilterOptions.getExercises(), true, true, this);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.filter_exercises_fragment, exerciseTypeFragment)
                     .commit();
         }
 

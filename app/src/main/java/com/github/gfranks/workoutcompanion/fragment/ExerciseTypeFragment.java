@@ -15,9 +15,7 @@ import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.adapter.ExerciseTypeAdapter;
 import com.github.gfranks.workoutcompanion.data.api.WorkoutCompanionService;
-import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
-import com.github.gfranks.workoutcompanion.manager.AccountManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,27 +32,36 @@ import retrofit2.Response;
 public class ExerciseTypeFragment extends BaseFragment implements Callback<List<String>> {
 
     public static final String TAG = "exercise_type_fragment";
+    private static final String EXTRA_EXERCISES = "exercises";
+    private static final String EXTRA_REQUEST_EXERCISES = "request_exercises";
 
     @Inject
     WorkoutCompanionService mService;
-    @Inject
-    AccountManager mAccountManager;
 
     @InjectView(R.id.exercise_request)
     Button mExerciseRequest;
     @InjectView(R.id.exercise_grid)
     RecyclerView mExerciseGrid;
 
-    private WCUser mUser;
+    private List<String> mExercises;
     private ExerciseTypeAdapter mAdapter;
-    private boolean mEditMode;
+    private boolean mCanRequestExercises, mEditMode;
+    private OnExercisesChangedListener mOnExercisesChangedListener;
 
-    public static ExerciseTypeFragment newInstance(WCUser user) {
+    public static ExerciseTypeFragment newInstance(List<String> exercises, boolean isEditMode, boolean canRequestExercises,
+                                                   OnExercisesChangedListener onExercisesChangedListener) {
         ExerciseTypeFragment fragment = new ExerciseTypeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(WCUser.EXTRA, user);
+        args.putStringArrayList(EXTRA_EXERCISES, new ArrayList<>(exercises));
+        args.putBoolean(EXTRA_REQUEST_EXERCISES, canRequestExercises);
         fragment.setArguments(args);
+        fragment.mEditMode = isEditMode;
+        fragment.setOnExercisesChangedListener(onExercisesChangedListener);
         return fragment;
+    }
+
+    public static ExerciseTypeFragment newInstance(List<String> exercises, boolean isEditMode, boolean canRequestExercises) {
+        return newInstance(exercises, isEditMode, canRequestExercises, null);
     }
 
     @Override
@@ -62,9 +69,11 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         if (savedInstanceState != null) {
-            mUser = savedInstanceState.getParcelable(WCUser.EXTRA);
+            mExercises = savedInstanceState.getStringArrayList(EXTRA_EXERCISES);
+            mCanRequestExercises = savedInstanceState.getBoolean(EXTRA_REQUEST_EXERCISES, false);
         } else if (getArguments() != null) {
-            mUser = getArguments().getParcelable(WCUser.EXTRA);
+            mExercises = getArguments().getStringArrayList(EXTRA_EXERCISES);
+            mCanRequestExercises = getArguments().getBoolean(EXTRA_REQUEST_EXERCISES, false);
         }
     }
 
@@ -79,14 +88,17 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         super.onViewCreated(view, savedInstanceState);
 
         ((GridLayoutManager) mExerciseGrid.getLayoutManager()).setSpanCount(4);
-        mExerciseGrid.setEnabled(false);
-        mExerciseRequest.setEnabled(false);
+        mExerciseGrid.setEnabled(mEditMode);
+        mExerciseRequest.setEnabled(mEditMode);
+
+        initWithExercises();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(WCUser.EXTRA, mUser);
+        outState.putStringArrayList(EXTRA_EXERCISES, new ArrayList<>(mExercises));
+        outState.putBoolean(EXTRA_REQUEST_EXERCISES, mCanRequestExercises);
     }
 
     /**
@@ -99,16 +111,16 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         if (isDetached() || getActivity() == null) {
             return;
         }
-        if (mAccountManager.getUser().equals(mUser) && !response.body().isEmpty()) {
+        if (mCanRequestExercises && !response.body().isEmpty()) {
             mExerciseRequest.setVisibility(View.VISIBLE);
         } else {
             mExerciseRequest.setVisibility(View.GONE);
         }
         if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
-            mAdapter = new ExerciseTypeAdapter(response.body(), new ArrayList<>(mUser.getExercises()), mEditMode);
+            mAdapter = new ExerciseTypeAdapter(response.body(), new ArrayList<>(mExercises), mEditMode, mOnExercisesChangedListener);
             mExerciseGrid.setAdapter(mAdapter);
         } else {
-            mAdapter.setExercises(response.body(), new ArrayList<>(mUser.getExercises()));
+            mAdapter.setExercises(response.body(), new ArrayList<>(mExercises));
         }
     }
 
@@ -120,11 +132,11 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         GFMinimalNotification.make(getView(), R.string.error_unable_to_load_exercises, GFMinimalNotification.LENGTH_LONG, GFMinimalNotification.TYPE_WARNING).show();
         if (mAdapter == null || mExerciseGrid.getAdapter() == null) {
             mAdapter = new ExerciseTypeAdapter(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))),
-                    new ArrayList<>(mUser.getExercises()), mEditMode);
+                    new ArrayList<>(mExercises), mEditMode, mOnExercisesChangedListener);
             mExerciseGrid.setAdapter(mAdapter);
         } else {
             mAdapter.setExercises(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.exercises))),
-                    new ArrayList<>(mUser.getExercises()));
+                    new ArrayList<>(mExercises));
         }
     }
 
@@ -147,7 +159,7 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
                             public void onResponse(Call<String> call, Response<String> response) {
                                 List<String> exercises = mAdapter.getExercises();
                                 exercises.add(response.body());
-                                mAdapter.setExercises(exercises, new ArrayList<>(mUser.getExercises()));
+                                mAdapter.setExercises(exercises, new ArrayList<>(mExercises));
                             }
 
                             @Override
@@ -162,15 +174,14 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
                 }).show();
     }
 
-    public void setUser(WCUser user) {
-        mUser = user;
-        if (!isDetached() && getActivity() != null) {
-            if (mAdapter == null) {
-                mService.getExercises().enqueue(this);
-            } else {
-                mAdapter.setSelectedExercises(new ArrayList<>(mUser.getExercises()));
-            }
-        }
+    public void setOnExercisesChangedListener(OnExercisesChangedListener onExercisesChangedListener) {
+        mOnExercisesChangedListener = onExercisesChangedListener;
+    }
+
+    public void setExercises(List<String> exercises, boolean canRequestExercises) {
+        mExercises = exercises;
+        mCanRequestExercises = canRequestExercises;
+        initWithExercises();
     }
 
     public List<String> getExercises() {
@@ -182,5 +193,19 @@ public class ExerciseTypeFragment extends BaseFragment implements Callback<List<
         mExerciseRequest.setEnabled(mEditMode);
         mExerciseGrid.setEnabled(mEditMode);
         mAdapter.setEnabled(mEditMode);
+    }
+
+    private void initWithExercises() {
+        if (!isDetached() && getActivity() != null && mExercises != null) {
+            if (mAdapter == null) {
+                mService.getExercises().enqueue(this);
+            } else {
+                mAdapter.setSelectedExercises(new ArrayList<>(mExercises));
+            }
+        }
+    }
+
+    public interface OnExercisesChangedListener {
+        void onExercisesChanged(List<String> exercises);
     }
 }
