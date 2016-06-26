@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,7 +15,6 @@ import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
-import com.github.gfranks.workoutcompanion.util.Utils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -64,7 +64,10 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
 
     @Override
     public void onPageSelected(int position) {
-        mViewPagerIndicator.setText(++position + " of " + mGym.getPhotos().size());
+        StringBuilder sb = new StringBuilder(++position);
+        sb.append(" of ");
+        sb.append(mGym.getPhotos().size());
+        mViewPagerIndicator.setText(sb.toString());
     }
 
     @Override
@@ -95,7 +98,7 @@ public class FullScreenGymPhotosActivity extends BaseActivity implements ViewPag
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            final ImageView imageView = new ImageView(container.getContext());
+            final AppCompatImageView imageView = new AppCompatImageView(container.getContext());
             imageView.setFitsSystemWindows(true);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

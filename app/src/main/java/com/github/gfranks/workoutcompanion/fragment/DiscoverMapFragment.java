@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
 
 import com.github.gfranks.minimal.notification.GFMinimalNotification;
@@ -43,7 +45,7 @@ import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
-import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -91,7 +93,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     @InjectView(R.id.map_view_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
-    EmptyView mEmptyView;
+    WCEmptyView mEmptyView;
 
     private GoogleMap mMap;
     private ClusterManager<WCGym> mClusterManager;
@@ -183,6 +185,11 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnSuggestionListener(this);
         mSearchView.setSuggestionsAdapter(mSearchViewAdapter);
+        try {
+            int searchSrcTextId = getResources().getIdentifier("android:id/search_src_text", null, null);
+            EditText searchEditText = (EditText) mSearchView.findViewById(searchSrcTextId);
+            searchEditText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.white_translucent));
+        } catch (Throwable t) {}
     }
 
     @Override
@@ -459,7 +466,16 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                         builder.include(item.getPosition());
                     }
                     final LatLngBounds bounds = builder.build();
-                    getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                    getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100), new GoogleMap.CancelableCallback() {
+                        @Override
+                        public void onFinish() {
+                            mClusterManager.cluster();
+                        }
+
+                        @Override
+                        public void onCancel() {
+                        }
+                    });
                 }
             }
 
@@ -473,7 +489,7 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         });
     }
 
-    private void showList(List<WCGym> gyms, final LatLng position, final boolean isFullscreen) {
+    private void showList(final List<WCGym> gyms, final LatLng position, final boolean isFullscreen) {
         mAdapter = new GymListAdapter(gyms, this);
         mListView.setAdapter(mAdapter);
         adjustListContainerHeight(isFullscreen);
@@ -503,16 +519,18 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
                 }
             }, 200);
         } else {
-            // ensure we position the marker above the list
-            // must be delayed due to map defaulting to centering the marker
-            new Handler().postDelayed(new Runnable() {
+            BottomSheetBehavior.from(mBottomSheet).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
-                public void run() {
-                    if (!isFullscreen) {
-                        ensureSelectedMarkerVisible(position);
-                    }
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    showList(gyms, position, isFullscreen);
+                    BottomSheetBehavior.from(mBottomSheet).setBottomSheetCallback(null);
                 }
-            }, 200);
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                }
+            });
+            BottomSheetBehavior.from(mBottomSheet).setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
 
@@ -545,9 +563,14 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
     private void adjustListContainerHeight(boolean isFullscreen) {
         if (isFullscreen) {
             ViewGroup.LayoutParams params = mBottomSheet.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            if (mAdapter.getItemCount() * getResources().getDimensionPixelSize(R.dimen.gym_list_item_height) < mMapView.getMeasuredHeight()) {
+                mListViewTopShadow.setVisibility(View.VISIBLE);
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            } else {
+                mListViewTopShadow.setVisibility(View.GONE);
+                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            }
             mBottomSheet.setLayoutParams(params);
-            mListViewTopShadow.setVisibility(View.GONE);
             return;
         }
 

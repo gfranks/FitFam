@@ -28,6 +28,7 @@
     <!-- Profile Strings -->
     <string name="user_profile">User Profile</string>
     <string name="set_public">Set Public</string>
+    <string name="set_private">Set Private</string>
     <string name="is_public">Public</string>
     <string name="is_private">Private</string>
     <string name="workout_request_sent">Workout request sent</string>
@@ -57,7 +58,6 @@
     <string name="gym_rating_unavailable">Rating Unavailable</string>
     <string name="gym_reviews">Reviews</string>
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
-    <string name="gym_call">Call %1$s at %2$s?</string>
     <string name="gym_share">Share Gym Using</string>
     <string name="gym_share_text"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
     <string name="gym_set_as_current">Set as home gym</string>
@@ -125,6 +125,7 @@
     <string name="companions">Companions</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="call_prompt">Call %1$s at %2$s?</string>
 
     <!-- Empty List Strings -->
     <string name="empty_companions_header_image">http://cdn3-www.superherohype.com/assets/uploads/gallery/captain_america_4979/captain_america_the_winter_soldier_7927/captws_captainamerica_avatar.jpg</string>

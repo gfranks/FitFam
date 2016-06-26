@@ -19,7 +19,7 @@ import com.github.gfranks.workoutcompanion.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class EmptyView extends FrameLayout {
+public class WCEmptyView extends FrameLayout {
 
     @InjectView(R.id.empty_view_header_container)
     ViewGroup mHeaderContainer;
@@ -34,21 +34,21 @@ public class EmptyView extends FrameLayout {
 
     private View mHeader;
 
-    public EmptyView(Context context) {
+    public WCEmptyView(Context context) {
         this(context, null);
     }
 
-    public EmptyView(Context context, AttributeSet attrs) {
+    public WCEmptyView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public EmptyView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WCEmptyView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public EmptyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public WCEmptyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }

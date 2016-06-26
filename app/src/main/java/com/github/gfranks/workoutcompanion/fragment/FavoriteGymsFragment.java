@@ -26,7 +26,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.fragment.base.BaseFragment;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
-import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
     @InjectView(R.id.list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
-    EmptyView mEmptyView;
+    WCEmptyView mEmptyView;
 
     private GymListAdapter mAdapter;
     private GymDatabase mGymDatabase;

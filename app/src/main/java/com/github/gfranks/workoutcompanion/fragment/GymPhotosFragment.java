@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ public class GymPhotosFragment extends BaseFragment {
     ViewPager mViewPager;
 
     private WCGym mGym;
-    private PhotoPagerAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,12 +63,11 @@ public class GymPhotosFragment extends BaseFragment {
     public void setGym(WCGym gym) {
         mGym = gym;
 
-        if (isDetached() || getActivity() == null || mGym == null || mGym.getPhotos() == null) {
+        if (isDetached() || getActivity() == null || mGym == null) {
             return;
         }
 
-        mAdapter = new PhotoPagerAdapter(GymUtils.getScaledGymPhotos(getContext(), mGym.getPhotos()));
-        mViewPager.setAdapter(mAdapter);
+        mViewPager.setAdapter(new PhotoPagerAdapter(GymUtils.getScaledGymPhotos(getContext(), mGym.getPhotos())));
     }
 
     private class PhotoPagerAdapter extends PagerAdapter {
@@ -81,7 +80,10 @@ public class GymPhotosFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return mPhotoUrls.size();
+            if (mPhotoUrls != null && mPhotoUrls.size() > 0) {
+                return mPhotoUrls.size();
+            }
+            return 1;
         }
 
         public String getItem(int position) {
@@ -95,37 +97,44 @@ public class GymPhotosFragment extends BaseFragment {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            final ImageView imageView = new ImageView(container.getContext());
+            final AppCompatImageView imageView = new AppCompatImageView(container.getContext());
             imageView.setFitsSystemWindows(true);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             Drawable defaultImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_gym);
-            mPicasso.load(getItem(position))
-                    .placeholder(defaultImage)
-                    .error(defaultImage)
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                        }
+            if (mPhotoUrls != null && mPhotoUrls.size() > 0) {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                mPicasso.load(getItem(position))
+                        .placeholder(defaultImage)
+                        .error(defaultImage)
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                            }
 
-                        @Override
-                        public void onError() {
-                            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                        }
-                    });
+                            @Override
+                            public void onError() {
+                                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            }
+                        });
+            } else {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setImageResource(R.drawable.ic_gym);
+            }
 
             container.addView(imageView);
 
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), FullScreenGymPhotosActivity.class);
-                    intent.putExtra(WCGym.EXTRA, mGym);
-                    intent.putExtra(FullScreenGymPhotosActivity.EXTRA_INDEX, mViewPager.getCurrentItem());
-                    startActivity(intent);
-                }
-            });
+            if (mPhotoUrls != null && mPhotoUrls.size() > 0) {
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), FullScreenGymPhotosActivity.class);
+                        intent.putExtra(WCGym.EXTRA, mGym);
+                        intent.putExtra(FullScreenGymPhotosActivity.EXTRA_INDEX, mViewPager.getCurrentItem());
+                        startActivity(intent);
+                    }
+                });
+            }
 
             return imageView;
         }

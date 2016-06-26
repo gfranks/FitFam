@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 
 public interface GoogleApiService {
 
-    @GET("/maps/api/place/search/json?radius=1000&types=workout,exercise&name=gym")
+    @GET("/maps/api/place/search/json?radius=1500&types=workout,exercise&name=gym")
     Call<WCGyms> getGyms(@Query("location") String location,
                          @Query("key") String key);
 

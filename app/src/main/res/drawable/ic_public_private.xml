@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_checked="true" android:state_enabled="false">
+        <layer-list>
+
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/theme_primary" />
+                </shape>
+            </item>
+
+            <item android:bottom="12dp" android:drawable="@drawable/ic_public" android:left="12dp" android:right="12dp" android:top="12dp" />
+
+            <item>
+                <shape android:dither="true" android:shape="oval">
+                    <stroke android:width="1dp" android:color="@color/theme_icon_color" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+    <item android:state_checked="true">
+        <layer-list>
+
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/theme_primary" />
+                </shape>
+            </item>
+
+            <item android:bottom="12dp" android:drawable="@drawable/ic_public" android:left="12dp" android:right="12dp" android:top="12dp" />
+
+            <item>
+                <shape android:dither="true" android:shape="oval">
+                    <stroke android:width="1dp" android:color="@color/theme_icon_color" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+    <item android:state_checked="false" android:state_enabled="false">
+        <layer-list>
+
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/black_transparent" />
+                </shape>
+            </item>
+
+            <item android:bottom="12dp" android:drawable="@drawable/ic_private" android:left="12dp" android:right="12dp" android:top="12dp" />
+
+            <item>
+                <shape android:dither="true" android:shape="oval">
+                    <stroke android:width="1dp" android:color="@color/theme_icon_color" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+    <item android:state_checked="false">
+        <layer-list>
+
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/black_translucent" />
+                </shape>
+            </item>
+
+            <item android:bottom="12dp" android:drawable="@drawable/ic_private" android:left="12dp" android:right="12dp" android:top="12dp" />
+
+            <item>
+                <shape android:dither="true" android:shape="oval">
+                    <stroke android:width="1dp" android:color="@color/theme_icon_color" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+
+</selector>

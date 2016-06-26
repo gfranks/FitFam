@@ -47,7 +47,7 @@ import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.util.Utils;
-import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -116,7 +116,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @InjectView(R.id.user_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
-    EmptyView mEmptyView;
+    WCEmptyView mEmptyView;
 
     private WCGym mGym;
     private UserListAdapter mAdapter;
@@ -241,11 +241,9 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         super.onOffsetChanged(appBarLayout, verticalOffset);
-        if (mAppBarCollapsed) {
+        if (ViewCompat.getElevation(mSetAsHomeGym) < ViewCompat.getElevation(mAppBarLayout)) {
             // ensure the set as home gym button stays above the toolbar on collapse
-            ViewCompat.setElevation(mSetAsHomeGym, mAppBarLayout.getTargetElevation() + 1);
-        } else {
-            ViewCompat.setElevation(mSetAsHomeGym, mAppBarLayout.getTargetElevation());
+            ViewCompat.setElevation(mSetAsHomeGym, ViewCompat.getElevation(mAppBarLayout));
         }
 
         if (Math.abs(verticalOffset) >= mFavorite.getBottom() && !mFavoriteAlt.isEnabled()) {
@@ -552,7 +550,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
 
     private void makePhoneCall() {
         new MaterialDialog.Builder(this)
-                .content(getString(R.string.gym_call, mGym.getName(), mGym.getFormatted_phone_number()))
+                .content(getString(R.string.call_prompt, mGym.getName(), mGym.getFormatted_phone_number()))
                 .positiveText(R.string.action_call)
                 .negativeText(R.string.action_cancel)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {

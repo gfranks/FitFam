@@ -122,20 +122,24 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
 
     public LatLng getLastKnownLocation() {
         if (mLatitudePreference.get() == 0.0 || mLongitudePreference.get() == 0.0) {
-            LatLng latLng = new LatLng(33.744473, -84.389886);
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (location != null) {
-                    return new LatLng(location.getLatitude(), location.getLongitude());
-                }
-            }
-
+            LatLng latLng = getLastKnownGpsLocation();
             mLatitudePreference.set(latLng.latitude);
             mLongitudePreference.set(latLng.longitude);
             return latLng;
         } else {
             return new LatLng(mLatitudePreference.get(), mLongitudePreference.get());
         }
+    }
+
+    public LatLng getLastKnownGpsLocation() {
+        LatLng latLng = new LatLng(33.744473, -84.389886);
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location != null) {
+                return new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        }
+        return latLng;
     }
 
     public void setLastKnownLocation(LatLng latLng) {

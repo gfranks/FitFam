@@ -25,7 +25,7 @@ import com.github.gfranks.workoutcompanion.data.model.WCUser;
 import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.manager.GoogleApiManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
-import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -54,7 +54,7 @@ public class SelectGymDialog extends MaterialDialog implements SearchView.OnQuer
     @InjectView(R.id.select_gym_list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
-    EmptyView mEmptyView;
+    WCEmptyView mEmptyView;
 
     private WCUser mUser;
     private SearchSuggestionsAdapter mSearchViewAdapter;

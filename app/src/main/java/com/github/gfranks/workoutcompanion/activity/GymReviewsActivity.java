@@ -13,7 +13,7 @@ import com.github.gfranks.workoutcompanion.adapter.GymReviewListAdapter;
 import com.github.gfranks.workoutcompanion.adapter.holder.GymReviewViewHolder;
 import com.github.gfranks.workoutcompanion.data.model.WCGym;
 import com.github.gfranks.workoutcompanion.data.model.WCGymReview;
-import com.github.gfranks.workoutcompanion.view.EmptyView;
+import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 
 import butterknife.InjectView;
@@ -23,7 +23,7 @@ public class GymReviewsActivity extends BaseActivity implements WCRecyclerView.O
     @InjectView(R.id.list)
     WCRecyclerView mListView;
     @InjectView(R.id.list_empty_text)
-    EmptyView mEmptyView;
+    WCEmptyView mEmptyView;
 
     private WCGym mGym;
     private GymReviewListAdapter mAdapter;

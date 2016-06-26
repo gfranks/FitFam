@@ -1,20 +1,23 @@
 package com.github.gfranks.workoutcompanion.activity;
 
+import android.Manifest;
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.transition.Transition;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +26,10 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.gfranks.minimal.notification.GFMinimalNotification;
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.activity.base.BaseActivity;
@@ -48,6 +54,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,6 +63,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
 
     private static final String CAN_EDIT = "can_edit";
     private static final String EDIT_MODE = "edit_mode";
+    private static final int REQUEST_CODE_PHONE_CALL = 1;
 
     @Inject
     WorkoutCompanionService mService;
@@ -67,7 +75,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     @InjectView(R.id.image)
     ImageView mImage;
     @InjectView(R.id.set_public)
-    CheckBox mPublic;
+    CheckBox mPublicPrivate;
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
     @InjectView(R.id.first_name)
@@ -149,6 +157,17 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_PHONE_CALL: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    makePhoneCall();
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_user_profile, menu);
         return true;
@@ -178,16 +197,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         }
 
         mImage.setEnabled(mEditMode);
-        mPublic.setEnabled(mEditMode);
-        if (mPublic.isEnabled()) {
-            mPublic.setText(R.string.set_public);
-        } else {
-            if (mPublic.isChecked()) {
-                mPublic.setText(R.string.is_public);
-            } else {
-                mPublic.setText(R.string.is_private);
-            }
-        }
+        mPublicPrivate.setEnabled(mEditMode);
         mFirstName.setEnabled(mEditMode);
         mLastName.setEnabled(mEditMode);
         mEmail.setEnabled(mEditMode);
@@ -228,7 +238,18 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mEditMode = false;
             supportInvalidateOptionsMenu();
         } else if (id == R.id.action_call) {
-            // call
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.CALL_PHONE)) {
+                    GFMinimalNotification.make(mCoordinatorLayout, R.string.gym_call_permission_reason, GFMinimalNotification.LENGTH_LONG).show();
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            REQUEST_CODE_PHONE_CALL);
+                }
+            } else {
+                makePhoneCall();
+            }
         } else if (id == R.id.action_message) {
             // message
         } else if (id == R.id.action_request_workout) {
@@ -313,6 +334,19 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         }
     }
 
+    @OnLongClick(R.id.set_public)
+    boolean onPublicPrivateLongClick(View v) {
+        Toast toast;
+        if (mPublicPrivate.isChecked()) {
+            toast = Toast.makeText(this, R.string.set_private, Toast.LENGTH_SHORT);
+        } else {
+            toast = Toast.makeText(this, R.string.set_public, Toast.LENGTH_SHORT);
+        }
+        toast.setGravity(Gravity.TOP | Gravity.START, v.getLeft(), v.getBottom());
+        toast.show();
+        return true;
+    }
+
     /**
      * ****************
      * Callback<WCUser>
@@ -338,9 +372,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     }
 
     private void initUser() {
-        if (!mCanEdit) {
-            setTitle(mUser.getFullName());
-        }
+        setTitle(mUser.getFullName() + (mCanEdit ? " - You" : ""));
         Drawable defaultImage = ContextCompat.getDrawable(this, R.drawable.ic_avatar);
         if (mUser.getImage() != null && !mUser.getImage().isEmpty()) {
             mPicasso.load(mUser.getImage())
@@ -352,7 +384,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mImage.setImageDrawable(defaultImage);
         }
 
-        mPublic.setChecked(mUser.isPublic());
+        mPublicPrivate.setChecked(mUser.isPublic());
         mFirstName.setText(mUser.getFirstName());
         mLastName.setText(mUser.getLastName());
         if (mUser.getHomeGym() != null && mUser.getHomeGym().length() > 0) {
@@ -386,7 +418,7 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
     }
 
     private void saveInfo() {
-        mUser.setPublic(mPublic.isChecked());
+        mUser.setPublic(mPublicPrivate.isChecked());
         mUser.setFirstName(mFirstName.getText().toString());
         mUser.setLastName(mLastName.getText().toString());
         mUser.setEmail(mEmail.getText().toString());
@@ -454,6 +486,24 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         });
     }
 
+    private void makePhoneCall() {
+        new MaterialDialog.Builder(this)
+                .content(getString(R.string.call_prompt, mUser.getFullName(), mUser.getPhoneNumber()))
+                .positiveText(R.string.action_call)
+                .negativeText(R.string.action_cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (ContextCompat.checkSelfPermission(UserProfileActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                            String uri = "tel:" + mUser.getPhoneNumber();
+                            Intent intent = new Intent(Intent.ACTION_CALL);
+                            intent.setData(Uri.parse(uri));
+                            startActivity(intent);
+                        }
+                    }
+                });
+    }
+
     private void continueOn() {
         if (mIsNewUser) {
             startActivity(new Intent(this, WorkoutCompanionActivity.class));
@@ -488,11 +538,12 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
         if (mFab.getScaleX() == 1 && mFab.getScaleY() == 1) {
             return;
         }
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION);
-        set.playTogether(ObjectAnimator.ofFloat(mFab, "scaleX", 0, 1), ObjectAnimator.ofFloat(mFab, "scaleY", 0, 1));
-        set.start();
-        mFab.setVisibility(View.VISIBLE);
+        mFab.animate().scaleX(1).scaleY(1).setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION).setListener(new AnimationUtils.DefaultAnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mFab.setVisibility(View.VISIBLE);
+            }
+        }).start();
     }
 
     private void hideFab() {
@@ -501,15 +552,11 @@ public class UserProfileActivity extends BaseActivity implements Callback<WCUser
             mFab.setVisibility(View.GONE);
             return;
         }
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION);
-        set.playTogether(ObjectAnimator.ofFloat(mFab, "scaleX", 1, 0), ObjectAnimator.ofFloat(mFab, "scaleY", 1, 0));
-        set.addListener(new AnimationUtils.DefaultAnimatorListener() {
+        mFab.animate().scaleX(0).scaleY(0).setDuration(AnimationUtils.DEFAULT_FAB_ANIM_DURATION).setListener(new AnimationUtils.DefaultAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mFab.setVisibility(View.GONE);
             }
-        });
-        set.start();
+        }).start();
     }
 }
