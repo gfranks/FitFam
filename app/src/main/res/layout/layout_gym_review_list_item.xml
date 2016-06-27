@@ -17,51 +17,16 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <android.support.v7.widget.AppCompatRatingBar
+        android:id="@+id/rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/list_cell_vertical_padding">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/rating_1_image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
-            android:src="@color/transparent" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/rating_2_image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
-            android:src="@color/transparent" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/rating_3_image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
-            android:src="@color/transparent" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/rating_4_image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
-            android:src="@color/transparent" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/rating_5_image_view"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@color/transparent" />
-
-    </LinearLayout>
+        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:max="5"
+        android:stepSize="0.1" />
 
     <TextView
         android:id="@+id/rating_date"

@@ -39,6 +39,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
         mAccountManager = accountManager;
         mUserDatabase = new UserDatabase(application);
         mExercisesPreference = new StringPreference(prefs, "exercises", TextUtils.join(",", application.getResources().getStringArray(R.array.exercises)));
+        setupMockUsers();
     }
 
     /**
@@ -187,7 +188,7 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
     }
 
     @Override
-    public Call<List<WCUser>> getUsers(@Path("placeId") final String placeId, @Body WCCompanionFilters filters) {
+    public Call<List<WCUser>> getUsers(@Path("placeId") final String placeId, @Body final WCCompanionFilters filters) {
         return new MockCall<List<WCUser>>() {
             @Override
             public void enqueue(Callback<List<WCUser>> cb) {
@@ -195,10 +196,6 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                 try {
                     mUserDatabase.open();
                     users = mUserDatabase.getAllUsers();
-                    if (users == null || users.isEmpty()) {
-                        users = getMockUsers();
-                    }
-
                     for (WCUser user : new ArrayList<>(users)) {
                         if (user.equals(mAccountManager.getUser()) || (!placeId.equals(user.getHomeGymId())
                                 && !user.getGymIds().contains(placeId))) {
@@ -207,6 +204,8 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                     }
 
                     mUserDatabase.close();
+
+                    users = filterUsers(users, filters);
                     if (cb != null) {
                         cb.onResponse(this, Response.success(users));
                     }
@@ -228,10 +227,6 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
                 try {
                     mUserDatabase.open();
                     users = mUserDatabase.getAllUsers();
-                    if (users == null || users.isEmpty()) {
-                        users = getMockUsers();
-                    }
-
                     for (WCUser user : new ArrayList<>(users)) {
                         if (user.equals(mAccountManager.getUser()) || !user.isCanSeeContactInfo()) {
                             users.remove(user);
@@ -284,38 +279,90 @@ public class MockWorkoutCompanionService implements WorkoutCompanionService {
         };
     }
 
-    private List<WCUser> getMockUsers() {
-        List<WCUser> users = new ArrayList<>();
-        users.add(new WCUser.Builder()
-                .setFirstName("Garrett")
-                .setLastName("Franks")
-                .setEmail("lgfz71@gmail.com")
-                .setImage(getRandomImage())
-                .build());
-        users.add(new WCUser.Builder()
-                .setFirstName("Mark")
-                .setLastName("Davis")
-                .setEmail("mark.davis@gmail.com")
-                .setImage(getRandomImage())
-                .build());
-        users.add(new WCUser.Builder()
-                .setFirstName("Jared")
-                .setLastName("Piatt")
-                .setEmail("jaredpiatt@gmail.com")
-                .setImage(getRandomImage())
-                .build());
-        users.add(new WCUser.Builder()
-                .setFirstName("James")
-                .setLastName("Finnigin")
-                .setEmail("jfinnigin@gmail.com")
-                .setImage(getRandomImage())
-                .build());
+    private void setupMockUsers() {
+        try {
+            mUserDatabase.open();
+            mUserDatabase.createUser(new WCUser.Builder()
+                    .setFirstName("Garrett")
+                    .setLastName("Franks")
+                    .setEmail("lgfz71@gmail.com")
+                    .setPassword("password")
+                    .setImage(getRandomImage())
+                    .build());
+            mUserDatabase.createUser(new WCUser.Builder()
+                    .setFirstName("Mark")
+                    .setLastName("Davis")
+                    .setEmail("mark.davis@gmail.com")
+                    .setPassword("password")
+                    .setImage(getRandomImage())
+                    .build());
+            mUserDatabase.createUser(new WCUser.Builder()
+                    .setFirstName("Jared")
+                    .setLastName("Piatt")
+                    .setEmail("jaredpiatt@gmail.com")
+                    .setPassword("password")
+                    .setImage(getRandomImage())
+                    .build());
+            mUserDatabase.createUser(new WCUser.Builder()
+                    .setFirstName("James")
+                    .setLastName("Finnigin")
+                    .setEmail("jfinnigin@gmail.com")
+                    .setPassword("password")
+                    .setImage(getRandomImage())
+                    .build());
+            mUserDatabase.close();
+        } catch (Throwable t) {
+            // unable to create mock users
+        }
+    }
 
-        for (WCUser user : users) {
-            mUserDatabase.createUser(user);
+    private List<WCUser> filterUsers(List<WCUser> users, WCCompanionFilters filters) {
+        if (filters.getLocation() == null && filters.getGym() == null && (filters.getSex() == null || filters.getSex().length() == 0)
+                && filters.getAge() == 0 && filters.getWeight() == 0 && (filters.getExercises() == null || filters.getExercises().size() == 0)) {
+            return users;
         }
 
-        return users;
+        List<WCUser> filteredUsers = new ArrayList<>();
+        for (WCUser user : users) {
+            boolean matched = false;
+            if (filters.getAge() != 0 && Math.abs(user.getBirthdayYear() - filters.getAge()) < 5) {
+                matched = true;
+            }
+
+            if (filters.getWeight() != 0 && Math.abs(user.getWeight() - filters.getWeight()) < 15) {
+                matched = true;
+            }
+
+            if (filters.getExercises() != null) {
+                for (String exercise : filters.getExercises()) {
+                    if (user.getExercises().contains(exercise)) {
+                        matched = true;
+                    }
+                }
+            }
+
+            if (filters.getSex() != null) {
+                if (user.getSex().equals(filters.getSex())) {
+                    matched = true;
+                }
+            }
+
+            if (filters.getGym() != null) {
+                if (filters.getGym().getPlace_id().equals(user.getHomeGymId())) {
+                    matched = true;
+                }
+
+                if (user.getGymIds() != null && user.getGymIds().contains(filters.getGym().getPlace_id())) {
+                    matched = true;
+                }
+            }
+
+            if (matched) {
+                filteredUsers.add(user);
+            }
+        }
+
+        return filteredUsers;
     }
 
     private String getRandomImage() {

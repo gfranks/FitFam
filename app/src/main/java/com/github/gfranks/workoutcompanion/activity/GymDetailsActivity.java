@@ -3,7 +3,9 @@ package com.github.gfranks.workoutcompanion.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.transition.Transition;
@@ -23,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -45,8 +47,6 @@ import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.manager.FilterManager;
 import com.github.gfranks.workoutcompanion.util.AnimationUtils;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
-import com.github.gfranks.workoutcompanion.util.GymUtils;
-import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.view.WCEmptyView;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -107,6 +107,8 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     ViewGroup mRatingsContainer;
     @InjectView(R.id.gym_ratings_title)
     TextView mRatingsTitle;
+    @InjectView(R.id.gym_rating_bar)
+    AppCompatRatingBar mRatingBar;
     @InjectView(R.id.gym_hours_container)
     View mHoursContainer;
     @InjectView(R.id.gym_hours)
@@ -145,6 +147,14 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         mMapView.onCreate(null);
         initGym();
         mGoogleApiService.getGymDetails(mGym.getPlace_id(), getString(R.string.api_places_key)).enqueue(this);
+
+        LayerDrawable stars = (LayerDrawable) mRatingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(ContextCompat.getColor(this, R.color.yellow),
+                PorterDuff.Mode.SRC_ATOP); // for filled stars
+        stars.getDrawable(1).setColorFilter(ContextCompat.getColor(this, R.color.yellow),
+                PorterDuff.Mode.SRC_ATOP); // for half filled stars
+        stars.getDrawable(0).setColorFilter(ContextCompat.getColor(this, R.color.theme_divider),
+                PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
@@ -481,24 +491,11 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
         if (mGym.getReviews() != null && mGym.getReviews().size() > 0) {
             mRatingsContainer.setVisibility(View.VISIBLE);
             mReviews.setText(mGym.getReviews().size() + " " + getString(R.string.gym_reviews));
+            mRatingBar.setRating(mGym.getRating());
             if (mGym.getRating() > 0f) {
                 mRatingsTitle.setText(getString(R.string.gym_rating) + ": " + String.valueOf(mGym.getRating()));
-                ImageView[] ivs = new ImageView[]{
-                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(0),
-                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(1),
-                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(2),
-                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(3),
-                        (ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(4)
-                };
-                GymUtils.adjustImageViewsForRating(this, mGym.getRating(), ivs);
             } else {
                 mRatingsTitle.setText(R.string.gym_rating_unavailable);
-                Drawable drawable = Utils.applyDrawableTint(this, R.drawable.ic_star, ContextCompat.getColor(this, R.color.gray_lightest));
-                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(0)).setImageDrawable(drawable);
-                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(1)).setImageDrawable(drawable);
-                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(2)).setImageDrawable(drawable);
-                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(3)).setImageDrawable(drawable);
-                ((ImageView) ((ViewGroup) mRatingsContainer.getChildAt(2)).getChildAt(4)).setImageDrawable(drawable);
             }
         } else {
             mRatingsContainer.setVisibility(View.GONE);

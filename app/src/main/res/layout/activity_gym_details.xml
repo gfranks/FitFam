@@ -202,53 +202,16 @@
                         android:text="@string/gym_rating"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                    <LinearLayout
+                    <android.support.v7.widget.AppCompatRatingBar
+                        android:id="@+id/gym_rating_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/gym_ratings_title"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
-                        android:orientation="horizontal">
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/rating_1_image_view"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginRight="2dp"
-                            android:src="@color/transparent" />
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/rating_2_image_view"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginRight="2dp"
-                            android:src="@color/transparent" />
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/rating_3_image_view"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginRight="2dp"
-                            android:src="@color/transparent" />
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/rating_4_image_view"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_marginRight="2dp"
-                            android:src="@color/transparent" />
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/rating_5_image_view"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@color/transparent" />
-
-                    </LinearLayout>
+                        android:isIndicator="true"
+                        android:max="5"
+                        android:numStars="5"
+                        android:stepSize="0.1" />
 
                 </RelativeLayout>
 
