@@ -202,16 +202,12 @@
                         android:text="@string/gym_rating"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-                    <android.support.v7.widget.AppCompatRatingBar
-                        android:id="@+id/gym_rating_bar"
+                    <include layout="@layout/layout_ratings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
                         android:layout_below="@+id/gym_ratings_title"
-                        android:layout_centerHorizontal="true"
-                        android:isIndicator="true"
-                        android:max="5"
-                        android:numStars="5"
-                        android:stepSize="0.1" />
+                        android:layout_centerHorizontal="true" />
 
                 </RelativeLayout>
 

@@ -159,6 +159,7 @@ public class FavoriteGymsFragment extends BaseFragment implements WCRecyclerView
                 .setName(getString(R.string.empty_favorite_gyms_header_name))
                 .setIcon(getString(R.string.empty_favorite_gyms_header_image))
                 .setVicinity(getString(R.string.empty_favorite_gyms_header_vicinity))
+                .setRating(4.3f)
                 .build());
         mListView.setEmptyView(mEmptyView);
     }

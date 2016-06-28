@@ -17,7 +17,6 @@ import com.github.gfranks.workoutcompanion.manager.AccountManager;
 import com.github.gfranks.workoutcompanion.util.GymDatabase;
 import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.util.RoundedCornersTransformation;
-import com.github.gfranks.workoutcompanion.util.Utils;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -39,6 +38,18 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
     ImageView mImage;
     @InjectView(R.id.gym_favorite)
     ToggleButton mFavorite;
+    @InjectView(R.id.rating_view)
+    View mRating;
+    @InjectView(R.id.rating_1_image_view)
+    ImageView mRating1;
+    @InjectView(R.id.rating_2_image_view)
+    ImageView mRating2;
+    @InjectView(R.id.rating_3_image_view)
+    ImageView mRating3;
+    @InjectView(R.id.rating_4_image_view)
+    ImageView mRating4;
+    @InjectView(R.id.rating_5_image_view)
+    ImageView mRating5;
     @InjectView(R.id.gym_name)
     TextView mName;
     @InjectView(R.id.gym_address)
@@ -70,6 +81,15 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
         mName.setText(gym.getName());
         mAddress.setText(gym.getVicinity());
 
+        if (gym.getRating() > 0) {
+            mRating.setVisibility(View.VISIBLE);
+            GymUtils.adjustImageViewsForRating(itemView.getContext(), gym.getRating(), new ImageView[]{
+                    mRating1, mRating2, mRating3, mRating4, mRating5
+            });
+        } else {
+            mRating.setVisibility(View.GONE);
+        }
+
         mFavorite.setOnCheckedChangeListener(null);
         try {
             gymDatabase.open();
@@ -88,6 +108,16 @@ public class GymViewHolder extends WCRecyclerView.ViewHolder implements Compound
         mAddress.setEnabled(false);
         mImage.setAlpha(0.5f);
         mFavorite.setEnabled(false);
+        mRating1.setEnabled(false);
+        mRating1.setAlpha(0.5f);
+        mRating2.setEnabled(false);
+        mRating2.setAlpha(0.5f);
+        mRating3.setEnabled(false);
+        mRating3.setAlpha(0.5f);
+        mRating4.setEnabled(false);
+        mRating4.setAlpha(0.5f);
+        mRating5.setEnabled(false);
+        mRating5.setAlpha(0.5f);
     }
 
     private void setGymImage(WCGym gym) {

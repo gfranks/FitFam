@@ -17,16 +17,10 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.AppCompatRatingBar
-        android:id="@+id/rating_bar"
-        style="?android:attr/ratingBarStyleSmall"
+    <include layout="@layout/layout_ratings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_cell_top_bottom_margin"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:max="5"
-        android:stepSize="0.1" />
+        android:layout_marginTop="@dimen/list_cell_top_bottom_margin" />
 
     <TextView
         android:id="@+id/rating_date"

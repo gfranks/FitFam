@@ -24,7 +24,8 @@ public class GymDatabase {
     private String[] ALL_COLUMNS = {
             GymSQLiteHelper.COLUMN_ID, GymSQLiteHelper.COLUMN_PLACE_ID,
             GymSQLiteHelper.COLUMN_NAME, GymSQLiteHelper.COLUMN_ICON,
-            GymSQLiteHelper.COLUMN_VICINITY, GymSQLiteHelper.COLUMN_GEOMETRY
+            GymSQLiteHelper.COLUMN_VICINITY, GymSQLiteHelper.COLUMN_RATING,
+            GymSQLiteHelper.COLUMN_GEOMETRY
     };
 
     private GymSQLiteHelper mDbHelper;
@@ -64,6 +65,7 @@ public class GymDatabase {
             values.put(GymSQLiteHelper.COLUMN_ICON, gym.getIcon());
         }
         values.put(GymSQLiteHelper.COLUMN_VICINITY, gym.getVicinity());
+        values.put(GymSQLiteHelper.COLUMN_RATING, String.valueOf(gym.getRating()));
         values.put(GymSQLiteHelper.COLUMN_GEOMETRY, getStringFromGeometry(gym.getGeometry()));
         mDatabase.insert(GymSQLiteHelper.TABLE_GYMS, null, values);
         mBroadcastManager.sendBroadcast(new Intent(BROADCAST));
@@ -119,6 +121,7 @@ public class GymDatabase {
                 .setName(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_NAME)))
                 .setIcon(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_ICON)))
                 .setVicinity(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_VICINITY)))
+                .setRating(Float.valueOf(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_RATING))))
                 .setGeometry(getGeometryFromString(cursor.getString(cursor.getColumnIndex(GymSQLiteHelper.COLUMN_GEOMETRY))))
                 .build();
     }
@@ -150,6 +153,7 @@ public class GymDatabase {
         static final String COLUMN_NAME = "name";
         static final String COLUMN_ICON = "icon";
         static final String COLUMN_VICINITY = "vicinity";
+        static final String COLUMN_RATING = "rating";
         static final String COLUMN_GEOMETRY = "geometry";
 
         private static final String DATABASE_NAME = "gyms.db";
@@ -164,6 +168,7 @@ public class GymDatabase {
                 + COLUMN_NAME + " text, "
                 + COLUMN_ICON + " text, "
                 + COLUMN_VICINITY + " text, "
+                + COLUMN_RATING + " text, "
                 + COLUMN_GEOMETRY + " text);";
 
         GymSQLiteHelper(Context context) {

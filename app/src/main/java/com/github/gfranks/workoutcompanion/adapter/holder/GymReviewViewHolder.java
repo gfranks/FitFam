@@ -1,14 +1,12 @@
 package com.github.gfranks.workoutcompanion.adapter.holder;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.LayerDrawable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.RatingBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.gfranks.workoutcompanion.R;
 import com.github.gfranks.workoutcompanion.data.model.WCGymReview;
+import com.github.gfranks.workoutcompanion.util.GymUtils;
 import com.github.gfranks.workoutcompanion.view.WCRecyclerView;
 
 import org.joda.time.DateTime;
@@ -25,8 +23,16 @@ public class GymReviewViewHolder extends WCRecyclerView.ViewHolder {
     TextView mUser;
     @InjectView(R.id.rating_date)
     TextView mDate;
-    @InjectView(R.id.rating_bar)
-    RatingBar mRatingBar;
+    @InjectView(R.id.rating_1_image_view)
+    ImageView mRating1;
+    @InjectView(R.id.rating_2_image_view)
+    ImageView mRating2;
+    @InjectView(R.id.rating_3_image_view)
+    ImageView mRating3;
+    @InjectView(R.id.rating_4_image_view)
+    ImageView mRating4;
+    @InjectView(R.id.rating_5_image_view)
+    ImageView mRating5;
     @InjectView(R.id.rating_text)
     TextView mText;
 
@@ -38,23 +44,23 @@ public class GymReviewViewHolder extends WCRecyclerView.ViewHolder {
     public void populate(WCGymReview review) {
         mUser.setText(review.getAuthor_name());
         mDate.setText(DateTimeFormat.forPattern(DATE_TIME_PATTERN).print(new DateTime(review.getTime())));
-        mRatingBar.setRating(review.getRating());
-        mText.setText(review.getText());
 
-        LayerDrawable stars = (LayerDrawable) mRatingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.yellow),
-                PorterDuff.Mode.SRC_ATOP); // for filled stars
-        stars.getDrawable(1).setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.yellow),
-                PorterDuff.Mode.SRC_ATOP); // for half filled stars
-        stars.getDrawable(0).setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.theme_divider),
-                PorterDuff.Mode.SRC_ATOP);
+        GymUtils.adjustImageViewsForRating(itemView.getContext(), review.getRating(), new ImageView[]{
+                mRating1, mRating2, mRating3, mRating4, mRating5
+        });
+
+        mText.setText(review.getText());
     }
 
     public void populateAsPlaceHolder(WCGymReview review) {
         populate(review);
         mUser.setEnabled(false);
         mDate.setEnabled(false);
-        mRatingBar.setEnabled(false);
+        mRating1.setEnabled(false);
+        mRating2.setEnabled(false);
+        mRating3.setEnabled(false);
+        mRating4.setEnabled(false);
+        mRating5.setEnabled(false);
         mText.setEnabled(false);
     }
 }
