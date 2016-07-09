@@ -1,4 +1,4 @@
-##WorkoutCompanion
+##FitFam
 
-Travis : [![Build Status](https://travis-ci.org/gfranks/WorkoutCompanion.svg?branch=master)](https://travis-ci.org/gfranks/WorkoutCompanion)
+Travis : [![Build Status](https://travis-ci.org/gfranks/FitFam.svg?branch=master)](https://travis-ci.org/gfranks/FitFam)
 ======

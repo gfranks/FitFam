@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+        <com.github.gfranks.fitfam.view.FFRecyclerView
             android:id="@+id/select_gym_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

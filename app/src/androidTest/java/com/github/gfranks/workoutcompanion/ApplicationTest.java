@@ -1,4 +1,4 @@
-package com.github.gfranks.workoutcompanion;
+package com.github.gfranks.fitfam;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

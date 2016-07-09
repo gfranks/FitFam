@@ -15,9 +15,9 @@ echo "****************************"
 ./gradlew clean
 
 echo "*******************************"
-echo "* Assembling WorkoutCompanion *"
+echo "* Assembling FitFam *"
 echo "*******************************"
-if [[ "$TRAVIS_BRANCH" =~ ^(wc-)([0-9]+)\.([0-9]+)\.([0-9]+)$ ]] ; then
+if [[ "$TRAVIS_BRANCH" =~ ^(ff-)([0-9]+)\.([0-9]+)\.([0-9]+)$ ]] ; then
    echo "Building on a release branch. Using prod keystore."
    ./gradlew assembleRelease crashlyticsUploadDistributionRelease -PdisablePreDex
    exit $?

@@ -28,7 +28,7 @@
         android:text="@string/request_exercise"
         android:visibility="gone" />
 
-    <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+    <com.github.gfranks.fitfam.view.FFRecyclerView
         android:id="@+id/exercise_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

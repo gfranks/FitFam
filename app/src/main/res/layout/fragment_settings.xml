@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+    <com.github.gfranks.fitfam.view.FFRecyclerView
         android:id="@+id/settings_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        app:wcrv_dividers="true" />
+        app:ffrv_dividers="true" />
 
     <TextView
         android:id="@+id/settings_build_version"

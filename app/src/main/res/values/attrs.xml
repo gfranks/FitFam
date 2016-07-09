@@ -6,10 +6,10 @@
         <attr name="esb_hideable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="WCRecyclerView">
-        <attr name="wcrv_layoutAnimation" format="boolean" />
-        <attr name="wcrv_dividers" format="boolean" />
-        <attr name="wcrv_orientation" format="enum">
+    <declare-styleable name="FFRecyclerView">
+        <attr name="ffrv_layoutAnimation" format="boolean" />
+        <attr name="ffrv_dividers" format="boolean" />
+        <attr name="ffrv_orientation" format="enum">
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>

@@ -1,29 +1,20 @@
 {
   "project_info": {
-    "project_number": "1058468277142",
-    "project_id": "workoutcompanion"
+    "project_number": "552850339132",
+    "project_id": "fitfam-1367"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1058468277142:android:e5ee8debb8d5b65f",
+        "mobilesdk_app_id": "1:552850339132:android:161ea167808afe00",
         "android_client_info": {
-          "package_name": "com.github.gfranks.workoutcompanion"
+          "package_name": "com.github.gfranks.fitfam"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1058468277142-04j1ta65rpkq1qj6kn1d0fdjnfrmlgqb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.github.gfranks.workoutcompanion",
-            "certificate_hash": "3732C6A3F5ACDFC7FF9BF64E8F7814C97227C964"
-          }
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDfU3GewEoPUCzlHjugZnbYaoOtFwJBSC0"
+          "current_key": "AIzaSyDpyxmzRYVG610KkPIhMEbCztQ01CJ9lgA"
         }
       ],
       "services": {
@@ -41,15 +32,15 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1058468277142:android:9f2f17654d66a401",
+        "mobilesdk_app_id": "1:552850339132:android:6a7d891634833051",
         "android_client_info": {
-          "package_name": "com.github.gfranks.workoutcompanion.debug"
+          "package_name": "com.github.gfranks.fitfam.debug"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDfU3GewEoPUCzlHjugZnbYaoOtFwJBSC0"
+          "current_key": "AIzaSyDpyxmzRYVG610KkPIhMEbCztQ01CJ9lgA"
         }
       ],
       "services": {

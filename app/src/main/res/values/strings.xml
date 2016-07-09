@@ -1,16 +1,16 @@
 <resources>
     <!-- App Strings -->
-    <string name="app_name">Workout Companion</string>
+    <string name="app_name">FitFam</string>
     <string name="app_description">The fastest, easiest way to find a local gym and workout partner</string>
 
     <!-- Keys -->
-    <string name="api_map_key">AIzaSyBRvdvERi0N5L2LPekYFbJ7w6jpBoucJ2o</string>
-    <string name="api_places_key">AIzaSyAVJmg5MTebQxSa5T6EQ1uJjz0hsPm0S60</string>
-    <string name="gcm_sender_id">1058468277142</string>
+    <string name="api_map_key">AIzaSyAZBfU7ohujt_BcWKkzsJ9m0mW82EoV59c</string>
+    <string name="api_places_key">AIzaSyB9Y1BaZX9Sn-wlQxnpAyKcC5NfdPi45u4</string>
+    <string name="gcm_sender_id">552850339132</string>
     <string name="airship_dev_app_key">U106HFiGTuOxuVN3iTsJUA</string>
     <string name="airship_dev_app_secret">7Nqij48pSyaJfV78rwiAdQ</string>
-    <string name="airship_prod_app_key">KFG7W4pjRhaxbB-BVWxslA</string> <!-- // TODO: update with prod key -->
-    <string name="airship_prod_app_secret">076-KC0lQYOvp5FPHwwsnQ</string> <!-- // TODO: update with prod app secret -->
+    <string name="airship_prod_app_key">pipUf5gxTKqnLXr-qfCUUg</string>
+    <string name="airship_prod_app_secret">KwE7uKHpTfm30PFzAOGFZg</string>
 
     <!-- Notification Strings -->
     <string name="notification_companion">You have a nearby companion</string>
@@ -20,7 +20,7 @@
     <string name="login_back">Back to Login</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="forgot_password_reset">Password Reset</string>
-    <string name="forgot_password_prompt">Please enter your WorkoutCompanion account email address</string>
+    <string name="forgot_password_prompt">Please enter your FitFam account email address</string>
     <string name="forgot_password_sent_link">Send Reset Link</string>
     <string name="forgot_password_sent">Forgotten password instructions sent</string>
     <string name="create_account">Create Account</string>
@@ -59,7 +59,7 @@
     <string name="gym_reviews">Reviews</string>
     <string name="gym_call_permission_reason">We will need your permission to make phone calls</string>
     <string name="gym_share">Share Gym Using</string>
-    <string name="gym_share_text"><p>I found this gym, %1$s, on WorkoutCompanion! Maybe we could check it out! \n %2$s</p></string>
+    <string name="gym_share_text"><p>I found this gym, %1$s, on FitFam! Maybe we could check it out! \n %2$s</p></string>
     <string name="gym_set_as_current">Set as home gym</string>
 
     <!-- Settings Strings -->

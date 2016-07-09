@@ -19,6 +19,7 @@
             android:id="@+id/empty_view_text_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:minHeight="100dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="10dp">

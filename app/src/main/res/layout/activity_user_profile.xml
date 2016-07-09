@@ -238,7 +238,7 @@
 
             <fragment
                 android:id="@+id/weight_select_fragment"
-                class="com.github.gfranks.workoutcompanion.fragment.WeightSelectFragment"
+                class="com.github.gfranks.fitfam.fragment.WeightSelectFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -246,7 +246,7 @@
 
             <fragment
                 android:id="@+id/exercise_type_fragment"
-                class="com.github.gfranks.workoutcompanion.fragment.ExerciseTypeFragment"
+                class="com.github.gfranks.fitfam.fragment.ExerciseTypeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_exercise_type" />

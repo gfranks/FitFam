@@ -27,7 +27,7 @@
 
             <fragment
                 android:id="@+id/images_fragment"
-                class="com.github.gfranks.workoutcompanion.fragment.GymPhotosFragment"
+                class="com.github.gfranks.fitfam.fragment.GymPhotosFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -269,7 +269,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/gym_info">
 
-                <com.github.gfranks.workoutcompanion.view.WCRecyclerView
+                <com.github.gfranks.fitfam.view.FFRecyclerView
                     android:id="@+id/user_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

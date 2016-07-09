@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp">
 
-        <com.github.gfranks.workoutcompanion.view.SeekArc
+        <com.github.gfranks.fitfam.view.SeekArc
             android:id="@+id/weight_seekbar"
             style="@style/DefaultAppTheme.WeightSelectStyle"
             android:layout_gravity="center" />
