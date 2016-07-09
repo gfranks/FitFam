@@ -117,7 +117,7 @@
                         android:background="@drawable/btn_theme_background_round"
                         android:enabled="false"
                         android:padding="5dp"
-                        android:tint="@color/theme_icon_color"
+                        android:tint="@color/blue"
                         app:srcCompat="@drawable/ic_call" />
 
                     <android.support.v7.widget.AppCompatImageButton
@@ -150,7 +150,7 @@
                         android:background="@drawable/btn_theme_background_round"
                         android:enabled="false"
                         android:padding="5dp"
-                        android:tint="@color/theme_icon_color"
+                        android:tint="@color/red"
                         app:srcCompat="@drawable/ic_heart_on" />
 
                 </LinearLayout>

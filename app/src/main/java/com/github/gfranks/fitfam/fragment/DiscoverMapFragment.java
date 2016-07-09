@@ -552,7 +552,17 @@ public class DiscoverMapFragment extends BaseFragment implements OnMapReadyCallb
         final int approximateMarkerBottomPosition = markerPosition.y + markerPadding;
         if (approximateMarkerBottomPosition > listTopInMap) {
             getMap().setOnCameraChangeListener(null);
-            getMap().animateCamera(CameraUpdateFactory.scrollBy(0, markerPosition.y - listTopInMap + markerPadding), 500, null);
+            getMap().animateCamera(CameraUpdateFactory.scrollBy(0, markerPosition.y - listTopInMap + markerPadding), 500, new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    getMap().setOnCameraChangeListener(mClusterManager);
+                }
+
+                @Override
+                public void onCancel() {
+                    getMap().setOnCameraChangeListener(mClusterManager);
+                }
+            });
         }
     }
 
