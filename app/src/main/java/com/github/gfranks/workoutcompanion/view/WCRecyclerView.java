@@ -16,6 +16,8 @@ public class WCRecyclerView extends RecyclerView {
     private RecyclerViewDataSetObserver mDataSetObserver;
     private OnItemClickListener mOnItemClickListener;
     private boolean mDisableOnItemClick;
+    private DividerItemDecoration mDividerItemDecoration;
+    private int mOrientation = VERTICAL;
 
     public WCRecyclerView(Context context) {
         super(context);
@@ -54,19 +56,32 @@ public class WCRecyclerView extends RecyclerView {
         mDisableOnItemClick = disableOnItemClick;
     }
 
+    public void setUseDividers(boolean useDividers) {
+        if (mDividerItemDecoration != null) {
+            removeItemDecoration(mDividerItemDecoration);
+        }
+
+        if (useDividers) {
+            if (mDividerItemDecoration == null) {
+                mDividerItemDecoration = new DividerItemDecoration(getContext(), mOrientation);
+            }
+            addItemDecoration(mDividerItemDecoration);
+        }
+    }
+
     private void init(AttributeSet attrs, int defStyle) {
         boolean layoutAnimation = false;
         boolean useDividers = false;
-        int orientation = VERTICAL;
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.WCRecyclerView, defStyle, 0);
             layoutAnimation = a.getBoolean(R.styleable.WCRecyclerView_wcrv_layoutAnimation, false);
             useDividers = a.getBoolean(R.styleable.WCRecyclerView_wcrv_dividers, false);
-            orientation = a.getInt(R.styleable.WCRecyclerView_wcrv_orientation, orientation);
+            mOrientation = a.getInt(R.styleable.WCRecyclerView_wcrv_orientation, mOrientation);
             a.recycle();
         }
         if (useDividers) {
-            addItemDecoration(new DividerItemDecoration(getContext(), orientation));
+            mDividerItemDecoration = new DividerItemDecoration(getContext(), mOrientation);
+            addItemDecoration(mDividerItemDecoration);
         }
         mDataSetObserver = new RecyclerViewDataSetObserver();
 

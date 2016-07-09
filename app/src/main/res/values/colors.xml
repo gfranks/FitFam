@@ -20,6 +20,7 @@
     <color name="theme_divider">#B6B6B6</color>
     <color name="theme_icon_color">@color/gray_light</color>
     <color name="theme_icon_color_light">@color/gray_super</color>
+    <color name="theme_menu_icon_color">@color/white</color>
     <color name="theme_primary">#2196F3</color>
     <color name="theme_primary_light">#BBDEFB</color>
     <color name="theme_primary_dark">#1976D2</color>

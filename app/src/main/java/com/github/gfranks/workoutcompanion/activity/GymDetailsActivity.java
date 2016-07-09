@@ -162,6 +162,11 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
     protected void onPause() {
         super.onPause();
         mMapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         mGymDatabase.close();
     }
 
@@ -407,6 +412,7 @@ public class GymDetailsActivity extends BaseActivity implements Callback<WCGyms>
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(mGym.getWebsite()));
                 startActivity(intent);
+                break;
             }
             case R.id.gym_ratings_container: {
                 Intent intent = new Intent(this, GymReviewsActivity.class);

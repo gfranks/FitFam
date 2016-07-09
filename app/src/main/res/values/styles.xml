@@ -29,14 +29,23 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DefaultAppTheme.NoActionBar.Transparent" parent="@style/DefaultAppTheme.NoActionBar">
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <style name="DefaultAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
     <style name="DefaultAppTheme.Toolbar" parent="DefaultAppTheme.AppBarOverlay">
-        <item name="colorControlNormal">@color/white</item>
-        <item name="actionMenuTextColor">@color/white</item>
+        <item name="colorControlNormal">@color/theme_menu_icon_color</item>
+        <item name="actionMenuTextColor">@color/theme_menu_icon_color</item>
     </style>
 
     <style name="DefaultAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">

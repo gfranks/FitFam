@@ -159,18 +159,20 @@ public class GoogleApiManager implements GoogleApiClient.ConnectionCallbacks, Go
                 Message message = Message.obtain();
                 message.setTarget(handler);
                 message.what = msg.what;
+                Bundle bundle = new Bundle();
                 switch (msg.what) {
                     case STATUS_SUCCESS:
-                        WCLocation location = msg.getData().getParcelable(WCLocation.EXTRA);
-                        setLastKnownLocation(location.getPosition());
+                        message.what = STATUS_SUCCESS;
+                        bundle.putAll(msg.getData());
                         break;
                     case STATUS_FAILURE:
-                        Bundle bundle = new Bundle();
+                        message.what = STATUS_FAILURE;
                         bundle.putParcelable(WCErrorResponse.EXTRA, new WCErrorResponse.Builder()
                                 .setMessage("Unable to use the selected location")
                                 .build());
                         break;
                 }
+                message.setData(bundle);
                 message.sendToTarget();
                 return true;
             }

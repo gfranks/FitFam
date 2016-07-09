@@ -75,14 +75,14 @@ public class GymUtils {
                         ContextCompat.getColor(context, R.color.yellow)));
             } else if (rating > 0f) {
                 iv.setBackground(Utils.applyDrawableTint(context, R.drawable.ic_star,
-                        ContextCompat.getColor(context, R.color.theme_icon_color)));
+                        ContextCompat.getColor(context, R.color.theme_icon_color_light)));
                 iv.setImageDrawable(new ClipDrawable(Utils.applyDrawableTint(context, R.drawable.ic_star,
                         ContextCompat.getColor(context, R.color.yellow)), Gravity.START, ClipDrawable.HORIZONTAL));
                 iv.getDrawable().setLevel((int) (10000 * rating));
             } else {
                 iv.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
                 iv.setImageDrawable(Utils.applyDrawableTint(context, R.drawable.ic_star,
-                        ContextCompat.getColor(context, R.color.theme_icon_color)));
+                        ContextCompat.getColor(context, R.color.theme_icon_color_light)));
             }
             --rating;
         }

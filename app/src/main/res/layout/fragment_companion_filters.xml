@@ -16,6 +16,7 @@
 
         <SearchView
             android:id="@+id/filter_location"
+            style="@style/DefaultAppTheme.AppBarOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/activity_horizontal_margin"

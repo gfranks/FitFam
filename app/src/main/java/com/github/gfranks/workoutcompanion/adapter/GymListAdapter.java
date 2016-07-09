@@ -33,6 +33,11 @@ public class GymListAdapter extends RecyclerView.Adapter<GymViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mGyms.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return mGyms.size();

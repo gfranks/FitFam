@@ -68,7 +68,7 @@ public class Utils {
         if (context == null || context.getResources() == null) {
             return;
         }
-        applyMenuTintColor(menu, ContextCompat.getColor(context, R.color.white), ContextCompat.getColor(context, R.color.theme_default_text));
+        applyMenuTintColor(menu, ContextCompat.getColor(context, R.color.theme_menu_icon_color), ContextCompat.getColor(context, R.color.theme_default_text));
     }
 
     public static void applyMenuTintColor(Menu menu, int color, int subMenuColor) {
